@@ -27,13 +27,9 @@ namespace DataYRAN
                         {
                           await  Obr();
                         }
-                    //return;
                     break;
                     }
-
                  await Obr();
-
-
                 }
 
            
