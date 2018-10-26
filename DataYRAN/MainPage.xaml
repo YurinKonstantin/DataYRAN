@@ -1,0 +1,62 @@
+﻿<Page
+    x:Class="DataYRAN.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DataYRAN"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+   >
+    
+    <NavigationView x:Name="NavView" IsBackButtonVisible="Collapsed"
+                   
+                    ItemInvoked="NavView_ItemInvoked"
+                    Loaded="NavView_Loaded"
+                    BackRequested="NavView_BackRequested"
+                    OpenPaneLength="280" CompactModeThresholdWidth="560" ExpandedModeThresholdWidth="560">
+        <NavigationView.Background>
+            <AcrylicBrush/>
+        </NavigationView.Background>
+
+        <NavigationView.MenuItems >
+            <NavigationViewItem  x:Uid="HomeNavItem" Content="Обработчик данных" Tag="home">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xEC59;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+            <NavigationViewItemSeparator/>
+            <NavigationViewItemHeader Content="Ещё возможности"/>
+            <NavigationViewItem x:Uid="AppsNavItem"  Content="Темп счета" Tag="apps">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE916;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+            <NavigationViewItem x:Uid="GamesNavItem" Content="Живое время установки" Tag="games">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE823;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+            <NavigationViewItem x:Uid="Zavisimost" Content="Зависимость n от A" Tag="Zavisimost">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE70F;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+        </NavigationView.MenuItems>
+    
+        <NavigationView.PaneFooter>
+            <HyperlinkButton x:Name="MoreInfoBtn"
+                             Content="More info"
+                           
+                             Margin="0,0"/>
+        </NavigationView.PaneFooter>
+        <Frame x:Name="ContentFrame" Margin="0,-56,4,4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Frame.ContentTransitions>
+                <TransitionCollection>
+                    <NavigationThemeTransition/>
+                </TransitionCollection>
+            </Frame.ContentTransitions>
+        </Frame>
+    </NavigationView>
+</Page>

@@ -1,0 +1,48 @@
+﻿<Page
+    x:Class="DataYRAN.SetUpUser"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DataYRAN"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <CommandBar>
+            <AppBarButton Icon="Save" Label="Сохранить" />
+            <AppBarButton Icon="Refresh" Label="Обновить" />
+            <CommandBar.Content>
+                <Button VerticalAlignment="Top" HorizontalAlignment="Left"  Style="{StaticResource NavigationBackButtonNormalStyle}" Click="Button_Click"/>
+            </CommandBar.Content>
+        </CommandBar>
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="16,32,0,0" Padding="0,0,0,0">
+            
+            <TextBlock Text="Использовать культуру"  FontSize="16"/>
+            
+            <TextBlock Text="   В англоязычных странах целую часть числа принято отделять точкой" FontSize="13" />
+            <TextBlock Text="   у нас же всё по человечески =)" FontSize="13" />
+            <TextBlock FontSize="4"/>
+            <RadioButton  Content="Рус" Tag="Rus" Checked="RadioButton_Checked"/>
+            <RadioButton Content="USA" Tag="USA" Checked="RadioButton_Checked"/>
+
+
+            <TextBlock FontSize="4"/>
+            <TextBlock FontSize="16"/>
+            
+            <TextBlock FontSize="4"/>
+            <TextBlock Text="Отображать путь к файлу в списке" FontSize="13" />
+            <ToggleSwitch x:Name="ToggleSwitchPath" />
+            <TextBlock FontSize="4"/>
+         
+
+
+
+
+        </StackPanel>
+    </Grid>
+</Page>
