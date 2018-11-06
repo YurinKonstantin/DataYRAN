@@ -31,12 +31,6 @@ namespace DataYRAN
                     }
                  await Obr();
                 }
-
-           
-            
-          
-
-
         }
 
         private async Task<int[]> neutron(int[,] n, string timeSob, double[] masnul, string nemeF, bool bad)//out int[] coutN,
@@ -144,59 +138,7 @@ namespace DataYRAN
             return coutN;
 
         }
-        public void MaxAmpAndNul(int[] NulLinMaxAndNull, int[,] data1, out Double[] sig, out double[] Amp, ref double[] Nul, out bool bad)
-        {
-            bad = false;
-            sig = new Double[12];
-            Amp = new double[12];
-            bool obrNoise = ClassUserSetUp.ObrNoise;
-           // Nul = new double[12];
-            int Nsob = 150;//число точек от начала для поиска нулевой линнии
-            for (int i = 0; i < 12; i++)
-            {
-                int[] sumNul = new int[Nsob];// точки нулевой линии для "a" - го канала
-                                             // double sred = Enumerable.Range(0, 2).Select(x => f[x]).Sum();
-                for (int a = 0; a < Nsob; a++)
-                {
-                    // Nul[i] = (Nul[i] + data1[i, a]);
-                    sumNul[a] = data1[i, a];// точки нулевой линии для "a"-го канала
-                }
-
-                Nul[i] = Enumerable.Range(0, 150).Select(x => data1[i, x]).Average();
-                sig[i] = Math.Sqrt(Sum(sumNul, Nul[i]) / Nsob);
-
-            }
-            int xbad = 0;
-            for (int z = 0; z < 12; z++)
-            {
-                double Nu = Nul[z];
-                
-
-               double max = (Enumerable.Range(0, 1024).Select(x => data1[z, x]).Max())-Nu;
-                double min = (Enumerable.Range(0, 1024).Select(x => data1[z, x]).Min())-Nu;
-              
-                if(obrNoise && Math.Abs(min/max)> ClassUserSetUp.KoefNoise & Math.Abs(max)>ClassUserSetUp.AmpNoise)
-                {
-                    xbad++;
-                }
-                
-                Amp[z] = max;
-            }
-            if(xbad>0)
-            {
-                bad = true;
-            }
-        }
-        private Double Sum(int[] n, double x)
-        {
-            Double res = 0;
-            foreach (int i in n)
-            {
-                res = res + Math.Pow((i - x), 2);
-            }
-            return res;
-        }
-    
+      
         public async Task Obr()
         {
             if (OcherediNaObrab.Count != 0)
@@ -216,7 +158,7 @@ namespace DataYRAN
                         int[] coutN1 = new int[12];
                         string time1 = null;
 
-                           ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200H(ObrD.Buf00, out data1, out time1, out dataTail1);
+                        ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200H(ObrD.Buf00, out data1, out time1, out dataTail1);
                         try
                         {
                            await SaveFileDelegate(data1, dataTail1, time1, ObrD.NameFile);
@@ -259,14 +201,16 @@ namespace DataYRAN
             int[] coutN1 = new int[12];
             Double[] sig = new Double[12];
             bool bad = false;
+            string[] timeS = new string[12];
             try
             {
-              await  Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-        () => {
-            MaxAmpAndNul(nul, data1, out sig, out Amp, ref Nul, out bad);
-        });
+                ClassUserSetUp classUserSetUp = new ClassUserSetUp();
+                ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
+       
 
               coutN1 = await Task<int[]>.Run(()=> neutron(dataTail1, time1, Nul, nameFile, bad));
+                classUserSetUp.SetPush1();
+                timeS = ParserBAAK12.ParseBinFileBAAK12.TimeS(data1, classUserSetUp.PorogS, Amp, Nul);
             }
 
             catch 
@@ -308,6 +252,18 @@ namespace DataYRAN
                 Nnut9 = Convert.ToInt16(coutN1[9]),
                 Nnut10 = Convert.ToInt16(coutN1[10]),
                 Nnut11 = Convert.ToInt16(coutN1[11]),
+                TimeS0 = timeS[0],
+                TimeS1 = timeS[1],
+                TimeS2 = timeS[2],
+                TimeS3 = timeS[3],
+                TimeS4 = timeS[4],
+                TimeS5 = timeS[5],
+                TimeS6 = timeS[6],
+                TimeS7 = timeS[7],
+                TimeS8 = timeS[8],
+                TimeS9 = timeS[9],
+                TimeS10 = timeS[10],
+                TimeS11 = timeS[11],
                 sig0 = sig[0],
                 sig1 = sig[1],
                 sig2 = sig[2],
@@ -373,6 +329,18 @@ namespace DataYRAN
                 Nnut9 = Convert.ToInt16(coutN1[9]),
                 Nnut10 = Convert.ToInt16(coutN1[10]),
                 Nnut11 = Convert.ToInt16(coutN1[11]),
+                TimeS0 = timeS[0],
+                TimeS1 = timeS[1],
+                TimeS2 = timeS[2],
+                TimeS3 = timeS[3],
+                TimeS4 = timeS[4],
+                TimeS5 = timeS[5],
+                TimeS6 = timeS[6],
+                TimeS7 = timeS[7],
+                TimeS8 = timeS[8],
+                TimeS9 = timeS[9],
+                TimeS10 = timeS[10],
+                TimeS11 = timeS[11],
                 sig0 = sig[0],
                 sig1 = sig[1],
                 sig2 = sig[2],

@@ -23,7 +23,7 @@
             
         </Grid.RowDefinitions>
        
-        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2"> 
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="60,0,0,0"> 
             <my:Menu>
                 <my:MenuItem Name="FileMenu"
         my:Menu.InputGestureText="Alt+F"
@@ -84,7 +84,7 @@
            DisplayMode="Inline"
            OpenPaneLength="320">
             <SplitView.Pane>
-                <ListView FocusVisualSecondaryBrush="Black"  x:Name="listView1"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended" Background="{ThemeResource AppBarItemPressedForegroundThemeBrush}"   >
+                <ListView FocusVisualSecondaryBrush="Black"  x:Name="listView1"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
                     
                     <ListView.ItemTemplate>
                         <DataTemplate >
@@ -136,6 +136,7 @@
                                             <StackPanel Grid.Row="1" Orientation="Vertical" Margin="16,32,0,0" Padding="0,0,0,0">
                                                 <TextBlock Text="Авто настройки" FontSize="16" />
                                                 <ToggleSwitch x:Name="ToggleSwitchAuto" Toggled="Avto_Toggled"/>
+                                                <TextBox Header="Порог отпора сигнала" Text="{x:Bind ViewModel.PorogS, Mode=TwoWay}" PlaceholderText="Значение от 1 до 2048" />
                                                 <Line X1="320"  Y1="0"   Margin="0,10,0,0" StrokeThickness="3" Stroke="Black"></Line>
                                                 <TextBlock FontSize="6"/>
                                                 <TextBlock Text="Настройки отбора нейтрона"  FontSize="16"/>
@@ -226,6 +227,7 @@
                                                                 <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut}"/>
                                                                 <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig}"/>
                                                                 <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Null}"/>
+                                                                <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS}"/>
                                                             </Grid>
                                                         </DataTemplate>
                                                     </ListView.ItemTemplate>

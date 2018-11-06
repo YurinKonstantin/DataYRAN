@@ -1,13 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Popups;
 
 namespace DataYRAN
 {
-    public class ClassUserSetUp
+    public class ClassUserSetUp : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            // Raise the PropertyChanged event, passing the name of the property whose value has changed.
+            this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
         static Windows.Storage.ApplicationDataContainer localSettings =
       Windows.Storage.ApplicationData.Current.LocalSettings;
         static Windows.Storage.StorageFolder localFolder =
@@ -27,12 +36,23 @@ namespace DataYRAN
             composite["boolObrNoise"] = ObrNoise;
             composite["KoefNoise"] = KoefNoise;
             composite["AmpNoise"] = AmpNoise;
-            
+           // composite["intPorogS"] = PorogS;
             localSettings.Values["exampleCompositeSetting"] = composite;
          
 
         }
+        public void saveUseSet1()
+        {
+            // Composite setting
+
+            Windows.Storage.ApplicationDataCompositeValue composite1 =
+                new Windows.Storage.ApplicationDataCompositeValue();
       
+            composite1["intPorogS"] = PorogS;
+            localSettings.Values["exampleCompositeSetting1"] = composite1;
+
+
+        }
 
         static public void SetPush()
         {
@@ -55,10 +75,29 @@ namespace DataYRAN
                 ObrNoise= Convert.ToBoolean(composite["boolObrNoise"]);
                  KoefNoise=Convert.ToDouble(composite["KoefNoise"]);
                 AmpNoise=Convert.ToInt32(composite["AmpNoise"]);
+               // PorogS=Convert.ToInt32(composite["intPorogS"]);
 
             }
         }
-        static int? porogN = 0;
+        public void SetPush1()
+        {
+
+
+            Windows.Storage.ApplicationDataCompositeValue composite1 =
+               (Windows.Storage.ApplicationDataCompositeValue)localSettings.Values["exampleCompositeSetting1"];
+
+            if (composite1 == null)
+            {
+                // No data
+            }
+            else
+            {
+                
+                PorogS = Convert.ToInt32(composite1["intPorogS"]);
+
+            }
+        }
+        static int? porogN = 5;
         static public int? PorogN
         {
             get
@@ -68,6 +107,20 @@ namespace DataYRAN
             set
             {
                 porogN = value;
+            }
+        }
+         int porogS = 10;
+        public int PorogS
+        {
+            get
+            {
+                return porogS;
+            }
+            set
+            {
+                    porogS = value;
+                    this.OnPropertyChanged();
+                
             }
         }
         static int? dlitN3 = 2;
@@ -210,8 +263,8 @@ namespace DataYRAN
             }
         }
 
-        static double? koefNoise =0.6;
-        static public double? KoefNoise
+        static double koefNoise =0.6;
+        static public double KoefNoise
         {
             get
             {

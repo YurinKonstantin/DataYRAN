@@ -34,7 +34,7 @@ namespace DataYRAN
             var t = ApplicationView.GetForCurrentView().TitleBar;
             t.BackgroundColor = Colors.DodgerBlue;
             t.ForegroundColor = Colors.White;
-            t.ButtonBackgroundColor = Colors.Indigo;
+            t.ButtonBackgroundColor = Colors.DodgerBlue;
             t.ButtonForegroundColor = Colors.White;
         }
         private void NavView_Loaded(object sender, RoutedEventArgs e)

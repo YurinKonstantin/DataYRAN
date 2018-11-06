@@ -14,7 +14,7 @@
                     ItemInvoked="NavView_ItemInvoked"
                     Loaded="NavView_Loaded"
                     BackRequested="NavView_BackRequested"
-                    OpenPaneLength="280" CompactModeThresholdWidth="560" ExpandedModeThresholdWidth="560">
+                    OpenPaneLength="280" CompactModeThresholdWidth="1200" ExpandedModeThresholdWidth="1250" CompactPaneLength="0">
         <NavigationView.Background>
             <AcrylicBrush/>
         </NavigationView.Background>

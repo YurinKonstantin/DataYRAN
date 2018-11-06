@@ -64,6 +64,19 @@ namespace DataYRAN
         public short Nnull10 { get; set; }
         public short Nnull11 { get; set; }
 
+        public string TimeS0 { get; set; }
+        public string TimeS1 { get; set; }
+        public string TimeS2 { get; set; }
+        public string TimeS3 { get; set; }
+        public string TimeS4 { get; set; }
+        public string TimeS5 { get; set; }
+        public string TimeS6 { get; set; }
+        public string TimeS7 { get; set; }
+        public string TimeS8 { get; set; }
+        public string TimeS9 { get; set; }
+        public string TimeS10 { get; set; }
+        public string TimeS11 { get; set; }
+
     }
  
 }

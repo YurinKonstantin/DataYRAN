@@ -747,28 +747,12 @@ namespace DataYRAN
         private async  void AppBarButton_Click_8(object sender, RoutedEventArgs e)
         {
 
-           // DataGrid.SelectionMode = DataGridSelectionMode.Multiple;
+            // DataGrid.SelectionMode = DataGridSelectionMode.Multiple;
 
 
-          //  DataGrid.SelectAll();
-           foreach(ClassSob classSob in DataGrid.SelectedItems)
-            {
-                MessageDialog messageDialog1 = new MessageDialog(classSob.nameBAAK + " " + classSob.SumAmp);
-               await messageDialog1.ShowAsync();
-
-            }
-            DataGridPlox.SelectionMode = DataGridSelectionMode.Multiple;
-            DataGridPlox.SelectAll();
-            MessageDialog messageDialog = new MessageDialog("FFF");
-            await messageDialog.ShowAsync();
-            foreach (ClassSob classSob in DataGridPlox.SelectedItems)
-            {
-                 messageDialog = new MessageDialog(classSob.nameBAAK + " " + classSob.SumAmp);
-                await messageDialog.ShowAsync();
-
-            }
-         //   DataGrid.SelectionMode = DataGridSelectionMode.Single;
-            DataGridPlox.SelectionMode = DataGridSelectionMode.Single;
+            //  DataGrid.SelectAll();
+            MessageDialog messageDialog = new MessageDialog(ViewModel.PorogS.ToString());
+           await messageDialog.ShowAsync();
 
         }
 
@@ -911,45 +895,43 @@ namespace DataYRAN
 
                     Split1.IsPaneOpen = true;
 
-                    foreach (ClassSob d in DataGrid.SelectedItems)
-                    {
+                   
 
                         _dataStat.Clear();
-                        foreach (ClassSob d1 in ViewModel.ClassSobs)
-                        {
+                        ClassSob sob = (ClassSob)ind;
+                       
                             int z = 1;
-                            if (d1.nameFile == d.nameFile & d1.time == d.time)
-                            {
-                                textPlata.Text = d1.nameBAAK.ToString();
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp0, sig = d1.sig0, Nnut = d1.Nnut0, N = z, Null = d1.Nnull0 });
+                           
+                                textPlata.Text = sob.nameBAAK.ToString();
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp0, sig = sob.sig0, Nnut = sob.Nnut0, N = z, Null = sob.Nnull0, TimeS= sob.TimeS0 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp1, sig = d1.sig1, Nnut = d1.Nnut1, N = z, Null = d1.Nnull1 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp1, sig = sob.sig1, Nnut = sob.Nnut1, N = z, Null = sob.Nnull1, TimeS = sob.TimeS1 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp2, sig = d1.sig2, Nnut = d1.Nnut2, N = z, Null = d1.Nnull2 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp2, sig = sob.sig2, Nnut = sob.Nnut2, N = z, Null = sob.Nnull2, TimeS = sob.TimeS2 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp3, sig = d1.sig3, Nnut = d1.Nnut3, N = z, Null = d1.Nnull3 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp3, sig = sob.sig3, Nnut = sob.Nnut3, N = z, Null = sob.Nnull3, TimeS = sob.TimeS3 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp4, sig = d1.sig4, Nnut = d1.Nnut4, N = z, Null = d1.Nnull4 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp4, sig = sob.sig4, Nnut = sob.Nnut4, N = z, Null = sob.Nnull4, TimeS = sob.TimeS4 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp5, sig = d1.sig5, Nnut = d1.Nnut5, N = z, Null = d1.Nnull5 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp5, sig = sob.sig5, Nnut = sob.Nnut5, N = z, Null = sob.Nnull5, TimeS = sob.TimeS5 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp6, sig = d1.sig6, Nnut = d1.Nnut6, N = z, Null = d1.Nnull6 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp6, sig = sob.sig6, Nnut = sob.Nnut6, N = z, Null = sob.Nnull6, TimeS = sob.TimeS6 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp7, sig = d1.sig7, Nnut = d1.Nnut7, N = z, Null = d1.Nnull7 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp7, sig = sob.sig7, Nnut = sob.Nnut7, N = z, Null = sob.Nnull7, TimeS = sob.TimeS7 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp8, sig = d1.sig8, Nnut = d1.Nnut8, N = z, Null = d1.Nnull8 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp8, sig = sob.sig8, Nnut = sob.Nnut8, N = z, Null = sob.Nnull8, TimeS = sob.TimeS8 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp9, sig = d1.sig9, Nnut = d1.Nnut9, N = z, Null = d1.Nnull9 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp9, sig = sob.sig9, Nnut = sob.Nnut9, N = z, Null = sob.Nnull9, TimeS = sob.TimeS9 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp10, sig = d1.sig10, Nnut = d1.Nnut10, N = z, Null = d1.Nnull10 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp10, sig = sob.sig10, Nnut = sob.Nnut10, N = z, Null = sob.Nnull10, TimeS = sob.TimeS10 });
                                 z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = d1.Amp11, sig = d1.sig11, Nnut = d1.Nnut11, N = z, Null = d1.Nnull11 });
+                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp11, sig = sob.sig11, Nnut = sob.Nnut11, N = z, Null = sob.Nnull11, TimeS = sob.TimeS11 });
 
 
-                            }
-                        }
+                            
+                        
 
-                    }
+                    
                     
                 }
 
@@ -966,15 +948,13 @@ namespace DataYRAN
                 //Split1Plox.IsPaneOpen = true;
                 Split1Plox.IsPaneOpen = !Split1Plox.IsPaneOpen;
 
-                foreach (ClassSob d in DataGridPlox.SelectedItems)
+                foreach (ClassSob d1 in DataGridPlox.SelectedItems)
                 {
 
                     _dataStatPlox.Clear();
-                    foreach (ClassSob d1 in _DataColecSobPlox)
-                    {
+                   
                         int z = 1;
-                        if (d1.nameFile == d.nameFile & d1.time == d.time)
-                        {
+                        
                             textPlata.Text = d1.nameBAAK.ToString();
                             _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp0, sig = d1.sig0, Nnut = d1.Nnut0, N = z, Null = d1.Nnull0 });
                             z++;
@@ -1001,8 +981,8 @@ namespace DataYRAN
                             _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp11, sig = d1.sig11, Nnut = d1.Nnut11, N = z, Null = d1.Nnull11 });
 
 
-                        }
-                    }
+                        
+                    
 
                 }
 
@@ -1041,8 +1021,9 @@ namespace DataYRAN
             try
             {
 
-
-                ClassUserSetUp.saveUseSet();
+                ViewModel.SaveUserSetUp();
+               // ClassUserSetUp.saveUseSet();
+               // ClassUserSetUp.saveUseSet1();
                 ExampleInAppNotification.Show("Настройки успешно сохранены в память", 2000);
             }
             catch(Exception)

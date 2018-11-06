@@ -20,5 +20,6 @@ namespace DataYRAN
         public double sig { get; set; }
         public int N { get; set; }
         public int Null { get; set; }
+        public string TimeS { get; set; }
     }
 }
