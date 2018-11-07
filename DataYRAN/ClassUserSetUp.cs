@@ -159,6 +159,18 @@ namespace DataYRAN
                 obrNoise = value;
             }
         }
+        static bool tipTail = true;
+        static public bool TipTail
+        {
+            get
+            {
+                return tipTail;
+            }
+            set
+            {
+                tipTail = value;
+            }
+        }
         static bool saveRaz = false;
         static public bool SaveRaz
         {

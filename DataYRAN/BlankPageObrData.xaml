@@ -82,7 +82,7 @@
         </StackPanel>
         <SplitView  x:Name="mySplitView" IsPaneOpen="False" Grid.Column="1" Grid.Row="1"
            DisplayMode="Inline"
-           OpenPaneLength="320">
+           OpenPaneLength="280">
             <SplitView.Pane>
                 <ListView FocusVisualSecondaryBrush="Black"  x:Name="listView1"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
                     
@@ -103,8 +103,35 @@
                 </ListView>
             </SplitView.Pane>
             <Grid x:Name="gridpan">
-                <Pivot x:Name="rootPivot" FontSize="12"  FontStyle="Normal" MinWidth="900"  >
-                    
+                <Pivot x:Name="rootPivot"   FontStyle="Normal" MinWidth="900"  >
+                    <Pivot.Resources>
+                        
+                            <Style TargetType="PivotHeaderItem">
+                                <Setter Property="FontSize"
+                Value="16" />
+                            
+                            <Setter Property="FontFamily"
+                Value="{ThemeResource PivotHeaderItemFontFamily}" />
+                                <Setter Property="FontWeight"
+                Value="{ThemeResource PivotHeaderItemThemeFontWeight}" />
+                                <Setter Property="CharacterSpacing"
+                Value="{ThemeResource PivotHeaderItemCharacterSpacing}" />
+                                <Setter Property="Background"
+                Value="{ThemeResource PivotHeaderItemBackgroundUnselected}" />
+                                <Setter Property="Foreground"
+                Value="{ThemeResource PivotHeaderItemForegroundUnselected}" />
+                                <Setter Property="Padding"
+                Value="{ThemeResource PivotHeaderItemMargin}" />
+                                <Setter Property="Height"
+                Value="36" />
+                                <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+                                <Setter Property="IsTabStop"
+                Value="False" />
+                              
+                            </Style>
+                      
+                    </Pivot.Resources>
                     <Pivot.RightHeader>
                         <CommandBar  HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" ClosedDisplayMode="Compact"  >
                             <AppBarButton Icon="Delete" Click="AppBarButton_Click_7" Label="Удалить" ToolTipService.ToolTip="Очистет все таблицы" Foreground="Red"/>
@@ -133,10 +160,18 @@
                                                 <AppBarButton Icon="Save" Label="Сохранить" Click="SaveUserSetUp_clic" />
                                                 <AppBarButton Icon="Refresh" Label="Обновить" />
                                             </CommandBar>
-                                            <StackPanel Grid.Row="1" Orientation="Vertical" Margin="16,32,0,0" Padding="0,0,0,0">
+                                            <StackPanel Grid.Row="1" Orientation="Vertical" Margin="16,16,0,0" Padding="0,0,0,0">
+                                                
+                                                    <TextBlock Text="Тип данных" Style="{ThemeResource BaseTextBlockStyle}"/>
+                                                    <StackPanel Orientation="Horizontal">
+                                                    <RadioButton Content="С хвостом" Tag="Tail" Checked="RadioButton_Checked" IsChecked="True" />
+                                                    <RadioButton Content="200 без хвоста" Checked="RadioButton_Checked" Tag="NoTail" />
+                                                       
+                                                    </StackPanel>
+                                               
                                                 <TextBlock Text="Авто настройки" FontSize="16" />
                                                 <ToggleSwitch x:Name="ToggleSwitchAuto" Toggled="Avto_Toggled"/>
-                                                <TextBox Header="Порог отпора сигнала" Text="{x:Bind ViewModel.PorogS, Mode=TwoWay}" PlaceholderText="Значение от 1 до 2048" />
+                                                <TextBox Header="Порог отбора сигнала" Text="{x:Bind ViewModel.PorogS, Mode=TwoWay}" PlaceholderText="Значение от 1 до 2048" />
                                                 <Line X1="320"  Y1="0"   Margin="0,10,0,0" StrokeThickness="3" Stroke="Black"></Line>
                                                 <TextBlock FontSize="6"/>
                                                 <TextBlock Text="Настройки отбора нейтрона"  FontSize="16"/>
@@ -180,33 +215,65 @@
 
                     <PivotItem Header="События" FontSize="10" Margin="0,0,12,0">
                         <Pivot x:Name="Sobitie" >
+                            <Pivot.Resources>
+
+                                <Style TargetType="PivotHeaderItem">
+                                    <Setter Property="FontSize"
+                Value="14" />
+                                    <Setter Property="Margin"
+                Value="16,-8,0,0" />
+                                    <Setter Property="FontFamily"
+                Value="{ThemeResource PivotHeaderItemFontFamily}" />
+                                    <Setter Property="FontWeight"
+                Value="{ThemeResource PivotHeaderItemThemeFontWeight}" />
+                                    <Setter Property="CharacterSpacing"
+                Value="{ThemeResource PivotHeaderItemCharacterSpacing}" />
+                                    <Setter Property="Background"
+                Value="{ThemeResource PivotHeaderItemBackgroundUnselected}" />
+                                    <Setter Property="Foreground"
+                Value="{ThemeResource PivotHeaderItemForegroundUnselected}" />
+                                    <Setter Property="Padding"
+                Value="0" />
+                                    <Setter Property="Height"
+                Value="24" />
+                                    <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+                                    <Setter Property="IsTabStop"
+                Value="False" />
+
+                                </Style>
+
+                            </Pivot.Resources>
                             <PivotItem Header="Все">
                                 <SplitView IsPaneOpen="False"
            DisplayMode="Inline"
-           OpenPaneLength="560" PanePlacement="Right" x:Name="Split1">
+           OpenPaneLength="480" PanePlacement="Right" x:Name="Split1">
 
                                     <SplitView.Pane >
                                         <Grid>
-                                            <StackPanel Margin="8,24,0,0">
-                                                <TextBlock Text="Плата" Margin="12,12,0,0" FontSize="12"/>
-                                                <TextBlock x:Name="textPlata" FontSize="12" Margin="12,4,0,0"/>
+                                            <StackPanel Margin="8,0,0,0">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Плата" Margin="12,8,0,0" FontSize="12"/>
+                                                    <TextBlock x:Name="textPlata" FontSize="12" Margin="12,8,0,0"/>
+                                                </StackPanel>
+                                                
                                                 <ListView  x:Name="List54">
                                                     <ListView.HeaderTemplate>
                                                         <DataTemplate>
                                                             <Grid Padding="12" >
                                                                 <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="48"/>
-                                                                    <ColumnDefinition Width="102"/>
-                                                                    <ColumnDefinition Width="102"/>
-                                                                    <ColumnDefinition Width="102"/>
-                                                                    <ColumnDefinition Width="102"/>
-                                                                    <ColumnDefinition Width="102"/>
+                                                                    <ColumnDefinition Width="44"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
                                                                 </Grid.ColumnDefinitions>
                                                                 <TextBlock Text="N" Style="{ThemeResource CaptionTextBlockStyle}"/>
                                                                 <TextBlock Text="Амплитуда" Grid.Column="1" Style="{ThemeResource CaptionTextBlockStyle}"/>
-                                                                <TextBlock Grid.Column="2" Text="Нейтрон" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                                                <TextBlock Grid.Column="2" Text="Нейтрон" x:Uid="BB" Style="{ThemeResource CaptionTextBlockStyle}"/>
                                                                 <TextBlock Grid.Column="3" Text="Сигмма" Style="{ThemeResource CaptionTextBlockStyle}"/>
-                                                                <TextBlock Grid.Column="4" Text="NullLine" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                                                <TextBlock Grid.Column="4" Text="NullLine"  Style="{ThemeResource CaptionTextBlockStyle}"/>
                                                                 <TextBlock Grid.Column="5" Text="TimeSig" Style="{ThemeResource CaptionTextBlockStyle}"/>
                                                             </Grid>
                                                         </DataTemplate>
@@ -215,12 +282,12 @@
                                                         <DataTemplate >
                                                             <Grid Height="48" AutomationProperties.Name="x:String">
                                                                 <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="48"/>
-                                                                    <ColumnDefinition Width="102"/>
-                                                                    <ColumnDefinition Width="102"/>
-                                                                    <ColumnDefinition Width="102"/>
-                                                                    <ColumnDefinition Width="102"/>
-                                                                    <ColumnDefinition Width="102"/>
+                                                                    <ColumnDefinition Width="44"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
                                                                 </Grid.ColumnDefinitions>
                                                                 <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="{Binding N}"/>
                                                                 <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp}" />
@@ -228,6 +295,46 @@
                                                                 <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig}"/>
                                                                 <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Null}"/>
                                                                 <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS}"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListView.ItemTemplate>
+                                                </ListView>
+                                                <ListView  x:Name="List55" Visibility="Collapsed">
+                                                    <ListView.HeaderTemplate>
+                                                        <DataTemplate>
+                                                            <Grid Padding="12" >
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="44"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Text="N" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                                                <TextBlock Text="Амплитуда" Grid.Column="1" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                                                <TextBlock Grid.Column="2" Text="Сигмма" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                                                <TextBlock Grid.Column="3" Text="NullLine"  Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                                                <TextBlock Grid.Column="4" Text="TimeSig" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListView.HeaderTemplate>
+                                                    <ListView.ItemTemplate>
+                                                        <DataTemplate >
+                                                            <Grid Height="48" AutomationProperties.Name="x:String">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="44"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                               
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                    <ColumnDefinition Width="90"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="{Binding N}"/>
+                                                                <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp}" />
+                                                              
+                                                                <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding sig}"/>
+                                                                <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding Null}"/>
+                                                                <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding TimeS}"/>
                                                             </Grid>
                                                         </DataTemplate>
                                                     </ListView.ItemTemplate>
@@ -243,7 +350,7 @@
                                             <telerikGrid:DataGridTextColumn PropertyName="nameFile" Header="Имя файла"/>
                                             <telerikGrid:DataGridTextColumn PropertyName="nameklaster" Header="Кластер №"/>
                                             <telerikGrid:DataGridTextColumn PropertyName="SumAmp" Header="Суммарная амплитуда"/>
-                                            <telerikGrid:DataGridTextColumn PropertyName="SumNeu" Header="Сумма нейтронов"/>
+                                            <telerikGrid:DataGridTextColumn PropertyName="SumNeu" Header="Сумма нейтронов" x:Name="dataN"/>
                                         </telerikGrid:RadDataGrid.Columns>
                                     </telerikGrid:RadDataGrid>
 
@@ -437,7 +544,7 @@
                         </StackPanel>
                     </PivotItem>
                 </Pivot>
-                <ProgressRing x:Name="ObRing" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="7" Grid.RowSpan="2" HorizontalAlignment="Left" Height="100" Width="100"/>
+                <ProgressRing x:Name="ObRing" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="7" Grid.RowSpan="2" HorizontalAlignment="Center" Height="80" Width="80"/>
             </Grid>
 
         </SplitView>

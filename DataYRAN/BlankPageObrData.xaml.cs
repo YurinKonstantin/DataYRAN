@@ -159,6 +159,7 @@ namespace DataYRAN
                 DataGridPlox.ItemsSource = _DataColecSobPlox;
                // DataGridnNeutron.ItemsSource = _DataColecNeu;
                 List54.ItemsSource = _dataStat;
+                List55.ItemsSource = _dataStat;
                 List54Plox.ItemsSource = _dataStatPlox;
                 ToggleSwitchAuto.IsOn = ClassUserSetUp.AutoSeting;
                 ToggleSwitchSaveRaz.IsOn = ClassUserSetUp.SaveRaz;
@@ -1444,6 +1445,36 @@ namespace DataYRAN
 
             }
 
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton rb = sender as RadioButton;
+
+            if (rb != null && TextBloxPorogN != null && TextBloxDlitN!=null && dataN != null && List54!= null && List55 != null)
+            {
+                string colorName = rb.Tag.ToString();
+                switch (colorName)
+                {
+                    case "Tail":
+                        TextBloxPorogN.IsEnabled = true;
+                        TextBloxDlitN.IsEnabled = true;
+                        ClassUserSetUp.TipTail = true;
+                        dataN.IsVisible = true;
+                        List55.Visibility = Visibility.Collapsed;
+                        List54.Visibility = Visibility.Visible;
+                        break;
+                    case "NoTail":
+                        TextBloxPorogN.IsEnabled = false;
+                        TextBloxDlitN.IsEnabled = false;
+                        ClassUserSetUp.TipTail = false;
+                        dataN.IsVisible = false;
+                        List55.Visibility = Visibility.Visible;
+                        List54.Visibility = Visibility.Collapsed;
+                        break;
+                   
+                }
+            }
         }
     }
 }
