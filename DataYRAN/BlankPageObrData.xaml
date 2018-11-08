@@ -10,7 +10,7 @@
     xmlns:telerikGrid1="using:Telerik.Data.Core"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <Grid>
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
@@ -59,7 +59,7 @@
             </my:Menu>
 
         </StackPanel>
-        <StackPanel Grid.Row="1">
+        <StackPanel Grid.Row="1" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <AppBarButton Icon="AllApps" Label="Список"  Foreground="Blue"  Click="AppBarButton_Click_9" />
             <AppBarButton Icon="Add" Label="Добавить файл" Foreground="Green" VerticalAlignment="Stretch" Click="AppBarButton_Click" />
             <AppBarButton Icon="MoveToFolder" Label="Добавить папку" VerticalAlignment="Stretch" Foreground="Green" Click="AppBarButton_Click_2" />
@@ -537,7 +537,7 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                        <CommandBar Grid.Row="1">
+                                        <CommandBar Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                                             <AppBarToggleButton Icon="OutlineStar" Label="Статистика" Click="AppBarToggleButton_Click_6"/>
                                         </CommandBar>
                                         <telerikGrid:RadDataGrid x:Name="DataGrid"  ItemsSource="{x:Bind ViewModel.ClassSobs}" AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
