@@ -74,8 +74,7 @@ namespace DataYRAN
         ObservableCollection<ClassSob> _DataColecSobCopy { get; set; }
         ObservableCollection<ClassSobColl> _DataSobColli = new ObservableCollection<ClassSobColl>();
        // ObservableCollection<ClassSobNeutron> _DataColecNeu = new ObservableCollection<ClassSobNeutron>();
-        ObservableCollection<ClassNeutronStat> _dataStat = new ObservableCollection<ClassNeutronStat>();
-        ObservableCollection<ClassNeutronStat> _dataStatPlox = new ObservableCollection<ClassNeutronStat>();
+    
         ClassСписокList _СписокФайловОбработки = new ClassСписокList();
 
         ObservableCollection<ClassSobObrZav> _DataColecSob2 = new ObservableCollection<ClassSobObrZav>();
@@ -158,9 +157,7 @@ namespace DataYRAN
               //  DataGrid.ItemsSource = _DataColecSob;
                 DataGridPlox.ItemsSource = _DataColecSobPlox;
                // DataGridnNeutron.ItemsSource = _DataColecNeu;
-                List54.ItemsSource = _dataStat;
-                List55.ItemsSource = _dataStat;
-                List54Plox.ItemsSource = _dataStatPlox;
+           
                 ToggleSwitchAuto.IsOn = ClassUserSetUp.AutoSeting;
                 ToggleSwitchSaveRaz.IsOn = ClassUserSetUp.SaveRaz;
                 ToggleSwitchObrSig.IsOn = ClassUserSetUp.ObrSig;
@@ -690,7 +687,7 @@ namespace DataYRAN
                     _DataColecSobPlox.Clear();
                     ViewModel.ClassSobNeutrons.Clear();
                    
-                    _dataStat.Clear();
+                
                     Split1.IsPaneOpen = false;
                 }
                 else
@@ -895,45 +892,7 @@ namespace DataYRAN
                     ind = DataGrid.SelectedItem;
 
                     Split1.IsPaneOpen = true;
-
-                   
-
-                        _dataStat.Clear();
-                        ClassSob sob = (ClassSob)ind;
-                       
-                            int z = 1;
-                           
-                                textPlata.Text = sob.nameBAAK.ToString();
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp0, sig = sob.sig0, Nnut = sob.Nnut0, N = z, Null = sob.Nnull0, TimeS= sob.TimeS0 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp1, sig = sob.sig1, Nnut = sob.Nnut1, N = z, Null = sob.Nnull1, TimeS = sob.TimeS1 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp2, sig = sob.sig2, Nnut = sob.Nnut2, N = z, Null = sob.Nnull2, TimeS = sob.TimeS2 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp3, sig = sob.sig3, Nnut = sob.Nnut3, N = z, Null = sob.Nnull3, TimeS = sob.TimeS3 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp4, sig = sob.sig4, Nnut = sob.Nnut4, N = z, Null = sob.Nnull4, TimeS = sob.TimeS4 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp5, sig = sob.sig5, Nnut = sob.Nnut5, N = z, Null = sob.Nnull5, TimeS = sob.TimeS5 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp6, sig = sob.sig6, Nnut = sob.Nnut6, N = z, Null = sob.Nnull6, TimeS = sob.TimeS6 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp7, sig = sob.sig7, Nnut = sob.Nnut7, N = z, Null = sob.Nnull7, TimeS = sob.TimeS7 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp8, sig = sob.sig8, Nnut = sob.Nnut8, N = z, Null = sob.Nnull8, TimeS = sob.TimeS8 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp9, sig = sob.sig9, Nnut = sob.Nnut9, N = z, Null = sob.Nnull9, TimeS = sob.TimeS9 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp10, sig = sob.sig10, Nnut = sob.Nnut10, N = z, Null = sob.Nnull10, TimeS = sob.TimeS10 });
-                                z++;
-                                _dataStat.Add(new ClassNeutronStat() { Amp = sob.Amp11, sig = sob.sig11, Nnut = sob.Nnut11, N = z, Null = sob.Nnull11, TimeS = sob.TimeS11 });
-
-
-                            
-                        
-
-                    
-                    
+ 
                 }
 
             }
@@ -948,44 +907,6 @@ namespace DataYRAN
             {
                 //Split1Plox.IsPaneOpen = true;
                 Split1Plox.IsPaneOpen = !Split1Plox.IsPaneOpen;
-
-                foreach (ClassSob d1 in DataGridPlox.SelectedItems)
-                {
-
-                    _dataStatPlox.Clear();
-                   
-                        int z = 1;
-                        
-                            textPlata.Text = d1.nameBAAK.ToString();
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp0, sig = d1.sig0, Nnut = d1.Nnut0, N = z, Null = d1.Nnull0 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp1, sig = d1.sig1, Nnut = d1.Nnut1, N = z, Null = d1.Nnull1 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp2, sig = d1.sig2, Nnut = d1.Nnut2, N = z, Null = d1.Nnull2 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp3, sig = d1.sig3, Nnut = d1.Nnut3, N = z, Null = d1.Nnull3 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp4, sig = d1.sig4, Nnut = d1.Nnut4, N = z, Null = d1.Nnull4 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp5, sig = d1.sig5, Nnut = d1.Nnut5, N = z, Null = d1.Nnull5 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp6, sig = d1.sig6, Nnut = d1.Nnut6, N = z, Null = d1.Nnull6 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp7, sig = d1.sig7, Nnut = d1.Nnut7, N = z, Null = d1.Nnull7 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp8, sig = d1.sig8, Nnut = d1.Nnut8, N = z, Null = d1.Nnull8 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp9, sig = d1.sig9, Nnut = d1.Nnut9, N = z, Null = d1.Nnull9 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp10, sig = d1.sig10, Nnut = d1.Nnut10, N = z, Null = d1.Nnull10 });
-                            z++;
-                            _dataStatPlox.Add(new ClassNeutronStat() { Amp = d1.Amp11, sig = d1.sig11, Nnut = d1.Nnut11, N = z, Null = d1.Nnull11 });
-
-
-                        
-                    
-
-                }
 
             }
             else
@@ -1475,6 +1396,126 @@ namespace DataYRAN
                    
                 }
             }
+        }
+
+        private void AppBarToggleButton_Click_6(object sender, RoutedEventArgs e)
+        {
+            if(DataGrid.Visibility==Visibility.Visible && ViewModel.ClassSobs.Count!=0)
+            {
+                DataGrid.Visibility = Visibility.Collapsed;
+                GridStatictik.Visibility = Visibility.Visible;
+                List<ClassSob> classSobs = ViewModel.ClassSobs.ToList<ClassSob>();
+                string stat = "Статистика общая"+"\n";
+
+                stat += "Средняя нулевая линия" + "\n";
+                double SrNull1 = 0;
+                double SrNull2 = 0;
+                double SrNull3 = 0;
+                double SrNull4 = 0;
+                double SrNull5 = 0;
+                double SrNull6 = 0;
+                double SrNull7 = 0;
+                double SrNull8 = 0;
+                double SrNull9 = 0;
+                double SrNull10 = 0;
+                double SrNull11 = 0;
+                double SrNull12 = 0;
+
+                double Srsig1 = 0;
+                double Srsig2 = 0;
+                double Srsig3 = 0;
+                double Srsig4 = 0;
+                double Srsig5 = 0;
+                double Srsig6 = 0;
+                double Srsig7 = 0;
+                double Srsig8 = 0;
+                double Srsig9 = 0;
+                double Srsig10 = 0;
+                double Srsig11 = 0;
+                double Srsig12 = 0;
+                foreach (var c in classSobs)
+                {
+                    SrNull1 += c.Nnull0;
+                    SrNull2 += c.Nnull1;
+                    SrNull3 += c.Nnull2;
+                    SrNull4 += c.Nnull3;
+                    SrNull5 += c.Nnull4;
+                    SrNull6 += c.Nnull5;
+                    SrNull7 += c.Nnull6;
+                    SrNull8 += c.Nnull7;
+                    SrNull9 += c.Nnull8;
+                    SrNull10 += c.Nnull9;
+                    SrNull11 += c.Nnull10;
+                    SrNull12 += c.Nnull11;
+                    Srsig1 += c.sig0;
+                    Srsig2 += c.sig1;
+                    Srsig3 += c.sig2;
+                    Srsig4 += c.sig3;
+                    Srsig5 += c.sig4;
+                    Srsig6 += c.sig5;
+                    Srsig7 += c.sig6;
+                    Srsig8 += c.sig7;
+                    Srsig9 += c.sig8;
+                    Srsig10 += c.sig9;
+                    Srsig11 += c.sig10;
+                    Srsig12 += c.sig11;
+                }
+                stat += "Кн1" + "\t"+ "Кн2" + "\t" + "Кн3" + "\t" + "Кн4" + "\t" + "Кн5" + "\t" + "Кн6" + "\t" + "Кн7" + "\t" + "Кн8" + "\t" + "Кн9" + "\t" + "Кн10" + "\t" + "Кн11" + "\t" + "Кн12"+"\n";
+                stat += (SrNull1/ classSobs.Count).ToString("0.0") + "\t" + (SrNull2 / classSobs.Count).ToString("0.0") + "\t" + (SrNull3 / classSobs.Count).ToString("0.0") + "\t" +
+                    (SrNull4 / classSobs.Count).ToString("0.0") + "\t" + (SrNull5 / classSobs.Count).ToString("0.0") + "\t" + (SrNull6 / classSobs.Count).ToString("0.0") + "\t" 
+                    + (SrNull7 / classSobs.Count).ToString("0.0") + "\t" + (SrNull8 / classSobs.Count).ToString("0.0") + "\t" + (SrNull9 / classSobs.Count).ToString("0.0") + "\t" + (SrNull10 / classSobs.Count).ToString("0.0") + "\t" + (SrNull11 / classSobs.Count).ToString("0.0") + "\t" + (SrNull12 / classSobs.Count).ToString("0.0") + "\n";
+                stat += "Средняя сигма" + "\n";
+                stat += "Кн1" + "\t" + "Кн2" + "\t" + "Кн3" + "\t" + "Кн4" + "\t" + "Кн5" + "\t" + "Кн6" + "\t" + "Кн7" + "\t" + "Кн8" + "\t" + "Кн9" + "\t" + "Кн10" + "\t" + "Кн11" + "\t" + "Кн12" + "\n";
+                stat += (Srsig1 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig2 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig3 / classSobs.Count).ToString("0.0000") + "\t" +
+                    (Srsig4 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig5 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig6 / classSobs.Count).ToString("0.0000") + "\t"
+                    + (Srsig7 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig8 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig9 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig10 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig11 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig12 / classSobs.Count).ToString("0.0000") + "\n";
+                Editor.Document.SetText(Windows.UI.Text.TextSetOptions.ApplyRtfDocumentDefaults, stat);
+            }
+            else
+            {
+                DataGrid.Visibility = Visibility.Visible;
+                GridStatictik.Visibility = Visibility.Collapsed;
+            }
+
+        }
+        private async void AppBarButtonSaveStat_Click(object sender, RoutedEventArgs e)
+        {
+          
+            Windows.Storage.Pickers.FileSavePicker savePicker = new Windows.Storage.Pickers.FileSavePicker();
+            savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+
+            // Dropdown of file types the user can save the file as
+            savePicker.FileTypeChoices.Add("Rich Text", new List<string>() { ".rtf" });
+
+            // Default file name if the user does not type one in or select a file to replace
+            savePicker.SuggestedFileName = "New Document";
+
+            Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
+            if (file != null)
+            {
+                // Prevent updates to the remote version of the file until we
+                // finish making changes and call CompleteUpdatesAsync.
+                Windows.Storage.CachedFileManager.DeferUpdates(file);
+                // write to file
+                Windows.Storage.Streams.IRandomAccessStream randAccStream =
+                    await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+
+                Editor.Document.SaveToStream(Windows.UI.Text.TextGetOptions.FormatRtf, randAccStream);
+
+                // Let Windows know that we're finished changing the file so the
+                // other app can update the remote version of the file.
+                Windows.Storage.Provider.FileUpdateStatus status = await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(file);
+                if (status != Windows.Storage.Provider.FileUpdateStatus.Complete)
+                {
+                    Windows.UI.Popups.MessageDialog errorBox =
+                        new Windows.UI.Popups.MessageDialog("File " + file.Name + " couldn't be saved.");
+                    await errorBox.ShowAsync();
+                }
+            }
+         
+            var mess = new MessageDialog("Сохранение завершено");
+            await mess.ShowAsync();
+
         }
     }
 }

@@ -111,7 +111,6 @@
     </Compile>
     <Compile Include="ChtenieIzFaila.cs" />
     <Compile Include="Class1.cs" />
-    <Compile Include="ClassNeutronStat.cs" />
     <Compile Include="ClassProject.cs" />
     <Compile Include="ClassSob.cs" />
     <Compile Include="ClassSobColl.cs" />

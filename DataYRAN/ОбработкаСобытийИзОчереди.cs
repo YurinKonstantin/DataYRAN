@@ -189,8 +189,6 @@ namespace DataYRAN
 
                         }
                        
-                            
-                     
                         ObrD = null;
                         //_СписокФайловОбработки = null;
 
