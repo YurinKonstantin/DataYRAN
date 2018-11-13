@@ -133,8 +133,8 @@
 
                                         <TextBlock Text="Тип данных" Style="{ThemeResource BaseTextBlockStyle}"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <RadioButton Content="С хвостом" Tag="Tail" Checked="RadioButton_Checked" IsChecked="True" />
-                                            <RadioButton Content="200 без хвоста" Checked="RadioButton_Checked" Tag="NoTail" />
+                                            <RadioButton Content="С хвостом" x:Name="TailCh" Tag="Tail" Checked="RadioButton_Checked" IsChecked="True" />
+                                            <RadioButton Content="200 без хвоста" x:Name="NoTailCh" Checked="RadioButton_Checked" Tag="NoTail" />
 
                                         </StackPanel>
 
@@ -542,6 +542,7 @@
                                         </CommandBar>
                                         <telerikGrid:RadDataGrid x:Name="DataGrid"  ItemsSource="{x:Bind ViewModel.ClassSobs}" AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
                                             <telerikGrid:RadDataGrid.Columns>
+                                                
                                                 <telerikGrid:DataGridTextColumn PropertyName="time" Header="Время события" />
                                                 <telerikGrid:DataGridTextColumn PropertyName="nameFile" Header="Имя файла"/>
                                                 <telerikGrid:DataGridTextColumn PropertyName="nameklaster" Header="Кластер №"/>

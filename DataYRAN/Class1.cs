@@ -30,6 +30,15 @@ namespace DataYRAN
 
                     if (file.FileType == ".bin")
                     {
+                        string[] str = file.DisplayName.Split('_');
+                        if(str[2]=="N")
+                        {
+                            NoTailCh.IsChecked = true;
+                        }
+                        if(str[2]=="T")
+                        {
+                            TailCh.IsChecked = true;
+                        }
                         string FileName = file.DisplayName;
                         string FilePath = file.Path;
                         BasicProperties basicProperties =
@@ -128,81 +137,7 @@ namespace DataYRAN
         }
 
 
-        public async System.Threading.Tasks.Task saveAsync(int[,] data, int[,] Tail, string time, string nameFile)
-        {
-
-
-            // StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
-            StorageFolder storageFolder = ApplicationData.Current.LocalFolder; ;
-            StorageFolder storageFolderRazvertka = await storageFolder.CreateFolderAsync("Развертка", CreationCollisionOption.OpenIfExists);
-            StorageFile sampleFile = await storageFolderRazvertka.CreateFileAsync(nameFile + time + ".txt", CreationCollisionOption.ReplaceExisting);
-
-            var stream = await sampleFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
-            using (var outputStream = stream.GetOutputStreamAt(0))
-            {
-                using (var dataWriter = new Windows.Storage.Streams.DataWriter(outputStream))
-                {
-                    string s = "i"+"\t"+"Ch1" + "\t" + "Ch2" + "\t" + "Ch3" + "\t" + "Ch4" + "\t" + "Ch5" + "\t" + "Ch6" + "\t" + "Ch7" + "\t" + "Ch8" + "\t" + "Ch9" + "\t" + "Ch10" + "\t" + "Ch11" + "\t" + "Ch12" + "\r\n";
-                    for (int i = 0; i < 1024; i++)
-                    {
-                        s = s + (i+1).ToString() + "\t";
-                        for (int j = 0; j < 12; j++)
-                        {
-                            s = s + data[j, i] + "\t";
-                        }
-                        if (i < 1023)
-                        {
-                            s = s + "\r\n";
-                        }
-                        else
-                        {
-
-                        }
-                    }
-                    dataWriter.WriteString(s);
-                    s = null;
-                    await dataWriter.StoreAsync();
-                    await outputStream.FlushAsync();
-                }
-            }
-            stream.Dispose(); // Or use the stream variable (see previous code snippet) with a using statement as well.
-
-            storageFolderRazvertka = await storageFolder.CreateFolderAsync("Развертка", CreationCollisionOption.OpenIfExists);
-            sampleFile = await storageFolderRazvertka.CreateFileAsync(nameFile + time + "Хвост" + ".txt", CreationCollisionOption.ReplaceExisting);
-
-            stream = await sampleFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
-            using (var outputStream = stream.GetOutputStreamAt(0))
-            {
-                using (var dataWriter = new Windows.Storage.Streams.DataWriter(outputStream))
-                {
-                    string s = "i"+"\t"+"Ch1" + "\t" + "Ch2" + "\t" + "Ch3" + "\t" + "Ch4" + "\t" + "Ch5" + "\t" + "Ch6" + "\t" + "Ch7" + "\t" + "Ch8" + "\t" + "Ch9" + "\t" + "Ch10" + "\t" + "Ch11" + "\t" + "Ch12" + "\r\n";
-                    for (int i = 0; i < 20000; i++)
-                    {
-                        s = s + (i + 1).ToString() + "\t";
-                        for (int j = 0; j < 12; j++)
-                        {
-                            s = s + Tail[j, i] + "\t";
-                        }
-                        if (i < 19999)
-                        {
-                            s = s + "\r\n";
-                        }
-                        else
-                        {
-
-                        }
-
-                        dataWriter.WriteString(s);
-                        s = null;
-                    }
-
-                    await dataWriter.StoreAsync();
-                    await outputStream.FlushAsync();
-                }
-            }
-            stream.Dispose();
-
-        }
+       
 
         /// <summary>
         /// Очищаем хранилище с разверткой
