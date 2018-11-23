@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Popups;
 
 namespace DataYRAN
 {
@@ -76,6 +77,11 @@ namespace DataYRAN
         public string TimeS9 { get; set; }
         public string TimeS10 { get; set; }
         public string TimeS11 { get; set; }
+        public async void openCom()
+        {
+            MessageDialog messageDialog = new MessageDialog("gffhf");
+            await messageDialog.ShowAsync();
+        }
 
     }
  

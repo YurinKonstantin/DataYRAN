@@ -12,13 +12,13 @@
     <DefaultLanguage>ru-RU</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17134.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <PackageCertificateKeyFile>DataYRAN_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
@@ -106,12 +106,16 @@
     <Compile Include="BlankPageObrData.xaml.cs">
       <DependentUpon>BlankPageObrData.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BlankPageRazverta.xaml.cs">
+      <DependentUpon>BlankPageRazverta.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BlankPageZavisimost.xaml.cs">
       <DependentUpon>BlankPageZavisimost.xaml</DependentUpon>
     </Compile>
     <Compile Include="ChtenieIzFaila.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="ClassProject.cs" />
+    <Compile Include="ClassRazvertka.cs" />
     <Compile Include="ClassSob.cs" />
     <Compile Include="ClassSobColl.cs" />
     <Compile Include="ClassSobNeutron.cs" />
@@ -170,6 +174,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="BlankPageRazverta.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="BlankPageZavisimost.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -185,7 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.1.9</Version>
+      <Version>6.2.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>5.0.0</Version>

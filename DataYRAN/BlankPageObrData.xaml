@@ -8,7 +8,8 @@
     xmlns:telerikGrid="using:Telerik.UI.Xaml.Controls.Grid"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:telerikGrid1="using:Telerik.Data.Core"
-    mc:Ignorable="d"
+      xmlns:telerikChart="using:Telerik.UI.Xaml.Controls.Chart"
+      mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
@@ -180,12 +181,11 @@
                         <AppBarButton Label="Настройки программы" Click="UserSetUp_Click" />
                     </CommandBar.SecondaryCommands>
                 </CommandBar>
-                <controls:TabView x:Name="rootPivot"   FontStyle="Normal" MinWidth="900"  Margin="8">
+                <controls:TabView x:Name="rootPivot"   FontStyle="Normal" MinWidth="900"  Margin="8" >
 
                     <controls:TabViewItem Header="События" FontSize="16">
-                        <controls:TabView x:Name="Sobitie">
-
-                            <controls:TabViewItem Header="Все">
+                        <Pivot x:Name="Sobitie">
+                            <PivotItem Header="Все">
                                 <SplitView IsPaneOpen="False" DisplayMode="Inline"  OpenPaneLength="480" PanePlacement="Right" x:Name="Split1">
 
                                     <SplitView.Pane >
@@ -194,8 +194,10 @@
                                                 <StackPanel Orientation="Horizontal" DataContext="{Binding SelectedItem, ElementName=DataGrid}">
                                                     <TextBlock Text="Плата" Margin="12,8,0,0" FontSize="12"/>
                                                     <TextBlock  Text="{Binding nameBAAK}" FontSize="12" Margin="12,8,0,0"/>
+                                                    <Button Content="Перейти к развертки" Click="Button_Click" Margin="12,8,0,0"/>
                                                 </StackPanel>
-                                                <StackPanel x:Name="List54" DataContext="{Binding SelectedItem, ElementName=DataGrid}" Margin="0,24,0,0">
+                                                <StackPanel x:Name="List54" DataContext="{Binding SelectedItem, ElementName=DataGrid}" Margin="0,24,0,0" >
+                                                    
                                                     <Grid Padding="12" >
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="44"/>
@@ -403,7 +405,9 @@
                                                         <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig11}"/>
                                                         <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull11}"/>
                                                         <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS11}"/>
+                                                       
                                                     </Grid>
+                                                  
                                                 </StackPanel>
                                                 <StackPanel x:Name="List55" Visibility="Collapsed" DataContext="{Binding SelectedItem, ElementName=DataGrid}" Margin="0,24,0,0">
                                                     <Grid Padding="12" >
@@ -539,8 +543,11 @@
                                         </Grid.RowDefinitions>
                                         <CommandBar Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                                             <AppBarToggleButton Icon="OutlineStar" Label="Статистика" Click="AppBarToggleButton_Click_6"/>
+                                            <AppBarToggleButton Label="Гистограмма" Click="AppBarToggleButton_Click_7">
+                                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE9F9;" />
+                                            </AppBarToggleButton>
                                         </CommandBar>
-                                        <telerikGrid:RadDataGrid x:Name="DataGrid"  ItemsSource="{x:Bind ViewModel.ClassSobs}" AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
+                                        <telerikGrid:RadDataGrid x:Name="DataGrid"  ItemsSource="{x:Bind ViewModel.ClassSobs}"  AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
                                             <telerikGrid:RadDataGrid.Columns>
                                                 
                                                 <telerikGrid:DataGridTextColumn PropertyName="time" Header="Время события" />
@@ -560,16 +567,41 @@
                                             </CommandBar>
                                             <RichEditBox Grid.Row="1" x:Name="Editor" PlaceholderText="Enter Text Here" />
                                         </Grid>
-                                           
+                                        <Grid x:Name="GridGistogram" Visibility="Collapsed" >
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="3*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
                                        
-                                       
+                                            <CommandBar>
+                                                <AppBarButton Icon="Save" Label="Сохранить" />
+                                            </CommandBar>
+                                            <TextBlock Text="Гистограмма событий" Grid.Row="1"/>
+                                            <RichEditBox Grid.Row="2" x:Name="EditorG" PlaceholderText="Enter Text Here" />
+                                            <telerikChart:RadCartesianChart x:Name="radChart" Grid.Row="2" Grid.Column="1">
+                                                <telerikChart:RadCartesianChart.HorizontalAxis>
+                                                    <telerikChart:CategoricalAxis/>
+                                                </telerikChart:RadCartesianChart.HorizontalAxis>
+                                                <telerikChart:RadCartesianChart.VerticalAxis>
+                                                    <telerikChart:LinearAxis/>
+                                                </telerikChart:RadCartesianChart.VerticalAxis>
+                                                <telerikChart:LineSeries ItemsSource="{Binding}"/>
+                                            </telerikChart:RadCartesianChart>
+                                        </Grid>
+
+
                                     </Grid>
                                        
 
                                      
                                 </SplitView>
-                            </controls:TabViewItem>
-                            <controls:TabViewItem Header="Плохие">
+                            </PivotItem>
+                            <PivotItem Header="Плохие">
                                 <SplitView IsPaneOpen="False"
            DisplayMode="Inline"
            OpenPaneLength="560" PanePlacement="Right" x:Name="Split1Plox">
@@ -580,6 +612,7 @@
                                                 <StackPanel Orientation="Horizontal" DataContext="{Binding SelectedItem, ElementName=DataGridPlox}">
                                                     <TextBlock Text="Плата" Margin="12,8,0,0" FontSize="12"/>
                                                     <TextBlock  Text="{Binding nameBAAK}" FontSize="12" Margin="12,8,0,0"/>
+                                                    <Button Content="Перейти к развертки" Click="Button_Click" Margin="12,8,0,0"/>
                                                 </StackPanel>
                                                 <StackPanel x:Name="List54Plox" DataContext="{Binding SelectedItem, ElementName=DataGridPlox}" Margin="0,24,0,0">
                                                     <Grid Padding="12" >
@@ -934,8 +967,8 @@
                                         </telerikGrid:RadDataGrid>
                                     </Grid>
                                 </SplitView>
-                            </controls:TabViewItem>
-                            <controls:TabViewItem Header="Общие">
+                            </PivotItem>
+                            <PivotItem Header="Общие">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
@@ -985,8 +1018,8 @@
                                     </telerikGrid:RadDataGrid>
                                     <ProgressRing Name="ProgressBar1" Height="100" Width="100"/>
                                 </Grid>
-                            </controls:TabViewItem>
-                        </controls:TabView>
+                            </PivotItem>
+                        </Pivot>
 
                     </controls:TabViewItem>
                     <controls:TabViewItem Header="Нейтроны" FontFamily="14" FontSize="16">

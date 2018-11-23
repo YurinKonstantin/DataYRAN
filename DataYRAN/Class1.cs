@@ -30,12 +30,21 @@ namespace DataYRAN
 
                     if (file.FileType == ".bin")
                     {
-                        string[] str = file.DisplayName.Split('_');
-                        if(str[2]=="N")
+                        try
                         {
-                            NoTailCh.IsChecked = true;
+
+
+                            string[] str = file.DisplayName.Split('_');
+                            if (str[2] == "N")
+                            {
+                                NoTailCh.IsChecked = true;
+                            }
+                            if (str[2] == "T")
+                            {
+                                TailCh.IsChecked = true;
+                            }
                         }
-                        if(str[2]=="T")
+                        catch
                         {
                             TailCh.IsChecked = true;
                         }

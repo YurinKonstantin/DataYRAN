@@ -1315,9 +1315,10 @@ namespace DataYRAN
 
         private void AppBarToggleButton_Click_6(object sender, RoutedEventArgs e)
         {
-            if(DataGrid.Visibility==Visibility.Visible && ViewModel.ClassSobs.Count!=0)
+            if(DataGrid.Visibility==Visibility.Visible && ViewModel.ClassSobs.Count!=0 || GridGistogram.Visibility == Visibility.Visible)
             {
                 DataGrid.Visibility = Visibility.Collapsed;
+                GridGistogram.Visibility = Visibility.Collapsed;
                 GridStatictik.Visibility = Visibility.Visible;
                 List<ClassSob> classSobs = ViewModel.ClassSobs.ToList<ClassSob>();
                 string stat = "Статистика общая"+"\n";
@@ -1431,6 +1432,210 @@ namespace DataYRAN
             var mess = new MessageDialog("Сохранение завершено");
             await mess.ShowAsync();
 
+        }
+        public async Task obrRazv(string nameFile, string time)
+        {
+           foreach(var v in _DataColec)
+            {
+                if(nameFile==v.NameFile)
+                {
+                    int[] masNul = new int[12];
+                    for (int i = 0; i < 12; i++)
+                    {
+                        masNul[i] = 2058;
+                    }
+
+                   
+
+                        listDataAll = new List<byte>();
+                        bool flagUserSetup = true;
+
+                        // foreach(ClassСписокList d1 in _DataColec)
+                        //   {
+                        //     if(d1==d)
+                        //    {
+                      
+                        //    break;
+                        //   }
+                        // }
+                        if (flagUserSetup)
+                        {
+                            try
+                            {
+                          
+                                var stream = await v.file1.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                                //  ulong size = stream.Size;
+                                uint numBytesLoaded = 1024;
+                                uint numBytesLoaded1 = 504648;
+                                bool end = false;
+                                uint kol = 0;
+                                Byte[] dataOnePac = new Byte[504648];
+
+                                int tecpos = 0;
+                                int countFlagEnt = 0;
+                                int pac = 0;
+                                while (!end)
+                                {
+                                    using (var inputStream = stream.GetInputStreamAt(kol * numBytesLoaded1))
+                                    {
+
+                                        using (var dataReader = new Windows.Storage.Streams.DataReader(inputStream))
+                                        {
+                                            numBytesLoaded = await dataReader.LoadAsync(numBytesLoaded1);
+                                            if (numBytesLoaded < numBytesLoaded1)
+                                            {
+                                                end = true;
+                                            }
+
+                                            if (numBytesLoaded == 0)
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                for (int i = 0; i < numBytesLoaded; i++)
+                                                {
+                                                    // while (Count() > 1800)
+                                                    // {
+
+                                                    // }
+                                                    var b = dataReader.ReadByte();
+
+                                                    dataOnePac[tecpos] = b;
+                                                    tecpos++;
+                                                    if (b == 0xFF)
+                                                    {
+                                                        countFlagEnt++;
+                                                        if (countFlagEnt == 4)
+                                                        {
+                                                        int[,] data1 = new int[12, 1024];
+                                                        int[,] dataTail1 = new int[12, 20000];
+                                                        int[] coutN1 = new int[12];
+                                                        string time1 = null;
+                                                        if (ClassUserSetUp.TipTail)
+                                                        {
+                                                            ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200H(dataOnePac, out data1, out time1, out dataTail1);
+                                                        }
+                                                        else
+                                                        {
+
+                                                            ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200(dataOnePac, 1, out data1, out time1);
+                                                        }
+                                                        if(time== time1)
+                                                        {
+                                                            ClassRazvertka classRazvertka = new ClassRazvertka() { nameFile1=nameFile, data=data1, dataTail=dataTail1, Time=time1 };
+                                                            this.Frame.Navigate(typeof(BlankPageRazverta), classRazvertka);
+                                                            break;
+                                                        }
+                                                       // OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = v.NameFile, Buf00 = dataOnePac, LenghtChenel = 1, НулеваяЛиния = masNul, NameBaaR12 = "Y", Ran = "Y" });
+                                                            pac++;
+                                                            dataOnePac = new Byte[504648];
+                                                            
+                                                            //Thread.Sleep(1000);
+                                                            countFlagEnt = 0;
+                                                            tecpos = 0;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        countFlagEnt = 0;
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+                                    }
+                                    kol++;
+                                }
+                            }
+                            catch
+                            {
+                                // var  messageDialog = new MessageDialog("ошибка открытия файла" + d.file1.Path +"   ");
+                                // await messageDialog.ShowAsync();
+                            }
+
+
+                        }
+                        else
+                        {
+                            // string nBaaK1;
+                            //string Ran;
+                            string b2 = v.NameFile;
+
+                            String[] substrings = b2.Split('.');
+                            string result = null;
+                            for (int i = 0; i < substrings.Length - 2; i++)
+                            {
+                                result = result + substrings[i] + ".";
+                            }
+                            result = result + substrings[substrings.Length - 2];
+
+                        }
+                     
+                    
+
+
+                    break;
+                }
+
+            }
+        }
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            object ff = DataGrid.SelectedItem;
+            ClassSob classSob = (ClassSob)ff;
+            MessageDialog messageDialog = new MessageDialog(classSob.nameFile);
+           await messageDialog.ShowAsync();
+          await  obrRazv(classSob.nameFile, classSob.time);
+           // this.Frame.Navigate(typeof(BlankPageRazverta), classSob.nameFile);
+        }
+
+        private async void AppBarToggleButton_Click_7(object sender, RoutedEventArgs e)
+        {
+            if (DataGrid.Visibility == Visibility.Visible && ViewModel.ClassSobs.Count != 0 || GridStatictik.Visibility==Visibility.Visible)
+            {
+                DataGrid.Visibility = Visibility.Collapsed;
+                GridStatictik.Visibility= Visibility.Collapsed;
+                GridGistogram.Visibility = Visibility.Visible;
+                List<ClassSob> classSobs = ViewModel.ClassSobs.ToList<ClassSob>();
+                List<int> listFregAll = new List<int>();
+                List<int> listFregCh1 = new List<int>();
+                string stat=String.Empty;
+
+        
+              
+                var SobeGroupsAll = classSobs.GroupBy(p => p.SumAmp).OrderBy(g=>g.Key)
+                        .Select(g => new { SumAmp = g.Key, Count = g.Count() });
+            
+                stat += "Amp" + "\t" + "FAКнAll" + "\n";
+
+                foreach (var group in SobeGroupsAll)
+                {
+                    stat += Convert.ToString(group.SumAmp) + "\t" + group.Count.ToString() + "\n";
+                 
+                }
+
+              
+                var SobeGroupsCh1 = classSobs.GroupBy(p => p.SumAmp).OrderBy(g => g.Key)
+                        .Select(g => new { SumAmp = g.Key, Count = g.Count() });
+
+                stat += "Amp" + "\t"  + "FAКн1" + "\n";
+              
+                foreach (var group in SobeGroupsCh1)
+                {
+                    stat += Convert.ToString(group.SumAmp) + "\t" + group.Count.ToString() + "\n";
+
+                }
+                EditorG.Document.SetText(Windows.UI.Text.TextSetOptions.ApplyRtfDocumentDefaults, stat);
+                this.radChart.DataContext = new double[] { 20, 30, 50, 10, 60, 40, 20, 80 };
+            }
+            else
+            {
+                DataGrid.Visibility = Visibility.Visible;
+                GridGistogram.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }
