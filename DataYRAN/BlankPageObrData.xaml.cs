@@ -1617,8 +1617,8 @@ namespace DataYRAN
                  
                 }
 
-              
-                var SobeGroupsCh1 = classSobs.GroupBy(p => p.SumAmp).OrderBy(g => g.Key)
+                
+                  var SobeGroupsCh1 = classSobs.GroupBy(p => p.SumAmp).OrderBy(g => g.Key)
                         .Select(g => new { SumAmp = g.Key, Count = g.Count() });
 
                 stat += "Amp" + "\t"  + "FAКн1" + "\n";

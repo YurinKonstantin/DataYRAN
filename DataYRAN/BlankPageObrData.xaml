@@ -84,7 +84,7 @@
            DisplayMode="Inline"
            OpenPaneLength="280">
             <SplitView.Pane>
-                <ListView FocusVisualSecondaryBrush="Black"  x:Name="listView1"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
+                <ListView FocusVisualSecondaryBrush="Black" CanDrag="True"  x:Name="listView1"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
                     
                     <ListView.ItemTemplate>
                         <DataTemplate >
@@ -183,9 +183,9 @@
                 </CommandBar>
                 <controls:TabView x:Name="rootPivot"   FontStyle="Normal" MinWidth="900"  Margin="8" >
 
-                    <controls:TabViewItem Header="События" FontSize="16">
+                    <controls:TabViewItem Header="События" FontSize="16" >
                         <Pivot x:Name="Sobitie">
-                            <PivotItem Header="Все">
+                            <PivotItem Header="Все" Pivot.SlideInAnimationGroup="GroupTwo">
                                 <SplitView IsPaneOpen="False" DisplayMode="Inline"  OpenPaneLength="480" PanePlacement="Right" x:Name="Split1">
 
                                     <SplitView.Pane >
@@ -197,7 +197,7 @@
                                                     <Button Content="Перейти к развертки" Click="Button_Click" Margin="12,8,0,0"/>
                                                 </StackPanel>
                                                 <StackPanel x:Name="List54" DataContext="{Binding SelectedItem, ElementName=DataGrid}" Margin="0,24,0,0" >
-                                                    
+
                                                     <Grid Padding="12" >
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="44"/>
@@ -405,9 +405,9 @@
                                                         <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig11}"/>
                                                         <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull11}"/>
                                                         <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS11}"/>
-                                                       
+
                                                     </Grid>
-                                                  
+
                                                 </StackPanel>
                                                 <StackPanel x:Name="List55" Visibility="Collapsed" DataContext="{Binding SelectedItem, ElementName=DataGrid}" Margin="0,24,0,0">
                                                     <Grid Padding="12" >
@@ -549,7 +549,7 @@
                                         </CommandBar>
                                         <telerikGrid:RadDataGrid x:Name="DataGrid"  ItemsSource="{x:Bind ViewModel.ClassSobs}"  AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
                                             <telerikGrid:RadDataGrid.Columns>
-                                                
+
                                                 <telerikGrid:DataGridTextColumn PropertyName="time" Header="Время события" />
                                                 <telerikGrid:DataGridTextColumn PropertyName="nameFile" Header="Имя файла"/>
                                                 <telerikGrid:DataGridTextColumn PropertyName="nameklaster" Header="Кластер №"/>
@@ -577,7 +577,7 @@
                                                 <ColumnDefinition Width="3*"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                       
+
                                             <CommandBar>
                                                 <AppBarButton Icon="Save" Label="Сохранить" />
                                             </CommandBar>
@@ -593,12 +593,7 @@
                                                 <telerikChart:LineSeries ItemsSource="{Binding}"/>
                                             </telerikChart:RadCartesianChart>
                                         </Grid>
-
-
                                     </Grid>
-                                       
-
-                                     
                                 </SplitView>
                             </PivotItem>
                             <PivotItem Header="Плохие">
@@ -1020,7 +1015,6 @@
                                 </Grid>
                             </PivotItem>
                         </Pivot>
-
                     </controls:TabViewItem>
                     <controls:TabViewItem Header="Нейтроны" FontFamily="14" FontSize="16">
                         <telerikGrid:RadDataGrid x:Name="DataGridnNeutron" ItemsSource="{x:Bind ViewModel.ClassSobNeutrons}" AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple"  UserFilterMode="Enabled" ColumnDataOperationsMode="Flyout" >
