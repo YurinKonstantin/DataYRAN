@@ -5,12 +5,16 @@
     xmlns:local="using:DataYRAN"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
+
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    >
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <CommandBar>
@@ -38,11 +42,36 @@
             <TextBlock Text="Отображать путь к файлу в списке" FontSize="13" />
             <ToggleSwitch x:Name="ToggleSwitchPath" />
             <TextBlock FontSize="4"/>
-         
+            <StackPanel>
+                <ScrollViewer>
 
+                <StackPanel>
 
+                    
 
+                    <Slider Minimum="0" Maximum="360" Header="Heading" Name="headingSlider" Value="0"/>
+
+                    <Slider Minimum="0" Maximum="64" Header=" DesiredPitch" Name="desiredPitchSlider" Value="0"/>
+
+                </StackPanel>
+
+            </ScrollViewer>
+          
+                <Button Content="cc" Click="Button_Click_1"/>
+            </StackPanel>
+          
+        
 
         </StackPanel>
+        <Maps:MapControl x:Name="MapControl1" Grid.Row="2"  
+                        
+            ZoomInteractionMode="GestureAndControl"
+       TiltInteractionMode="GestureAndControl"   
+        MapServiceToken="UDDbiVEi8pMdARAw6uN4~FlOWI8GCRDrMsm4gmW3QXw~Al2UArrk6ORs-Zcve0_O8twKyz-AF3HEqs5zdCgHTJSjQK2t8TPs0EahL9unKAEk" 
+        Heading="{Binding ElementName=headingSlider,Path=Value, Mode=TwoWay}"  DesiredPitch="{Binding ElementName=desiredPitchSlider,Path=Value, Mode=TwoWay}"  
+        MapTapped="MapControl1_MapTapped" ZoomLevelChanged="MapControl1_ZoomLevelChanged">
+         
+           
+        </Maps:MapControl>
     </Grid>
 </Page>

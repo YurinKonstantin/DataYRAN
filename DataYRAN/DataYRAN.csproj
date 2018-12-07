@@ -109,6 +109,9 @@
     <Compile Include="BlankPageRazverta.xaml.cs">
       <DependentUpon>BlankPageRazverta.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BlankPageShowMap.xaml.cs">
+      <DependentUpon>BlankPageShowMap.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BlankPageZavisimost.xaml.cs">
       <DependentUpon>BlankPageZavisimost.xaml</DependentUpon>
     </Compile>
@@ -134,6 +137,7 @@
       <DependentUpon>SetUpUser.xaml</DependentUpon>
     </Compile>
     <Compile Include="TelerikStringLoader.cs" />
+    <Compile Include="ViewShovMaps.cs" />
     <Compile Include="ОбработкаСобытийИзОчереди.cs" />
     <Compile Include="РаботаФайлами.cs" />
   </ItemGroup>
@@ -141,6 +145,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="Assets\mug.3mf" />
     <None Include="DataYRAN_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +180,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BlankPageRazverta.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BlankPageShowMap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

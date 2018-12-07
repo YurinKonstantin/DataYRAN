@@ -117,9 +117,9 @@ namespace DataYRAN
 
         private async void AppBarButton_Click_1(object sender, RoutedEventArgs e)
         {
-            int porog = 15;
+            int porog = 10;
             int trig = 4;
-            int step = 20;
+            int step = 200;
             int g = 0;
             List<int> listsob = new List<int>();
             double sredN = 0;

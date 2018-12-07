@@ -82,7 +82,10 @@ namespace DataYRAN
             MessageDialog messageDialog = new MessageDialog("gffhf");
             await messageDialog.ShowAsync();
         }
-
+        public short[] AmpSum()
+        {
+            return new short[12] {Amp0, Amp1, Amp2, Amp3, Amp4, Amp5, Amp6, Amp7, Amp8, Amp9, Amp10, Amp11 };
+        }
     }
  
 }

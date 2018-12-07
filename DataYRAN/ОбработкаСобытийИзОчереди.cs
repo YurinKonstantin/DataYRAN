@@ -68,6 +68,7 @@ namespace DataYRAN
                             }
                             else
                             {
+                                countendtime3--;
                                 break;
                             }
                         }
@@ -86,6 +87,10 @@ namespace DataYRAN
                             while (v > Nu)
                             {
                                 countendtime++;
+                                if(countendtime >19999)
+                                {
+                                    break;
+                                }
                                 v = n[i, countendtime];
                             }
 
@@ -94,6 +99,8 @@ namespace DataYRAN
                             while (v > Nu)
                             {
                                 countfirsttime--;
+                                if (countfirsttime < 0)
+                                    break;
                                 v = n[i, countfirsttime];
                             }
 
@@ -229,7 +236,7 @@ namespace DataYRAN
                     coutN1 = await Task<int[]>.Run(() => neutron(dataTail1, time1, Nul, nameFile, bad, listNet));
                     foreach (var vv in listNet)
                     {
-                        Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                       await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                             ViewModel.ClassSobNeutrons.Add(new ClassSobNeutron() { nameFile = vv.nameFile, D = vv.D, Amp = vv.Amp, time = vv.time, TimeAmp = vv.TimeAmp, TimeEnd = vv.TimeEnd, TimeEnd3 = vv.TimeEnd3, TimeFirst = vv.TimeFirst, TimeFirst3 = vv.TimeFirst3 });
                         });
                     }
@@ -248,7 +255,7 @@ namespace DataYRAN
             string[] array = nameFile.Split('_');
             if (!bad)
             {
-               Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+             await  Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
         () => {
             ViewModel.ClassSobs.Add(new ClassSob()
             {
@@ -325,7 +332,7 @@ namespace DataYRAN
             }
             else
             {
-              Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            await  Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
         () => {
             _DataColecSobPlox.Add(new ClassSob()
             {
