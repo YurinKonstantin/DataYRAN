@@ -35,6 +35,9 @@ using Windows.ApplicationModel.Activation;
 using Windows.Devices.Geolocation;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI;
+using System.Net;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.FileProperties;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -57,7 +60,34 @@ namespace DataYRAN
             get { return _protocolEventArgs; }
             set { _protocolEventArgs = value; }
         }
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter is ClassBDMan2)
+            {
+                ClassBDMan2 classBD = (ClassBDMan2)e.Parameter;
+                if (!classBD.flagP)
+                {
+                    ObRing.IsActive = true;
+                   
+                   await StartClientBD(classBD.listsql.ElementAt(0), classBD.ip);
+                    ObRing.IsActive = false;
+                }
+            }
+            else
+            {
 
+            }
+
+            // Specify a known location.
+            BasicGeoposition cityPosition = new BasicGeoposition() { Latitude = 55.6512013566365, Longitude = 37.6681702130651 };
+            Geopoint cityCenter = new Geopoint(cityPosition);
+
+            // Set the map location.
+            MapControl1.Center = cityCenter;
+            MapControl1.ZoomLevel = 20;
+            MapControl1.LandmarksVisible = true;
+            base.OnNavigatedTo(e);
+        }
         public async void NavigateToFilePage1()
         {
             MessageDialog messageDialog = new MessageDialog("gfhf");
@@ -608,18 +638,7 @@ namespace DataYRAN
             }
 
         }
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            // Specify a known location.
-            BasicGeoposition cityPosition = new BasicGeoposition() { Latitude = 55.6512013566365, Longitude = 37.6681702130651 };
-            Geopoint cityCenter = new Geopoint(cityPosition);
-
-            // Set the map location.
-            MapControl1.Center = cityCenter;
-            MapControl1.ZoomLevel = 20;
-            MapControl1.LandmarksVisible = true;
-
-        }
+        
         private async void AppBarToggleButton_Click_1(object sender, RoutedEventArgs e)
         {
             try
@@ -652,11 +671,10 @@ namespace DataYRAN
         private async  void AppBarButton_Click_8(object sender, RoutedEventArgs e)
         {
 
-            // DataGrid.SelectionMode = DataGridSelectionMode.Multiple;
-
-
-            //  DataGrid.SelectAll();
-            MessageDialog messageDialog = new MessageDialog(ViewModel.PorogS.ToString());
+            
+            
+           
+            MessageDialog messageDialog = new MessageDialog(ViewModel.ClassSobs.Count.ToString());
            await messageDialog.ShowAsync();
 
         }
@@ -3826,6 +3844,68 @@ namespace DataYRAN
               });
               bool viewShown = await ApplicationViewSwitcher.TryShowAsStandaloneAsync(newViewId);
             */
+        }
+
+        private void ListView1_DragOver(object sender, DragEventArgs e)
+        {
+            e.AcceptedOperation = DataPackageOperation.Copy;
+        }
+
+        private async void ListView1_Drop(object sender, DragEventArgs e)
+        {
+            if (e.DataView.Contains(StandardDataFormats.StorageItems))
+            {
+                var items = await e.DataView.GetStorageItemsAsync();
+                if (items.Count > 0)
+                {
+
+                    foreach (StorageFile storageFile in items)
+                    {
+
+                        if (storageFile.FileType == ".bin")
+                        {
+                            try
+                            {
+
+
+                                string[] str = storageFile.DisplayName.Split('_');
+                                if (str[2] == "N")
+                                {
+                                    NoTailCh.IsChecked = true;
+                                }
+                                if (str[2] == "T")
+                                {
+                                    TailCh.IsChecked = true;
+                                }
+                            }
+                            catch
+                            {
+                                TailCh.IsChecked = true;
+                            }
+                            string FileName = storageFile.DisplayName;
+                            string FilePath = storageFile.Path;
+                            BasicProperties basicProperties =
+           await storageFile.GetBasicPropertiesAsync();
+
+                            // Application now has read/write access to the picked file
+                            _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = storageFile, size = basicProperties.Size, StatusSize = 0 });
+
+                        }
+                        else
+                        {
+
+                        }
+
+                    }
+                }
+
+                   
+            }
+        }
+
+        private void MenuFlyoutItemn_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(BlankPage1));
         }
     }
 }

@@ -1,0 +1,57 @@
+﻿<Page
+    x:Class="DataYRAN.BlankPageBDMan"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DataYRAN"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="24">
+            <TextBlock Text="Загрузить таблицы из БД" FontSize="20"></TextBlock>
+            <TextBlock Text="при загрузке можно применить собственные Sql запросы или использовать графические фильтры" TextWrapping="Wrap"/>
+            <Button Content="Загрузить" IsEnabled="False"/>
+        </StackPanel>
+        <ListView Header="Шаблон загрузки" Grid.Column="1" FontSize="20" Margin="24" SelectionChanged="ListView_SelectionChanged" >
+            <ListViewItem Tag="MyS" Margin="4">
+                <StackPanel>
+                    <TextBlock Text="Базывый ДатаУРАН БД" />
+                    <TextBlock Text="Базывый шаблон загрузки таблиц данных УРАН с применением запросов" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="Загружает таблицу События и Нейтронов"/>
+                    <TextBlock Text="Автор: Юрин Константин" HorizontalAlignment="Right"/>
+                </StackPanel>
+            </ListViewItem>
+            <ListViewItem Tag="MySlocalhost" Margin="4">
+                <StackPanel>
+                    <TextBlock Text="Базывый ДатаУРАН БД localhost" />
+                    <TextBlock Text="Базывый шаблон загрузки таблиц данных УРАН с применением запросов" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="Загружает таблицу События и Нейтронов используя локальную БД"/>
+                    <TextBlock Text="Автор: Юрин Константин" HorizontalAlignment="Right"/>
+                </StackPanel>
+            </ListViewItem>
+            <ListViewItem  Margin="4">
+                <StackPanel>
+                    <TextBlock Text="другой шаблон ДатаУРАН БД" />
+                    <TextBlock Text="Шаблон загрузки таблиц данных УРАН с применением запросов по времени" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="Загружает таблицу События и Темп"/>
+                    <TextBlock Text="Автор: Кто-то" HorizontalAlignment="Right"/>
+                </StackPanel>
+            </ListViewItem>
+            <ListViewItem  Margin="4">
+                <StackPanel>
+                    <TextBlock Text="Еще один шаблон ДатаУРАН БД" />
+                    <TextBlock Text="Шаблон загрузки таблиц данных УРАН" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="Загружает таблицу Нейтроны"/>
+                    <TextBlock Text="Автор: Некто" HorizontalAlignment="Right"/>
+                </StackPanel>
+            </ListViewItem>
+        </ListView>
+    </Grid>
+</Page>

@@ -23,7 +23,7 @@
             <RowDefinition Height="auto"/>
             
         </Grid.RowDefinitions>
-       
+        
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="60,0,0,0"> 
             <my:Menu>
                 <my:MenuItem Name="FileMenu"
@@ -42,7 +42,7 @@
                     <MenuFlyoutSubItem Text="Открыть" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+O">
                         <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+O"
                 
-                Text="Проект"/>
+                Text="Проект" Click="MenuFlyoutItemn_Click"/>
 
                         <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+O"
                
@@ -85,7 +85,7 @@
            DisplayMode="Inline"
            OpenPaneLength="280">
             <SplitView.Pane>
-                <ListView FocusVisualSecondaryBrush="Black" CanDrag="True"  x:Name="listView1"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
+                <ListView FocusVisualSecondaryBrush="Black" CanDrag="True"  x:Name="listView1" AllowDrop="True"  DragOver="ListView1_DragOver" CanDragItems="True" Drop="ListView1_Drop"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
                     
                     <ListView.ItemTemplate>
                         <DataTemplate >
@@ -1225,5 +1225,7 @@
         <controls:InAppNotification Grid.Row="1" Grid.Column="1" x:Name="ExampleInAppNotification">
             <!-- InAppNotification content -->
         </controls:InAppNotification>
+      
+      
     </Grid>
 </Page>

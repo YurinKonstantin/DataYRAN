@@ -1,0 +1,114 @@
+﻿<Page
+    x:Class="DataYRAN.BlankPageBDMan2"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DataYRAN"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <GridView Margin="28" x:Name="gridV" SelectionChanged="GridV_SelectionChanged">
+            <GridViewItem Padding="16" Tag="TabSob">
+                <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
+                    <StackPanel Height="260">
+                    <TextBlock Text="Таблица: Событие" FontSize="20"/>
+                    <TextBlock Text="сдержит поля"/>
+                    <TextBlock Text="- Код"/>
+                    <TextBlock Text="- Время"/>
+                    <TextBlock Text="- ИмяФайла"/>
+                    <TextBlock Text="- Плата"/>
+                    <TextBlock Text="- Кластер"/>
+                    <TextBlock Text="- СмАмп"/>
+                    <TextBlock Text="- Nn"/>
+                    <TextBlock Text="- АмплитудаКанал1"/>
+                        <TextBlock Text="- АмплитудаКанал2"/>
+                        <TextBlock Text="- АмплитудаКанал3"/>
+                        <TextBlock Text="- АмплитудаКанал4"/>
+                        <TextBlock Text="- АмплитудаКанал5"/>
+                        <TextBlock Text="- АмплитудаКанал6"/>
+                        <TextBlock Text="- АмплитудаКанал7"/>
+                        <TextBlock Text="- АмплитудаКанал8"/>
+                        <TextBlock Text="- АмплитудаКанал9"/>
+                        <TextBlock Text="- АмплитудаКанал10"/>
+                        <TextBlock Text="- АмплитудаКанал11"/>
+                        <TextBlock Text="- АмплитудаКанал12"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </GridViewItem>
+            <GridViewItem Padding="16" Tag="TabN" >
+                <ScrollViewer>
+                    <StackPanel Height="260">
+                        <TextBlock Text="Таблица: Нейтроны" FontSize="20"/>
+                        <TextBlock Text="сдержит поля"/>
+                        <TextBlock Text="- Код"/>
+                       
+                        <TextBlock Text="- ИмяФайла"/>
+                        <TextBlock Text="- Время"/>
+                        <TextBlock Text="- Dn"/>
+                        <TextBlock Text="- Amp"/>
+                        <TextBlock Text="- TimeFirst"/>
+                        <TextBlock Text="- TimeEnd"/>
+                        <TextBlock Text="- TimeFirst3"/>
+                        <TextBlock Text="- TimeEnd3"/>
+                        <TextBlock Text="- TimeAmp"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </GridViewItem>
+        </GridView>
+        <StackPanel Grid.Row="1">
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="24">
+                <TextBlock Text="Поля для загрузки" Margin="18,0,0,0"/>
+                <StackPanel Margin="8,0,0,0">
+                    <TextBlock Text="IP Adress"/>
+                    <TextBox x:Name="textip" />
+                    <Button Content="Применить" Click="Button_Click_1"/>
+                </StackPanel>
+                <StackPanel Margin="8,0,0,0">
+                    <TextBlock Text="Параметры отбора" FontSize="22"/>
+                    <TextBlock  Text="Диапозон даты и времени" />
+                    <CheckBox IsChecked="False" x:Name="ChTime"/>
+                    <StackPanel Orientation="Horizontal">
+                       
+                        <CalendarDatePicker Header="От" DateChanged="MyDate1_DateChanged" x:Name="MyDate1"/>
+
+                        <CalendarDatePicker x:Name="MyDate2" Header="До" DateChanged="CalendarDatePicker_DateChanged"/>
+                    </StackPanel>
+
+                    <Button Content="Применить" Click="Button_Click_2"/>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock  Text="Кластеры для отбора" />
+                    <CheckBox Content="Все" IsChecked="True" x:Name="ChklAll" Tag="all" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="Кластер 1" x:Name="Chkl1" Tag="1" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                        <CheckBox Content="Кластер 2" x:Name="Chkl2" Tag="2" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="Кластер 3" x:Name="Chkl3" Tag="3" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                        <CheckBox Content="Кластер 4" x:Name="Chkl4" Tag="4" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="Кластер 5" x:Name="Chkl5" Tag="5" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                        <CheckBox Content="Кластер 6" x:Name="Chkl6" Tag="6" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                    </StackPanel>
+                    
+                    <Button Content="Применить" Click="Button_Click_2"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Margin="24">
+                <TextBlock Text="sql запрос"/>
+                <TextBox x:Name="textSql" Text="select * from [Событие] order by Код desc"/>
+                <Button Content="Применить" Click="Button_Click_1"/>
+            </StackPanel>
+        </StackPanel>
+        <Button VerticalAlignment="Bottom" Content="Добавить таблицу" IsEnabled="False"/>
+        <Button VerticalAlignment="Bottom" Content="Далее" Click="Button_Click" Grid.Row="1" HorizontalAlignment="Right" Margin="24"/>
+
+    </Grid>
+</Page>

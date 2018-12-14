@@ -50,7 +50,7 @@ namespace DataYRAN
                 if (item is NavigationViewItem && item.Tag.ToString() == "home")
                 {
                     NavView.SelectedItem = item;
-                    ContentFrame.Navigate(typeof(BlankPageObrData));
+                    ContentFrame.Navigate(typeof(BlankPage1));
 
 
                     break;
