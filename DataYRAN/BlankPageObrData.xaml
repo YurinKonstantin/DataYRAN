@@ -26,27 +26,14 @@
         
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="60,0,0,0"> 
             <my:Menu>
-                <my:MenuItem Name="FileMenu"
-        my:Menu.InputGestureText="Alt+F"
-        Header="Файл" ToolTipService.ToolTip="для быстрого доступа Alt+F">
-
+                <my:MenuItem Name="FileMenu" my:Menu.InputGestureText="Alt+F" Header="Файл" ToolTipService.ToolTip="для быстрого доступа Alt+F">
                     <MenuFlyoutSubItem Text="Новый" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+N">
-                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+N"
-                
-                Text="Проект" Click="ButtonMenu_NewProgect"/>
-
-                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+N"
-               
-                Text="File" IsEnabled="False" />
+                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+N" Text="Проект" Click="ButtonMenu_NewProgect"/>
+                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+N" Text="File" IsEnabled="False" />
                     </MenuFlyoutSubItem>
                     <MenuFlyoutSubItem Text="Открыть" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+O">
-                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+O"
-                
-                Text="Проект" Click="MenuFlyoutItemn_Click"/>
-
-                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+O"
-               
-                Text="файл таблицы" IsEnabled="False" />
+                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+O" Text="Проект" Click="MenuFlyoutItemn_Click"/>
+                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+O" Text="файл таблицы" IsEnabled="False" />
                     </MenuFlyoutSubItem>
                     <MenuFlyoutSubItem Text="Сохранить" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+S">
                         <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+P"  Text="Проект" />
@@ -54,10 +41,26 @@
                             <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+T"  Text="Все" Click="AppBarButton_Click_6"/>
                             <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+T"  Text="Сохранить как" IsEnabled="False" />
                         </MenuFlyoutSubItem>
-
                     </MenuFlyoutSubItem>
                 </my:MenuItem>
-              
+
+                <my:MenuItem Name="TabMenu" my:Menu.InputGestureText="Alt+F" Header="Таблица" ToolTipService.ToolTip="для быстрого доступа Alt+F">
+                    <MenuFlyoutSubItem Text="Новый" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+N">
+                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+N" Text="Таблица" Click="MenuFlyoutItemTabNew_Click"/>
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutSubItem Text="Открыть" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+O">
+                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+O" Text="менеджер импорта"/>
+                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+O" Text="файл таблицы" IsEnabled="False" />
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutSubItem Text="Сохранить" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+S">
+                        <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+P"  Text="Проект" />
+                        <MenuFlyoutSubItem Text="Таблицы" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+T">
+                            <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+T"  Text="Все"/>
+                            <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+T"  Text="Сохранить как" IsEnabled="False" />
+                            <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+T"  Text="Открытыю" IsEnabled="False" />
+                        </MenuFlyoutSubItem>
+                    </MenuFlyoutSubItem>
+                </my:MenuItem>
             </my:Menu>
 
         </StackPanel>
@@ -554,6 +557,20 @@
                                                 <Grid Grid.Row="1">
                                                  
                                                     <Canvas Width="480" Height="480" Background="White" >
+                                                        <StackPanel Margin="60,0,0,0">
+                                                            <!-- This rectangle is painted with a vertical linear gradient. -->
+                                                            <Rectangle Width="10" Height="200">
+                                                                <Rectangle.Fill>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                        <GradientStop Color="Yellow" Offset="0.20" />
+                                                                        <GradientStop Color="Red" Offset="0.40" />
+                                                                        <GradientStop Color="Blue" Offset="0.60" />
+                                                                        <GradientStop Color="LimeGreen" Offset="0.80" />
+                                                                        <GradientStop Color="Wheat" Offset="1.0" />
+                                                                    </LinearGradientBrush>
+                                                                </Rectangle.Fill>
+                                                            </Rectangle>
+                                                        </StackPanel>
                                                         <Line X1="10" Y1="10" X2="10" Y2="50"  Stroke="Red" StrokeThickness="4" Canvas.Left="5" Canvas.Top="1"></Line>
                                                         <Line X1="10" Y1="10" X2="10" Y2="50"  Stroke="DarkRed" StrokeThickness="4" Canvas.Left="5" Canvas.Top="41"></Line>
                                                         <Line X1="10" Y1="10" X2="10" Y2="50"  Stroke="Yellow" StrokeThickness="4" Canvas.Left="5" Canvas.Top="81"></Line>

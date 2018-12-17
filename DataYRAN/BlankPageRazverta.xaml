@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:telerikChart="using:Telerik.UI.Xaml.Controls.Chart"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -14,6 +15,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
    <!-- <Canvas Width="480" Height="480" Margin="80" Background="WhiteSmoke">
             <Line X1="10" Y1="10" X2="10" Y2="50"   StrokeThickness="4" Canvas.Left="5" Canvas.Top="1">
@@ -132,9 +134,9 @@
             <TextBlock Text="Имя файла"/>
             <TextBlock x:Name="textZag"/>
         </StackPanel>
-        <SplitView Grid.Row="2" IsPaneOpen="True" >
+        <SplitView Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" >
             <SplitView.Pane>
-                <ListView  x:Name="ListSob" Grid.RowSpan="2" Margin="0,40,0,8">
+                <ListView  x:Name="ListSob" Grid.RowSpan="2"  Margin="0,40,0,8" ItemsSource="{x:Bind _ClassViewModalTab._DataColec}">
                     <ListView.HeaderTemplate>
                         <DataTemplate>
                             <Grid Padding="6" Background="{ThemeResource SystemBaseLowColor}">
@@ -146,14 +148,13 @@
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Время" Grid.ColumnSpan="2" Style="{ThemeResource CaptionTextBlockStyle}"/>
-                                <TextBlock Grid.Row="1" Text="СуммАмп" Style="{ThemeResource CaptionTextBlockStyle}"/>
-                                <TextBlock Grid.Column="2" Grid.Row="1" Text="СуммНейтрон" Style="{ThemeResource CaptionTextBlockStyle}" Margin="4,0,0,0"/>
+                                <TextBlock Text="Имя файла" Grid.ColumnSpan="2" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                <TextBlock Grid.Row="1" Text="Путь" Style="{ThemeResource CaptionTextBlockStyle}"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.HeaderTemplate>
                     <ListView.ItemTemplate>
-                        <DataTemplate x:Name="TableDataTemplate" >
+                        <DataTemplate x:Name="TableDataTemplate" x:DataType="local:ClassСписокList">
                             <Grid Height="48">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="18"/>
@@ -164,21 +165,80 @@
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.ColumnSpan="2" VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="fgfghfh" />
-                                <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Text="fgh"/>
-                                <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Text="fffh"/>
+                                <TextBlock Grid.ColumnSpan="2" VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{x:Bind NameFile}" />
+                                <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Grid.ColumnSpan="2" Text="{x:Bind Path=NemePapka}"/>
+                                
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </SplitView.Pane>
             <controls:TabView>
-                <controls:TabViewItem Header="Таблица">
+                <controls:TabViewItem x:Name="TabHead1" Header="Таблица1">
+                    <controls:DataGrid Tag="Data1" AutoGenerateColumns="False" Loading="DataGrid1_Loading" ItemsSource="{x:Bind _ClassTable.collection}" IsReadOnly="False"/>
+                </controls:TabViewItem>
+                <controls:TabViewItem x:Name="TabHead2" Header="Таблица2">
+                    <TextBox x:Name="texte1T" Grid.Row="2" AcceptsReturn="True" TextWrapping="Wrap"
+         ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch" Margin="4"/>
+                </controls:TabViewItem>
+                <controls:TabViewItem x:Name="TabHeadRaz" Header="Таблица3">
                     <TextBox x:Name="textT" Grid.Row="2" AcceptsReturn="True" TextWrapping="Wrap"
          ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch" Margin="4"/>
                 </controls:TabViewItem>
+                <controls:TabViewItem x:Name="TabHeadRazGraf1" Header="Таблица3" >
+                    <telerikChart:RadCartesianChart x:Name="radChart" DataContext="{x:Bind _ClassViewModalTab._DataColecGraf1}">
+                        <telerikChart:RadCartesianChart.HorizontalAxis>
+                            <telerikChart:CategoricalAxis/>
+                        </telerikChart:RadCartesianChart.HorizontalAxis>
+                        <telerikChart:RadCartesianChart.VerticalAxis>
+                            <telerikChart:LinearAxis/>
+                        </telerikChart:RadCartesianChart.VerticalAxis>
+                      
+                    </telerikChart:RadCartesianChart>
+                </controls:TabViewItem>
             </controls:TabView>
         </SplitView>
-      
+        <CommandBar Grid.Row="3"  IsOpen="False" DefaultLabelPosition="Right">
+            <AppBarButton Label="Добавить колонку" Icon="Add"/>
+            <AppBarSeparator/>
+            <AppBarButton Label="Статистига">
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE9F9;" />
+            </AppBarButton>
+            <AppBarSeparator/>
+            <AppBarButton Label="График" Click="AppBarButton_Click_1">
+                <FontIcon FontFamily="Segoe MDL2 Asseets" Glyph="&#xE9D2;" />
+            </AppBarButton>
+        </CommandBar>
+        <Border x:Name="border" Visibility="Collapsed" Grid.ColumnSpan="1" Grid.RowSpan="4"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="4" BorderBrush="Black">
+            <Grid  HorizontalAlignment="Center" VerticalAlignment="Center" Height="380" Width="680" Background="WhiteSmoke">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Менеджер построяния графика"/>
+                <ListView Grid.Row="1" x:Name="ListKol" Header="Выберите колонки для построения" SelectionMode="Multiple">
+                    <ListView.ItemTemplate>
+                        <DataTemplate  x:DataType="x:String">
+                            <Grid Height="48">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="18"/>
+                                    <RowDefinition Height="18"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.ColumnSpan="2" VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding}" />
+                             
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                </ListView>
+                <Button Grid.Row="2" Content="Построить" Click="Button_Click_1" HorizontalAlignment="Right"/>
+            </Grid>
+        </Border>
     </Grid>
 </Page>

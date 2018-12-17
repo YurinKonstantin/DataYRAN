@@ -276,8 +276,10 @@
         <ScrollViewer Grid.Column="2" VerticalScrollMode="Auto" HorizontalScrollMode="Auto">
             <Grid  ScrollViewer.VerticalScrollMode="Auto" x:Name="gr">
             <TextBlock Text="События по амплитуде"/>
-            <Canvas Grid.Column="2" Background="White" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="60" Height="{Binding ElementName=gr, Path=Height, Mode=OneWay}">
-                <Line X1="10" Y1="10" X2="10" Y2="50"  Stroke="Red" StrokeThickness="4" Canvas.Left="5" Canvas.Top="1"></Line>
+               
+                <Canvas Grid.Column="2" Background="White" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="60" Height="{Binding ElementName=gr, Path=Height, Mode=OneWay}">
+                   
+                    <Line X1="10" Y1="10" X2="10" Y2="50"  Stroke="Red" StrokeThickness="4" Canvas.Left="5" Canvas.Top="1"></Line>
                 <Line X1="10" Y1="10" X2="10" Y2="50"  Stroke="DarkRed" StrokeThickness="4" Canvas.Left="5" Canvas.Top="41"></Line>
                 <Line X1="10" Y1="10" X2="10" Y2="50"  Stroke="Yellow" StrokeThickness="4" Canvas.Left="5" Canvas.Top="81"></Line>
                 <Line X1="10" Y1="10" X2="10" Y2="50"  Stroke="Blue" StrokeThickness="4" Canvas.Left="5" Canvas.Top="121"></Line>
@@ -380,7 +382,8 @@
                 <Ellipse x:Name="k6d11" Height="20" Width="20" StrokeThickness="1" Stroke="Black" Fill="White" Canvas.Left="340" Canvas.Top="335"/>
                 <Ellipse x:Name="k6d12" Height="20" Width="20" StrokeThickness="1" Stroke="Black" Fill="White" Canvas.Left="340" Canvas.Top="375"/>
             </Canvas>
-        </Grid>
+            
+            </Grid>
         </ScrollViewer>
         
          

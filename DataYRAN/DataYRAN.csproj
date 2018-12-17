@@ -128,13 +128,16 @@
     <Compile Include="Class1.cs" />
     <Compile Include="ClassBD.cs" />
     <Compile Include="ClassBDMan2.cs" />
+    <Compile Include="ClassGraf.cs" />
     <Compile Include="ClassProject.cs" />
     <Compile Include="ClassRazvertka.cs" />
     <Compile Include="ClassSob.cs" />
     <Compile Include="ClassSobColl.cs" />
     <Compile Include="ClassSobNeutron.cs" />
     <Compile Include="ClassSobObrZav.cs" />
+    <Compile Include="ClassTabs.cs" />
     <Compile Include="ClassUserSetUp.cs" />
+    <Compile Include="ClassViewModal.cs" />
     <Compile Include="ClassСписокList.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DataTime.cs" />

@@ -3907,5 +3907,10 @@ namespace DataYRAN
         {
             this.Frame.Navigate(typeof(BlankPage1));
         }
+
+        private async void MenuFlyoutItemTabNew_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(BlankPageRazverta));
+        }
     }
 }
