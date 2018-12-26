@@ -26,6 +26,7 @@ namespace DataYRAN
     /// </summary>
     public sealed partial class BlankPageZavisimost : Page
     {
+        
 
         ObservableCollection<ClassSob> _DataColecSob = new ObservableCollection<ClassSob>();
         ObservableCollection<ClassSobObrZav> _DataColecSob2 = new ObservableCollection<ClassSobObrZav>();

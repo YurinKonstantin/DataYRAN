@@ -7,10 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:telerikChart="using:Telerik.UI.Xaml.Controls.Chart"
+    xmlns:lvc="using:LiveCharts.Uwp"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid UseLayoutRounding="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -130,16 +131,16 @@
                 <Button VerticalAlignment="Top" HorizontalAlignment="Left"  Style="{StaticResource NavigationBackButtonNormalStyle}" Click="Button_Click"/>
             </CommandBar.Content>
         </CommandBar>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="12,0,0,0">
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="12,0,0,0" UseLayoutRounding="True">
             <TextBlock Text="Имя файла"/>
             <TextBlock x:Name="textZag"/>
         </StackPanel>
-        <SplitView Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" >
+        <SplitView Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" UseLayoutRounding="True" >
             <SplitView.Pane>
-                <ListView  x:Name="ListSob" Grid.RowSpan="2"  Margin="0,40,0,8" ItemsSource="{x:Bind _ClassViewModalTab._DataColec}">
+                <ListView UseLayoutRounding="True" x:Name="ListSob" Grid.RowSpan="2"  Margin="0,40,0,8" ItemsSource="{x:Bind _ClassViewModalTab._DataColec}">
                     <ListView.HeaderTemplate>
                         <DataTemplate>
-                            <Grid Padding="6" Background="{ThemeResource SystemBaseLowColor}">
+                            <Grid Padding="6" Background="{ThemeResource SystemBaseLowColor}" UseLayoutRounding="True">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="18"/>
                                     <RowDefinition Height="18"/>
@@ -173,10 +174,25 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </SplitView.Pane>
-            <controls:TabView>
+            <controls:TabView UseLayoutRounding="True" ItemsSource="{x:Bind _ClassViewModalTab._DataColecViewDoc}">
+                <controls:TabView.ItemHeaderTemplate >
+                    <DataTemplate  x:DataType="local:ClassTabs" >
+                        <TextBlock Text="{x:Bind name}" FontSize="14"  VerticalAlignment="Center" Tag="{x:Bind tag}" ></TextBlock>
+                    </DataTemplate>
+                </controls:TabView.ItemHeaderTemplate>
                 <controls:TabViewItem x:Name="TabHead1" Header="Таблица1">
-                    <controls:DataGrid Tag="Data1" AutoGenerateColumns="False" Loading="DataGrid1_Loading" ItemsSource="{x:Bind _ClassTable.collection}" IsReadOnly="False"/>
-                </controls:TabViewItem>
+                    <Pivot>
+                        <PivotItem Header="Таблица">
+                            <controls:DataGrid UseLayoutRounding="True" Tag="Data1" AutoGenerateColumns="False" Loading="DataGrid1_Loading" ItemsSource="{x:Bind _ClassTable.collection}" IsReadOnly="False"/>
+                        </PivotItem>
+                        <PivotItem Header="График">
+                            <Grid x:Name="_grid">
+                                <lvc:CartesianChart x:Name="chart" Series="{x:Bind _ClassTable.ss}"/>
+                            </Grid>
+                           
+                        </PivotItem>
+                    </Pivot>
+               </controls:TabViewItem>
                 <controls:TabViewItem x:Name="TabHead2" Header="Таблица2">
                     <TextBox x:Name="texte1T" Grid.Row="2" AcceptsReturn="True" TextWrapping="Wrap"
          ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch" Margin="4"/>
@@ -185,28 +201,51 @@
                     <TextBox x:Name="textT" Grid.Row="2" AcceptsReturn="True" TextWrapping="Wrap"
          ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch" Margin="4"/>
                 </controls:TabViewItem>
-                <controls:TabViewItem x:Name="TabHeadRazGraf1" Header="Таблица3" >
-                    <telerikChart:RadCartesianChart x:Name="radChart" DataContext="{x:Bind _ClassViewModalTab._DataColecGraf1}">
+                <controls:TabViewItem x:Name="TabHeadRazGraf1" Header="График" UseLayoutRounding="True">
+                    <Grid UseLayoutRounding="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <telerikChart:RadCartesianChart x:Name="radChart" UseLayoutRounding="True">
+                            <telerikChart:RadCartesianChart.Annotations>
+                                <telerikChart:CartesianCustomLineAnnotation x:Name="From"/>
+                            </telerikChart:RadCartesianChart.Annotations>
+                            <telerikChart:RadCartesianChart.Behaviors>
+                            <telerikChart:ChartPanAndZoomBehavior x:Name="Zomm" ZoomMode="Both" PanMode="Both"/>
+                        </telerikChart:RadCartesianChart.Behaviors>
                         <telerikChart:RadCartesianChart.HorizontalAxis>
-                            <telerikChart:CategoricalAxis/>
-                        </telerikChart:RadCartesianChart.HorizontalAxis>
+                                <telerikChart:CategoricalAxis IsDoubleTapEnabled="True" DoubleTapped="LinearAxis_DoubleTapped"/>
+                            </telerikChart:RadCartesianChart.HorizontalAxis>
                         <telerikChart:RadCartesianChart.VerticalAxis>
-                            <telerikChart:LinearAxis/>
+                            <telerikChart:LinearAxis IsTapEnabled="True" DoubleTapped="LinearAxis_DoubleTapped" IsDoubleTapEnabled="True"/>
                         </telerikChart:RadCartesianChart.VerticalAxis>
+                        
                       
                     </telerikChart:RadCartesianChart>
+                      
+                    </Grid>
                 </controls:TabViewItem>
+                
             </controls:TabView>
         </SplitView>
         <CommandBar Grid.Row="3"  IsOpen="False" DefaultLabelPosition="Right">
-            <AppBarButton Label="Добавить колонку" Icon="Add"/>
+            <AppBarButton Label="Добавить колонку" Icon="Add" Click="AppBarButton_Click_2"/>
             <AppBarSeparator/>
             <AppBarButton Label="Статистига">
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE9F9;" />
             </AppBarButton>
             <AppBarSeparator/>
-            <AppBarButton Label="График" Click="AppBarButton_Click_1">
+            <AppBarButton Label="График" >
                 <FontIcon FontFamily="Segoe MDL2 Asseets" Glyph="&#xE9D2;" />
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Линия" Click="AppBarButton_Click_1" Tag="line"/>
+                        <MenuFlyoutItem Text="Бар"  Tag="Bar" Click="AppBarButtonBar_Click_1"/>
+                        <MenuFlyoutItem Text="Шаг"  Tag="Step" Click="AppBarButtonStep_Click_1"/>
+                   </MenuFlyout>
+                </AppBarButton.Flyout>
+
             </AppBarButton>
         </CommandBar>
         <Border x:Name="border" Visibility="Collapsed" Grid.ColumnSpan="1" Grid.RowSpan="4"  HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="4" BorderBrush="Black">

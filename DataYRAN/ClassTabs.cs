@@ -1,17 +1,25 @@
-﻿using Microsoft.Toolkit.Uwp.UI.Controls;
+﻿using LiveCharts;
+using LiveCharts.Uwp;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
+using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 
 namespace DataYRAN
 {
    public class ClassTabs
     {
+        public string name { get; set; }
+        public string tag { get; set; }
         DataTable _booksTable;
         public DataTable booksTable
         {
@@ -25,7 +33,31 @@ namespace DataYRAN
                
             }
         }
+        public SeriesCollection ss =  new SeriesCollection { };
+    public void NewAddLine()
+        {
+            if(ss!=null)
+            ss.Add(new LineSeries() { Values = new ChartValues<double> {},  Fill = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)) });
+            else
+            {
+                NewAddSeriaCol();
+                ss.Add(new LineSeries() { Values = new ChartValues<double> { }, Fill = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)) });
+                
 
+            }
+        }
+        public void NewAddSeriaCol()
+        {
+            ss = new SeriesCollection { };
+        }
+        public void NewAddColumnSeries()
+        {
+            ss.Add(new ColumnSeries() { Values = new ChartValues<double> { } });
+        }
+        public void NewAddPpoin(int ser, double point)
+        {
+            ss[ser].Values.Add(point);
+        }
         public DataGrid dataGrid = new DataGrid();
         public void newTab(string name)
         {
@@ -79,45 +111,36 @@ namespace DataYRAN
             }
         }
         public ObservableCollection<ClassGraf> collectionGraf = new ObservableCollection<ClassGraf>();
-        public ObservableCollection<ClassGraf> newGrafSer(List<string> vs)
+        public void newGrafSer(List<int> vs)
         {
          
-            ClassGraf classGrafSer = new ClassGraf();
-            foreach (string vv in vs)
+            ClassGraf classGrafSer;
+           for(int i=0; i<vs.Count; i++)
             {
-                int x = 0;
-                foreach (DataColumn column in _booksTable.Columns)
-                {
-                    if (column.ColumnName == vv)
-                    {
-                        classGrafSer.name = vv;
+                classGrafSer = new ClassGraf();
+                classGrafSer.name = "Колонка "+i.ToString();
                         for (int j = 0; j < collection.Count; j++)
                         {
-                           
-                            classGrafSer.collectionGraf.Add((int)collection.ElementAt(j).ItemArray[x+1]);
-
-                        }
-                    
-                        collectionGraf.Add(classGrafSer);
-                    }
-                    classGrafSer = new ClassGraf();
-                    x++;
-                }
-
+                         classGrafSer.collectionGraf.Add((int)collection.ElementAt(j).ItemArray[vs.ElementAt(i)]);
+                        }                   
+                        collectionGraf.Add(classGrafSer);                    
+                    //classGrafSer = new ClassGraf();                
             }
-            return collectionGraf;
+         
         }
-        public void newRows(int[] mas)
+        public  void newRows(int[] mas)
         {
             // row.ItemArray = new object[] { null, "Война и мир", 200 };
             DataRow row = booksTable.NewRow();
             int x = booksTable.Columns.Count - 1;
             int x1 = 0;
+         
             for (int i = 0; i < mas.Length; i++)
             {
-                row[i + 1] = mas[x1];
+                row[i + 1] = mas[i];
+                
             }
-            collection.Add(row);
+            _collection.Add(row);
             booksTable.AcceptChanges();
 
 

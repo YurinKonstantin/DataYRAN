@@ -73,7 +73,8 @@ namespace DataYRAN
                         await messageDialog12.ShowAsync();
                     }
 
-
+                    MessageDialog messageDialog122 = new MessageDialog("Конец");
+                    await messageDialog122.ShowAsync();
 
 
                 }

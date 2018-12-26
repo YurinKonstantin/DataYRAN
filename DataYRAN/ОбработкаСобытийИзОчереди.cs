@@ -4,8 +4,7 @@ using System.Collections.Generic;using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
-
-
+using Windows.UI.Popups;
 
 namespace DataYRAN
 {
@@ -217,10 +216,13 @@ namespace DataYRAN
             Double[] sig = new Double[12];
             bool bad = false;
             string[] timeS = new string[12];
+            double[] sumDetQ = new double[12];
+            double[,] data1S = new double[12, 1024];
             try
             {
                 ClassUserSetUp classUserSetUp = new ClassUserSetUp();
-                if(ClassUserSetUp.TipTail)
+        
+                if (ClassUserSetUp.TipTail)
                 {
                     ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
 
@@ -228,7 +230,20 @@ namespace DataYRAN
                 else
                 {
                     ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
+                  
+                    for (int i = 0; i < 12; i++)
+                    {
 
+
+                        for (int j = 0; j < 1024; j++)
+                        {
+                            data1S[i,j] = Convert.ToDouble(data1[i,j])- Nul[i]; 
+                        }
+                      
+
+                    }
+             
+                    ParserBAAK12.ParseBinFileBAAK12.SumSig(data1S, out sumDetQ);
                 }
                 List<ClassSobNeutron> listNet = new List<ClassSobNeutron>();
                 if(ClassUserSetUp.TipTail)
@@ -255,7 +270,8 @@ namespace DataYRAN
             string[] array = nameFile.Split('_');
             if (!bad)
             {
-             await  Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+
+            await  Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
         () => {
             ViewModel.ClassSobs.Add(new ClassSob()
             {
@@ -324,7 +340,20 @@ namespace DataYRAN
                 Nnull8 = Convert.ToInt16(Nul[8]),
                 Nnull9 = Convert.ToInt16(Nul[9]),
                 Nnull10 = Convert.ToInt16(Nul[10]),
-                Nnull11 = Convert.ToInt16(Nul[11])
+                Nnull11 = Convert.ToInt16(Nul[11]),
+                QS0= sumDetQ[0],
+                QS1 = sumDetQ[1],
+                QS2 = sumDetQ[2],
+                QS3 = sumDetQ[3],
+                QS4 = sumDetQ[4],
+                QS5 = sumDetQ[5],
+                QS6 = sumDetQ[6],
+                QS7 = sumDetQ[7],
+                QS8 = sumDetQ[8],
+                QS9 = sumDetQ[9],
+                QS10 = sumDetQ[10],
+                QS11 = sumDetQ[11]
+
             });
 
         });

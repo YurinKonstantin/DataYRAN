@@ -77,6 +77,18 @@ namespace DataYRAN
         public string TimeS9 { get; set; }
         public string TimeS10 { get; set; }
         public string TimeS11 { get; set; }
+        public double QS0 { get; set; }
+        public double QS1 { get; set; }
+        public double QS2 { get; set; }
+        public double QS3 { get; set; }
+        public double QS4 { get; set; }
+        public double QS5 { get; set; }
+        public double QS6 { get; set; }
+        public double QS7 { get; set; }
+        public double QS8 { get; set; }
+        public double QS9 { get; set; }
+        public double QS10 { get; set; }
+        public double QS11 { get; set; }
         public async void openCom()
         {
             MessageDialog messageDialog = new MessageDialog("gffhf");
@@ -85,6 +97,36 @@ namespace DataYRAN
         public short[] AmpSum()
         {
             return new short[12] {Amp0, Amp1, Amp2, Amp3, Amp4, Amp5, Amp6, Amp7, Amp8, Amp9, Amp10, Amp11 };
+        }
+        public List<string> ShovSelect()
+        {
+            List<string> vs = new List<string>();
+            vs.Add(vs.Count.ToString()+" "+Amp0.ToString()+" "+sig0.ToString());
+            
+            return vs;
+        }
+        public double[] Qsum
+        {
+            get
+            {
+                double[] vs = new double[12];
+                vs[0] = QS0;
+                vs[1] = QS1;
+                vs[2] = QS2;
+                vs[3] = QS3;
+                vs[4] = QS4;
+                vs[5] = QS5;
+                vs[6] = QS6;
+                vs[7] = QS7;
+                vs[8] = QS8;
+                vs[9] = QS9;
+                vs[10] = QS10;
+                vs[11] = QS11;
+
+                return vs;
+            }
+            
+          
         }
     }
  

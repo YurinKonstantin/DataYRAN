@@ -12,7 +12,251 @@
       xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
       mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+      
+        <Style x:Key="PivotStyle1" TargetType="Pivot">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="{ThemeResource PivotBackground}"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <Grid/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Pivot">
+                        <Grid x:Name="RootElement" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                            <Grid.Resources>
+                                <Style x:Key="BaseContentControlStyle" TargetType="ContentControl">
+                                    <Setter Property="FontFamily" Value="XamlAutoFontFamily"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ContentControl">
+                                                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" OpticalMarginAlignment="TrimSideBearings" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                                <Style x:Key="TitleContentControlStyle" BasedOn="{StaticResource BaseContentControlStyle}" TargetType="ContentControl">
+                                    <Setter Property="FontFamily" Value="{ThemeResource PivotTitleFontFamily}"/>
+                                    <Setter Property="FontWeight" Value="{ThemeResource PivotTitleThemeFontWeight}"/>
+                                    <Setter Property="FontSize" Value="12"/>
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="Orientation">
+                                    <VisualState x:Name="Portrait">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TitleContentControl" Storyboard.TargetProperty="Margin">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotPortraitThemePadding}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Landscape">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TitleContentControl" Storyboard.TargetProperty="Margin">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotLandscapeThemePadding}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="NavigationButtonsVisibility">
+                                    <VisualState x:Name="NavigationButtonsHidden"/>
+                                    <VisualState x:Name="NavigationButtonsVisible">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NextButton" Storyboard.TargetProperty="Opacity">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NextButton" Storyboard.TargetProperty="IsEnabled">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="True"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PreviousButton" Storyboard.TargetProperty="Opacity">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PreviousButton" Storyboard.TargetProperty="IsEnabled">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="True"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PreviousButtonVisible">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PreviousButton" Storyboard.TargetProperty="Opacity">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PreviousButton" Storyboard.TargetProperty="IsEnabled">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="True"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="NextButtonVisible">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NextButton" Storyboard.TargetProperty="Opacity">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NextButton" Storyboard.TargetProperty="IsEnabled">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="True"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="HeaderStates">
+                                    <VisualState x:Name="HeaderDynamic"/>
+                                    <VisualState x:Name="HeaderStatic">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Header" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="StaticHeader" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentControl x:Name="TitleContentControl" ContentTemplate="{TemplateBinding TitleTemplate}" Content="{TemplateBinding Title}" IsTabStop="False" Margin="{StaticResource PivotPortraitThemePadding}" Style="{StaticResource TitleContentControlStyle}" Visibility="Collapsed"/>
+                            <Grid Grid.Row="1">
+                                <Grid.Resources>
+                                    <ControlTemplate x:Key="NextTemplate" TargetType="Button">
+                                        <Border x:Name="Root" Background="{ThemeResource PivotNextButtonBackground}" BorderThickness="{ThemeResource PivotNavButtonBorderThemeThickness}" BorderBrush="{ThemeResource PivotNextButtonBorderBrush}">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal"/>
+                                                    <VisualState x:Name="PointerOver">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotNextButtonBackgroundPointerOver}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotNextButtonBorderBrushPointerOver}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotNextButtonForegroundPointerOver}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Pressed">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotNextButtonBackgroundPressed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotNextButtonBorderBrushPressed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotNextButtonForegroundPressed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" Foreground="{ThemeResource PivotNextButtonForeground}" FontSize="12" Glyph="&#xE0E3;" HorizontalAlignment="Center" MirroredWhenRightToLeft="True" UseLayoutRounding="False" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                    <ControlTemplate x:Key="PreviousTemplate" TargetType="Button">
+                                        <Border x:Name="Root" Background="{ThemeResource PivotPreviousButtonBackground}" BorderThickness="{ThemeResource PivotNavButtonBorderThemeThickness}" BorderBrush="{ThemeResource PivotPreviousButtonBorderBrush}">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal"/>
+                                                    <VisualState x:Name="PointerOver">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotPreviousButtonBackgroundPointerOver}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotPreviousButtonBorderBrushPointerOver}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotPreviousButtonForegroundPointerOver}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Pressed">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotPreviousButtonBackgroundPressed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotPreviousButtonBorderBrushPressed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotPreviousButtonForegroundPressed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" Foreground="{ThemeResource PivotPreviousButtonForeground}" FontSize="12" Glyph="&#xE0E2;" HorizontalAlignment="Center" MirroredWhenRightToLeft="True" UseLayoutRounding="False" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Grid.Resources>
+                                <ScrollViewer x:Name="ScrollViewer" BringIntoViewOnFocusChange="False" HorizontalScrollBarVisibility="Hidden" HorizontalSnapPointsAlignment="Center" HorizontalSnapPointsType="MandatorySingle" Margin="{TemplateBinding Padding}" Template="{StaticResource ScrollViewerScrollBarlessTemplate}" VerticalContentAlignment="Stretch" VerticalSnapPointsType="None" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" ZoomMode="Disabled">
+                                    <PivotPanel x:Name="Panel" VerticalAlignment="Stretch">
+                                        <Grid x:Name="PivotLayoutElement">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.RenderTransform>
+                                                <CompositeTransform x:Name="PivotLayoutElementTranslateTransform"/>
+                                            </Grid.RenderTransform>
+                                            <ContentPresenter x:Name="LeftHeaderPresenter" ContentTemplate="{TemplateBinding LeftHeaderTemplate}" Content="{TemplateBinding LeftHeader}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                            <ContentControl x:Name="HeaderClipper" Grid.Column="1" HorizontalContentAlignment="Stretch" UseSystemFocusVisuals="{StaticResource UseSystemFocusVisuals}">
+                                                <ContentControl.Clip>
+                                                    <RectangleGeometry x:Name="HeaderClipperGeometry"/>
+                                                </ContentControl.Clip>
+                                                <Grid Background="{ThemeResource PivotHeaderBackground}">
+                                                    <Grid.RenderTransform>
+                                                        <CompositeTransform x:Name="HeaderOffsetTranslateTransform"/>
+                                                    </Grid.RenderTransform>
+                                                    <PivotHeaderPanel x:Name="StaticHeader" Visibility="Collapsed">
+                                                        <PivotHeaderPanel.RenderTransform>
+                                                            <CompositeTransform x:Name="StaticHeaderTranslateTransform"/>
+                                                        </PivotHeaderPanel.RenderTransform>
+                                                    </PivotHeaderPanel>
+                                                    <PivotHeaderPanel x:Name="Header">
+                                                        <PivotHeaderPanel.RenderTransform>
+                                                            <CompositeTransform x:Name="HeaderTranslateTransform"/>
+                                                        </PivotHeaderPanel.RenderTransform>
+                                                    </PivotHeaderPanel>
+                                                    <Rectangle x:Name="FocusFollower" Fill="Transparent" HorizontalAlignment="Stretch" IsHitTestVisible="False" Control.IsTemplateFocusTarget="True" VerticalAlignment="Stretch"/>
+                                                </Grid>
+                                            </ContentControl>
+                                            <Button x:Name="PreviousButton" Background="Transparent" Grid.Column="1" HorizontalAlignment="Left" Height="36" IsEnabled="False" IsTabStop="False" Margin="{ThemeResource PivotNavButtonMargin}" Opacity="0" Template="{StaticResource PreviousTemplate}" UseSystemFocusVisuals="False" VerticalAlignment="Top" Width="20"/>
+                                            <Button x:Name="NextButton" Background="Transparent" Grid.Column="1" HorizontalAlignment="Right" Height="36" IsEnabled="False" IsTabStop="False" Margin="{ThemeResource PivotNavButtonMargin}" Opacity="0" Template="{StaticResource NextTemplate}" UseSystemFocusVisuals="False" VerticalAlignment="Top" Width="20"/>
+                                            <ContentPresenter x:Name="RightHeaderPresenter" ContentTemplate="{TemplateBinding RightHeaderTemplate}" Content="{TemplateBinding RightHeader}" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                            <ItemsPresenter x:Name="PivotItemPresenter" Grid.ColumnSpan="3" Grid.Row="1">
+                                                <ItemsPresenter.RenderTransform>
+                                                    <TransformGroup>
+                                                        <TranslateTransform x:Name="ItemsPresenterTranslateTransform"/>
+                                                        <CompositeTransform x:Name="ItemsPresenterCompositeTransform"/>
+                                                    </TransformGroup>
+                                                </ItemsPresenter.RenderTransform>
+                                            </ItemsPresenter>
+                                        </Grid>
+                                    </PivotPanel>
+                                </ScrollViewer>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}" UseLayoutRounding="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
@@ -23,8 +267,8 @@
             <RowDefinition Height="auto"/>
             
         </Grid.RowDefinitions>
-        
-        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="60,0,0,0"> 
+
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="60,0,0,0" UseLayoutRounding="True"> 
             <my:Menu>
                 <my:MenuItem Name="FileMenu" my:Menu.InputGestureText="Alt+F" Header="Файл" ToolTipService.ToolTip="для быстрого доступа Alt+F">
                     <MenuFlyoutSubItem Text="Новый" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+N">
@@ -40,6 +284,7 @@
                         <MenuFlyoutSubItem Text="Таблицы" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+T">
                             <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+T"  Text="Все" Click="AppBarButton_Click_6"/>
                             <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+T"  Text="Сохранить как" IsEnabled="False" />
+                            <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+T"  Text="Амплитуда и заряд" Click="SaveQ_Click_6" />
                         </MenuFlyoutSubItem>
                     </MenuFlyoutSubItem>
                 </my:MenuItem>
@@ -64,7 +309,7 @@
             </my:Menu>
 
         </StackPanel>
-        <StackPanel Grid.Row="1" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel Grid.Row="1" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" UseLayoutRounding="True">
             <AppBarButton Icon="AllApps" Label="Список"  Foreground="Blue"  Click="AppBarButton_Click_9" />
             <AppBarButton Icon="Add" Label="Добавить файл" Foreground="Green" VerticalAlignment="Stretch" Click="AppBarButton_Click" />
             <AppBarButton Icon="MoveToFolder" Label="Добавить папку" VerticalAlignment="Stretch" Foreground="Green" Click="AppBarButton_Click_2" />
@@ -84,16 +329,16 @@
             </AppBarButton>
            
         </StackPanel>
-        <SplitView  x:Name="mySplitView" IsPaneOpen="False" Grid.Column="1" Grid.Row="1"
+        <SplitView  x:Name="mySplitView" IsPaneOpen="False" Grid.Column="1" Grid.Row="1" UseLayoutRounding="True"
            DisplayMode="Inline"
            OpenPaneLength="280">
             <SplitView.Pane>
-                <ListView FocusVisualSecondaryBrush="Black" CanDrag="True"  x:Name="listView1" AllowDrop="True"  DragOver="ListView1_DragOver" CanDragItems="True" Drop="ListView1_Drop"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
+                <ListView FocusVisualSecondaryBrush="Black" CanDrag="True" UseLayoutRounding="True"  x:Name="listView1" AllowDrop="True"  DragOver="ListView1_DragOver" CanDragItems="True" Drop="ListView1_Drop"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
                     
                     <ListView.ItemTemplate>
                         <DataTemplate >
-                            <Grid>
-                                <StackPanel >
+                            <Grid UseLayoutRounding="True">
+                                <StackPanel UseLayoutRounding="True">
                                     <TextBlock Text="{Binding NameFile}" FontSize="16"></TextBlock>
                                     <TextBlock Text="{Binding NemePapka}" FontSize="10"></TextBlock>
                                     <ProgressBar x:Name="ProgB1" Foreground="Green" HorizontalAlignment="Stretch" IsIndeterminate="{Binding Status}" Visibility="{Binding Status}" />
@@ -106,8 +351,8 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </SplitView.Pane>
-            <Grid x:Name="gridpan">
-                <CommandBar  VerticalAlignment="Stretch" Background="Transparent" ClosedDisplayMode="Compact"  HorizontalAlignment="Right">
+            <Grid x:Name="gridpan" UseLayoutRounding="True">
+                <CommandBar  VerticalAlignment="Stretch" Background="Transparent" ClosedDisplayMode="Compact"  HorizontalAlignment="Right" UseLayoutRounding="True">
                     <AppBarButton Icon="Delete" Click="AppBarButton_Click_7" Label="Удалить" ToolTipService.ToolTip="Очистет все таблицы" Foreground="Red"/>
                     <AppBarSeparator/>
                     <AppBarButton Icon="Save" Click="AppBarButton_Click_6" Label="Сохранить"/>
@@ -185,33 +430,36 @@
                         <AppBarButton Label="Настройки программы" Click="UserSetUp_Click" />
                     </CommandBar.SecondaryCommands>
                 </CommandBar>
-                <controls:TabView x:Name="rootPivot"   FontStyle="Normal" MinWidth="900"  Margin="8" >
+                <controls:TabView x:Name="rootPivot"   FontStyle="Normal" MinWidth="900"  Margin="8" UseLayoutRounding="True">
 
                     <controls:TabViewItem Header="События" FontSize="16" >
-                        <Pivot x:Name="Sobitie">
-                            <PivotItem Header="Все" Pivot.SlideInAnimationGroup="GroupTwo">
-                                <SplitView IsPaneOpen="False" DisplayMode="Inline"  OpenPaneLength="480" PanePlacement="Right" x:Name="Split1">
+                        <Pivot Style="{StaticResource PivotStyle1}" x:Name="Sobitie">
+                            <PivotItem Header="Все" Pivot.SlideInAnimationGroup="GroupTwo" UseLayoutRounding="True">
+                                <SplitView IsPaneOpen="False" DisplayMode="Inline"  OpenPaneLength="480" PanePlacement="Right" x:Name="Split1" UseLayoutRounding="True">
 
                                     <SplitView.Pane >
                                         <ScrollViewer>
-                                            <Grid>
+                                            <Grid UseLayoutRounding="True">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="auto"/>
                                                   
                                                     <RowDefinition Height="480"/>
                                                 </Grid.RowDefinitions>
 
-                                                <StackPanel Margin="8,0,0,0">
+                                                <StackPanel Margin="8,0,0,0" UseLayoutRounding="True">
                                                     <StackPanel Orientation="Horizontal" DataContext="{Binding SelectedItem, ElementName=DataGrid}">
-                                                        <TextBlock Text="Плата" Margin="12,8,0,0" FontSize="12"/>
-                                                        <TextBlock  Text="{Binding nameBAAK}" FontSize="12" Margin="12,8,0,0"/>
-                                                        <Button Content="Перейти к развертки" Click="Button_Click" Margin="12,8,0,0"/>
+                                                        <TextBlock Text="Плата" Margin="12,4,0,0" FontSize="12"/>
+                                                        <TextBlock  Text="{Binding nameBAAK}" FontSize="12" Margin="12,4,0,0"/>
+                                                      
                                                     </StackPanel>
-                                                    <StackPanel x:Name="List54" DataContext="{Binding SelectedItem, ElementName=DataGrid}" Margin="0,24,0,0" >
+                                                    <HyperlinkButton Content="Перейти к развертки" Click="Button_Click" Margin="0,8,0,0"/>
+                                                 
+                                                    <StackPanel x:Name="List54" DataContext="{Binding SelectedItem, ElementName=DataGrid}" Margin="0,4,0,0" UseLayoutRounding="True">
 
-                                                        <Grid Padding="10" >
+                                                        <Grid Padding="10" UseLayoutRounding="True">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
+                                                                <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -224,10 +472,12 @@
                                                             <TextBlock Grid.Column="3" Text="Сигмма" Style="{ThemeResource CaptionTextBlockStyle}"/>
                                                             <TextBlock Grid.Column="4" Text="NullLine"  Style="{ThemeResource CaptionTextBlockStyle}"/>
                                                             <TextBlock Grid.Column="5" Text="TimeSig" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                                         
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" UseLayoutRounding="True">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
+                                                                <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -242,8 +492,9 @@
                                                             <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig0}"/>
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull0}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS0}"/>
+                                                            
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" UseLayoutRounding="True">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -259,7 +510,7 @@
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull1}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS1}"/>
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" UseLayoutRounding="True">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -275,7 +526,7 @@
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull2}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS2}"/>
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -291,7 +542,7 @@
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull3}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS3}"/>
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -307,7 +558,7 @@
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull4}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS4}"/>
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -323,7 +574,7 @@
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull5}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS5}"/>
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -339,7 +590,7 @@
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull6}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS6}"/>
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -355,7 +606,7 @@
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull7}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS7}"/>
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -371,7 +622,7 @@
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull8}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS8}"/>
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -387,7 +638,7 @@
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull9}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS9}"/>
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -403,7 +654,7 @@
                                                             <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull10}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS10}"/>
                                                         </Grid>
-                                                        <Grid Height="42" AutomationProperties.Name="x:String" Padding="6" >
+                                                        <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="44"/>
                                                                 <ColumnDefinition Width="90"/>
@@ -430,6 +681,7 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
+                                                                <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
                                                             <Grid.RowDefinitions>
                                                                 <RowDefinition Height="48"/>
@@ -451,28 +703,29 @@
                                                             <TextBlock Grid.Column="2" Text="Сигмма" Style="{ThemeResource CaptionTextBlockStyle}"/>
                                                             <TextBlock Grid.Column="3" Text="NullLine"  Style="{ThemeResource CaptionTextBlockStyle}"/>
                                                             <TextBlock Grid.Column="4" Text="TimeSig" Style="{ThemeResource CaptionTextBlockStyle}"/>
-
+                                                            <TextBlock Grid.Column="4" Text="TimeSig" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                                            <TextBlock Grid.Column="5" Text="Заряд" Style="{ThemeResource CaptionTextBlockStyle}"/>
 
                                                             <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Text="1"/>
                                                             <TextBlock Grid.Column="1" Grid.Row="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp0}" />
                                                             <TextBlock Grid.Column="2" Grid.Row="1"  VerticalAlignment="Center" Text="{Binding sig0}"/>
                                                             <TextBlock Grid.Column="3" Grid.Row="1"  VerticalAlignment="Center" Text="{Binding Nnull0}"/>
                                                             <TextBlock Grid.Column="4" Grid.Row="1"  VerticalAlignment="Center" Text="{Binding TimeS0}"/>
-
+                                                            <TextBlock Grid.Column="5" Grid.Row="1"  VerticalAlignment="Center" Text="{Binding QS0}"/>
 
                                                             <TextBlock Grid.Column="0" Grid.Row="2"  VerticalAlignment="Center" Text="2"/>
                                                             <TextBlock Grid.Column="1" Grid.Row="2"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp1}" />
                                                             <TextBlock Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Text="{Binding sig1}"/>
                                                             <TextBlock Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Text="{Binding Nnull1}"/>
                                                             <TextBlock Grid.Column="4" Grid.Row="2" VerticalAlignment="Center" Text="{Binding TimeS1}"/>
-
+                                                            <TextBlock Grid.Column="5" Grid.Row="2"  VerticalAlignment="Center" Text="{Binding QS1}"/>
 
                                                             <TextBlock Grid.Column="0" Grid.Row="3"  VerticalAlignment="Center" Text="3"/>
                                                             <TextBlock Grid.Column="1" Grid.Row="3"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp2}" />
                                                             <TextBlock Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" Text="{Binding sig2}"/>
                                                             <TextBlock Grid.Column="3" Grid.Row="3"  VerticalAlignment="Center" Text="{Binding Nnull2}"/>
                                                             <TextBlock Grid.Column="4" Grid.Row="3" VerticalAlignment="Center" Text="{Binding TimeS2}"/>
-
+                                                            <TextBlock Grid.Column="5" Grid.Row="3"  VerticalAlignment="Center" Text="{Binding QS2}"/>
 
                                                             <TextBlock Grid.Column="0"  Grid.Row="4"  VerticalAlignment="Center" Text="4"/>
                                                             <TextBlock Grid.Column="1"  Grid.Row="4" VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp3}" />
@@ -480,6 +733,7 @@
                                                             <TextBlock Grid.Column="2"  Grid.Row="4" VerticalAlignment="Center" Text="{Binding sig3}"/>
                                                             <TextBlock Grid.Column="3"  Grid.Row="4"  VerticalAlignment="Center" Text="{Binding Nnull3}"/>
                                                             <TextBlock Grid.Column="4"  Grid.Row="4"  VerticalAlignment="Center" Text="{Binding TimeS3}"/>
+                                                            <TextBlock Grid.Column="5" Grid.Row="4"  VerticalAlignment="Center" Text="{Binding QS3}"/>
 
 
                                                             <TextBlock Grid.Column="0" Grid.Row="5"  VerticalAlignment="Center" Text="5"/>
@@ -488,6 +742,7 @@
                                                             <TextBlock Grid.Column="2" Grid.Row="5"  VerticalAlignment="Center" Text="{Binding sig4}"/>
                                                             <TextBlock Grid.Column="3" Grid.Row="5"   VerticalAlignment="Center" Text="{Binding Nnull4}"/>
                                                             <TextBlock Grid.Column="4"  Grid.Row="5"   VerticalAlignment="Center" Text="{Binding TimeS4}"/>
+                                                            <TextBlock Grid.Column="5" Grid.Row="5"  VerticalAlignment="Center" Text="{Binding QS4}"/>
 
 
                                                             <TextBlock Grid.Column="0" Grid.Row="6"   VerticalAlignment="Center" Text="6"/>
@@ -496,6 +751,7 @@
                                                             <TextBlock Grid.Column="2" Grid.Row="6"  VerticalAlignment="Center" Text="{Binding sig5}"/>
                                                             <TextBlock Grid.Column="3" Grid.Row="6"  VerticalAlignment="Center" Text="{Binding Nnull5}"/>
                                                             <TextBlock Grid.Column="4" Grid.Row="6"  VerticalAlignment="Center" Text="{Binding TimeS5}"/>
+                                                            <TextBlock Grid.Column="5" Grid.Row="6"  VerticalAlignment="Center" Text="{Binding QS5}"/>
 
 
                                                             <TextBlock Grid.Column="0" Grid.Row="7"  VerticalAlignment="Center" Text="7"/>
@@ -550,13 +806,14 @@
                                                         <Slider Minimum="0" Maximum="360" Header="Heading" Name="headingSlider" Value="0"/>
                                                         <Slider Minimum="0" Maximum="64" Header=" DesiredPitch" Name="desiredPitchSlider" Value="0"/>
                                                     </StackPanel>
+                                                    <TextBlock x:Name="textText" TextWrapping="Wrap"/>
                                                     <AppBarButton Icon="Map" Click="AppBarButtonMap"/>
                                                    
                                                 </StackPanel>
                                              
                                                 <Grid Grid.Row="1">
-                                                 
-                                                    <Canvas Width="480" Height="480" Background="White" >
+
+                                                    <Canvas Width="480" Height="480" Background="White" UseLayoutRounding="True">
                                                         <StackPanel Margin="60,0,0,0">
                                                             <!-- This rectangle is painted with a vertical linear gradient. -->
                                                             <Rectangle Width="10" Height="200">
@@ -687,12 +944,12 @@
                                             </Grid>
                                         </ScrollViewer>
                                     </SplitView.Pane>
-                                    <Grid>
+                                    <Grid UseLayoutRounding="True">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                        <CommandBar Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                                        <CommandBar Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" UseLayoutRounding="True">
                                             <AppBarButton Icon="Pictures" Label="визуализация" Click="AppBarButtonMap_Click"/>
                                             <AppBarToggleButton Icon="OutlineStar" Label="Статистика" Click="AppBarToggleButton_Click_6"/>
                                             <AppBarToggleButton Label="Гистограмма" Click="AppBarToggleButton_Click_7">
@@ -700,7 +957,7 @@
                                             </AppBarToggleButton>
                                             
                                         </CommandBar>
-                                        <telerikGrid:RadDataGrid x:Name="DataGrid"  ItemsSource="{x:Bind ViewModel.ClassSobs}"  AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
+                                        <telerikGrid:RadDataGrid x:Name="DataGrid"  ItemsSource="{x:Bind ViewModel.ClassSobs}" UseLayoutRounding="True"  AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
                                             <telerikGrid:RadDataGrid.Columns>
 
                                                 <telerikGrid:DataGridTextColumn PropertyName="time" Header="Время события" />
@@ -710,7 +967,7 @@
                                                 <telerikGrid:DataGridTextColumn PropertyName="SumNeu" Header="Сумма нейтронов" x:Name="dataN"/>
                                             </telerikGrid:RadDataGrid.Columns>
                                         </telerikGrid:RadDataGrid>
-                                        <Grid x:Name="GridStatictik" Visibility="Collapsed">
+                                        <Grid x:Name="GridStatictik" Visibility="Collapsed" UseLayoutRounding="True">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="auto"/>
                                                 <RowDefinition Height="*"/>
@@ -720,7 +977,7 @@
                                             </CommandBar>
                                             <RichEditBox Grid.Row="1" x:Name="Editor" PlaceholderText="Enter Text Here" />
                                         </Grid>
-                                        <Grid x:Name="GridGistogram" Visibility="Collapsed" >
+                                        <Grid x:Name="GridGistogram" Visibility="Collapsed" UseLayoutRounding="True">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="auto"/>
                                                 <RowDefinition Height="auto"/>
@@ -1229,7 +1486,7 @@
             </Grid>
 
         </SplitView>
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Grid.ColumnSpan="2" Background="{ThemeResource ListPickerFlyoutPresenterSelectedItemForegroundThemeBrush}" > 
+        <StackPanel UseLayoutRounding="True" Grid.Row="2" Orientation="Horizontal" Grid.ColumnSpan="2" Background="{ThemeResource ListPickerFlyoutPresenterSelectedItemForegroundThemeBrush}" > 
             <TextBlock  Text="Время обработки: " Foreground="White" FontFamily="Georgia" FontStyle="Italic" />
             <TextBlock  x:Name="duration" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0" />
 

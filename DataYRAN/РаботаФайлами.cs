@@ -110,6 +110,24 @@ namespace DataYRAN
             await mess.ShowAsync();
 
         }
+        private async void SaveQ_Click_6(object sender, RoutedEventArgs e)
+        {
+
+            ObRing.IsActive = true;
+            if (ClassUserSetUp.TipTail)
+            {
+             
+            }
+            if (!ClassUserSetUp.TipTail)
+            {
+                await SaveAllNoTailQ();
+            }
+
+            ObRing.IsActive = false;
+            var mess = new MessageDialog("Сохранение завершено");
+            await mess.ShowAsync();
+
+        }
         public async Task SaveAllNoTail()
         {
             string cul = "en-US";
@@ -146,7 +164,7 @@ namespace DataYRAN
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
                    "СобытияФайла.txt", CreationCollisionOption.GenerateUniqueName)))
                     {
-                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" +  "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "aD10" + "\t" + "AD11" + "\t" + "AD12" +
+                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" +  "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "AD10" + "\t" + "AD11" + "\t" + "AD12" +
                                    "\t" + "SigD1" + "\t" + "SigD2" + "\t" + "SigD3" + "\t" + "SigD4" + "\t" + "SigD5" + "\t" + "SigD6" + "\t" + "SigD7" + "\t" + "SigD8" + "\t" + "SigD9" + "\t" + "SigD10" + "\t" + "SigD11" + "\t" + "SigD12" + "\t" + "NullD1" + "\t" + "NullD2"
                                    + "\t" + "NullD3" + "\t" + "NullD4" + "\t" + "NullD5" + "\t" + "NullD6" + "\t" + "NullD7" + "\t" + "NullD8" + "\t" + "NullD9" + "\t" + "NullD10" + "\t" + "NullD11" + "\t" + "NullD12";
 
@@ -169,7 +187,7 @@ namespace DataYRAN
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
                    "СобытияФайлаBad.txt", CreationCollisionOption.GenerateUniqueName)))
                     {
-                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SN" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "aD10" + "\t" + "AD11" + "\t" + "AD12" +
+                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SN" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "AD10" + "\t" + "AD11" + "\t" + "AD12" +
                                    "\t" +"SigD1" + "\t" + "SigD2" + "\t" + "SigD3" + "\t" + "SigD4" + "\t" + "SigD5" + "\t" + "SigD6" + "\t" + "SigD7" + "\t" + "SigD8" + "\t" + "SigD9" + "\t" + "SigD10" + "\t" + "SigD11" + "\t" + "SigD12" + "\t" + "NullD1" + "\t" + "NullD2"
                                    + "\t" + "NullD3" + "\t" + "NullD4" + "\t" + "NullD5" + "\t" + "NullD6" + "\t" + "NullD7" + "\t" + "NullD8" + "\t" + "NullD9" + "\t" + "NullD10" + "\t" + "NullD11" + "\t" + "NullD12";
 
@@ -228,7 +246,7 @@ namespace DataYRAN
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
                    "СобытияФайла.txt", CreationCollisionOption.GenerateUniqueName)))
                     {
-                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SN" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "aD10" + "\t" + "AD11" + "\t" + "AD12" +
+                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SN" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "AD10" + "\t" + "AD11" + "\t" + "AD12" +
                                    "\t" + "ND1" + "\t" + "ND2" + "\t" + "ND3" + "\t" + "ND4" + "\t" + "ND5" + "\t" + "ND6" + "\t" + "ND7" + "\t" + "ND8" + "\t" + "ND9" + "\t" + "ND10" + "\t" + "ND11" + "\t" + "ND12" + "\t" +
                                    "SigD1" + "\t" + "SigD2" + "\t" + "SigD3" + "\t" + "SigD4" + "\t" + "SigD5" + "\t" + "SigD6" + "\t" + "SigD7" + "\t" + "SigD8" + "\t" + "SigD9" + "\t" + "SigD10" + "\t" + "SigD11" + "\t" + "SigD12" + "\t" + "NullD1" + "\t" + "NullD2"
                                    + "\t" + "NullD3" + "\t" + "NullD4" + "\t" + "NullD5" + "\t" + "NullD6" + "\t" + "NullD7" + "\t" + "NullD8" + "\t" + "NullD9" + "\t" + "NullD10" + "\t" + "NullD11" + "\t" + "NullD12";
@@ -253,7 +271,7 @@ namespace DataYRAN
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
                    "СобытияФайлаBad.txt", CreationCollisionOption.GenerateUniqueName)))
                     {
-                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SN" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "aD10" + "\t" + "AD11" + "\t" + "AD12" +
+                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SN" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "AD10" + "\t" + "AD11" + "\t" + "AD12" +
                                    "\t" + "ND1" + "\t" + "ND2" + "\t" + "ND3" + "\t" + "ND4" + "\t" + "ND5" + "\t" + "ND6" + "\t" + "ND7" + "\t" + "ND8" + "\t" + "ND9" + "\t" + "ND10" + "\t" + "ND11" + "\t" + "ND12" + "\t" +
                                    "SigD1" + "\t" + "SigD2" + "\t" + "SigD3" + "\t" + "SigD4" + "\t" + "SigD5" + "\t" + "SigD6" + "\t" + "SigD7" + "\t" + "SigD8" + "\t" + "SigD9" + "\t" + "SigD10" + "\t" + "SigD11" + "\t" + "SigD12" + "\t" + "NullD1" + "\t" + "NullD2"
                                    + "\t" + "NullD3" + "\t" + "NullD4" + "\t" + "NullD5" + "\t" + "NullD6" + "\t" + "NullD7" + "\t" + "NullD8" + "\t" + "NullD9" + "\t" + "NullD10" + "\t" + "NullD11" + "\t" + "NullD12";
@@ -294,7 +312,65 @@ namespace DataYRAN
 
             }
         }
+        public async Task SaveAllNoTailQ()
+        {
+            string cul = "en-US";
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
 
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                // Application now has read/write access to all contents in the picked folder
+                // (including other sub-folder contents)
+                Windows.Storage.AccessCache.StorageApplicationPermissions.
+                FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+
+                StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+
+                StorageFolder storageFolderRazvertka = await storageFolder.CreateFolderAsync("Развертка", CreationCollisionOption.OpenIfExists);
+
+                IReadOnlyList<StorageFile> fileList =
+                    await storageFolderRazvertka.GetFilesAsync();
+                if (fileList.Count != 0)
+                {
+                    
+                }
+                int i = 0;
+                if (ViewModel.ClassSobs.Count != 0)
+                {
+                    using (StreamWriter writer =
+                   new StreamWriter(await folder.OpenStreamForWriteAsync(
+                   "QСобытияФайла.txt", CreationCollisionOption.GenerateUniqueName)))
+                    {
+                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" +"\t"+"SQ"+ "\t" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "aD10" + "\t" + "AD11" + "\t" + "AD12" +
+                                   "\t" + "QD1" + "\t" + "QD2" + "\t" + "QD3" + "\t" + "QD4" + "\t" + "QD5" + "\t" + "QD6" + "\t" + "QD7" + "\t" + "QD8" + "\t" + "QD9" + "\t" + "QD10" + "\t" + "QD11" + "\t" + "QD12";
+
+
+                        await writer.WriteLineAsync(sSob);
+                        foreach (ClassSob sob in ViewModel.ClassSobs)
+                        {
+                            i++;
+                            string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" +
+                           sob.SumAmp + "\t" + sob.Qsum.Sum().ToString() + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t" 
+                           + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" +
+                           sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t"
+                           + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" +
+                           sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString()+"\t";
+                            await writer.WriteLineAsync(Sob);
+                        }
+                    }
+                }
+                
+              
+
+            }
+            else
+            {
+
+            }
+        }
         /// <summary>
         /// Сохраняет развертку в локальную папку
         /// </summary>

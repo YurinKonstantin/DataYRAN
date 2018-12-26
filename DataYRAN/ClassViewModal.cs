@@ -13,8 +13,8 @@ namespace DataYRAN
         
        public ObservableCollection<ClassСписокList> _DataColec = new ObservableCollection<ClassСписокList>();
         public ObservableCollection<int> _DataColecGraf1 = new ObservableCollection<int>();
-  
-     
-      
+
+        public ObservableCollection<ClassTabs> _DataColecViewDoc = new ObservableCollection<ClassTabs>();
+
     }
 }

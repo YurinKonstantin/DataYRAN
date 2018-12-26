@@ -71,6 +71,7 @@ namespace DataYRAN
                    
                    await StartClientBD(classBD.listsql.ElementAt(0), classBD.ip);
                     ObRing.IsActive = false;
+
                 }
             }
             else
@@ -3761,8 +3762,7 @@ namespace DataYRAN
         {
             object ff = DataGrid.SelectedItem;
             ClassSob classSob = (ClassSob)ff;
-            MessageDialog messageDialog = new MessageDialog(classSob.nameFile);
-           await messageDialog.ShowAsync();
+      
           await  obrRazv(classSob.nameFile, classSob.time);
            // this.Frame.Navigate(typeof(BlankPageRazverta), classSob.nameFile);
         }
