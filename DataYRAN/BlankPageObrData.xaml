@@ -26,6 +26,7 @@
                     </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>
+            
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Pivot">
@@ -45,8 +46,9 @@
                                 <Style x:Key="TitleContentControlStyle" BasedOn="{StaticResource BaseContentControlStyle}" TargetType="ContentControl">
                                     <Setter Property="FontFamily" Value="{ThemeResource PivotTitleFontFamily}"/>
                                     <Setter Property="FontWeight" Value="{ThemeResource PivotTitleThemeFontWeight}"/>
-                                    <Setter Property="FontSize" Value="12"/>
+                                    <Setter Property="FontSize" Value="10"/>
                                 </Style>
+                          
                             </Grid.Resources>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -431,10 +433,14 @@
                     </CommandBar.SecondaryCommands>
                 </CommandBar>
                 <controls:TabView x:Name="rootPivot"   FontStyle="Normal" MinWidth="900"  Margin="8" UseLayoutRounding="True">
-
+                    <controls:TabView.Resources>
+                        <x:Double x:Key="TabViewItemHeaderMinHeight">32</x:Double>
+                        <x:Double x:Key="TabViewItemHeaderMinWidth">48</x:Double>
+                        <x:Double x:Key="TabViewItemHeaderMaxWidth">200</x:Double>
+                    </controls:TabView.Resources>
                     <controls:TabViewItem Header="События" FontSize="16" >
-                        <Pivot Style="{StaticResource PivotStyle1}" x:Name="Sobitie">
-                            <PivotItem Header="Все" Pivot.SlideInAnimationGroup="GroupTwo" UseLayoutRounding="True">
+                        <Pivot Style="{StaticResource PivotStyle1}" x:Name="Sobitie" >
+                            <PivotItem Header="Все" Pivot.SlideInAnimationGroup="GroupTwo" UseLayoutRounding="True" FontSize="10">
                                 <SplitView IsPaneOpen="False" DisplayMode="Inline"  OpenPaneLength="480" PanePlacement="Right" x:Name="Split1" UseLayoutRounding="True">
 
                                     <SplitView.Pane >
@@ -1006,7 +1012,7 @@
                                     </Grid>
                                 </SplitView>
                             </PivotItem>
-                            <PivotItem Header="Плохие">
+                            <PivotItem Header="Плохие" FontSize="10" >
                                 <SplitView IsPaneOpen="False"
            DisplayMode="Inline"
            OpenPaneLength="560" PanePlacement="Right" x:Name="Split1Plox">
@@ -1373,7 +1379,7 @@
                                     </Grid>
                                 </SplitView>
                             </PivotItem>
-                            <PivotItem Header="Общие">
+                            <PivotItem Header="Общие" FontSize="10" >
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>

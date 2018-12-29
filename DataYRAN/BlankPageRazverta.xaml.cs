@@ -89,6 +89,12 @@ namespace DataYRAN
         {
             this.InitializeComponent();
             _ClassViewModalTab = new ClassViewModalTab();
+           // ClassTabs classTabs = new ClassTabs() { name = "tab", tag = "tab" };
+            
+           
+           // classTabs.newTabl();
+          //  classTabs.page = new BlankPage2() { Name = "fgf" };
+          //  _ClassViewModalTab._DataColecViewDoc.Add(classTabs);
             //radChart.Palette = CustomPalettes.CustomDark;
 
         }
@@ -96,47 +102,58 @@ namespace DataYRAN
         ClassRazvertka ClassRazvertkaR = new ClassRazvertka();
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _ClassTable = new ClassTabs();
+           
            
             if (e.Parameter is ClassRazvertka )
             {
+                ClassTabs classTabs = new ClassTabs() { name = "tab", tag = "tab" };
+             
                 ClassRazvertka classRazvertka = e.Parameter as ClassRazvertka;
                 ClassRazvertkaR = classRazvertka;
+                classTabs.name = classRazvertka.nameFile1;
+                classTabs.tag = classRazvertka.nameFile1;
+                classTabs.newTabl();
                 textZag.Text = classRazvertka.nameFile1;
-                _ClassTable.newTab(classRazvertka.nameFile1);
+               // _ClassTable.newTabl(classRazvertka.nameFile1);
                 for(int i=0; i<12; i++)
                 {
-                    newColon(_ClassTable.dataGrid, _ClassTable.newColums(i.ToString()));
+                    classTabs.newColums();
+                   // newColon(_ClassTable.dataGrid, _ClassTable.newColums(i.ToString()));
                 }
-                string s = "i" + "\t" + "Ch1" + "\t" + "Ch2" + "\t" + "Ch3" + "\t" + "Ch4" + "\t" + "Ch5" + "\t" + "Ch6" + "\t" + "Ch7" + "\t" + "Ch8" + "\t" + "Ch9" + "\t" + "Ch10" + "\t" + "Ch11" + "\t" + "Ch12" + "\r\n";
+               // string s = "i" + "\t" + "Ch1" + "\t" + "Ch2" + "\t" + "Ch3" + "\t" + "Ch4" + "\t" + "Ch5" + "\t" + "Ch6" + "\t" + "Ch7" + "\t" + "Ch8" + "\t" + "Ch9" + "\t" + "Ch10" + "\t" + "Ch11" + "\t" + "Ch12" + "\r\n";
                 for (int i = 0; i < 1024; i++)
                 {
                     int[] mas = new int[12]; 
-                    s = s + (i + 1).ToString() + "\t";
+                   // s = s + (i + 1).ToString() + "\t";
                     for (int j = 0; j < 12; j++)
                     {
                         mas[j] = classRazvertka.data[j, i];
-                        s = s + classRazvertka.data[j, i] + "\t";
+                      //  s = s + classRazvertka.data[j, i] + "\t";
                         
                     }
-                    _ClassTable.newRows(mas);
+                    classTabs.newRows(mas);
                     if (i < 1023)
                     {
-                        s = s + "\r\n";
+                      //  s = s + "\r\n";
                     }
                     else
                     {
 
                     }
                 }
-                
-                textT.Text = s;
+                _ClassViewModalTab._DataColecViewDoc.Add(classTabs);
+
+                // textT.Text = s;
             }
             else
             {
-                _ClassTable.newTab("Новая таблица");
+                ClassTabs classTabs = new ClassTabs() { name = "tab", tag = "tab" };
+
+                 classTabs.newTabl();
+                //  classTabs.page = new BlankPage2() { Name = "fgf" };
+                  _ClassViewModalTab._DataColecViewDoc.Add(classTabs);
             }
-           
+
             base.OnNavigatedTo(e);
         }
         public void newColon(DataGrid dataGrid, string name)
@@ -414,7 +431,7 @@ namespace DataYRAN
                 }
 
                 _ClassTable.collectionGraf.Clear();
-                radChart.Series.Clear();
+             //   radChart.Series.Clear();
                 try
                 {
                    // _ClassTable.ss.Clear();
@@ -427,7 +444,7 @@ namespace DataYRAN
                // _ClassTable.NewAddLine();
                 _ClassTable.newGrafSer(vs1);
                 border.Visibility = Visibility.Collapsed;
-                TabHeadRazGraf1.IsSelected = true;
+            //    TabHeadRazGraf1.IsSelected = true;
                 for (int i = 0; i < _ClassTable.collectionGraf.Count; i++)
                 {
                     if (i == 0)
@@ -436,7 +453,7 @@ namespace DataYRAN
                         await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
           () =>
           {
-              radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 128, 0)), ItemsSource =  _ClassTable.collectionGraf.ElementAt(i).collectionGraf});
+            //  radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 128, 0)), ItemsSource =  _ClassTable.collectionGraf.ElementAt(i).collectionGraf});
           });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
@@ -449,7 +466,7 @@ namespace DataYRAN
                         await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
           () =>
           {
-              radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 96, 194, 25)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+             // radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 96, 194, 25)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
           });
                        _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
@@ -459,7 +476,7 @@ namespace DataYRAN
                     }
                     if (i == 2)
                     {
-                        radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 16, 194, 235)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                  //      radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 16, 194, 235)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
                         {
@@ -468,7 +485,7 @@ namespace DataYRAN
                     }
                     if (i == 3)
                     {
-                        radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 92, 194, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                    //    radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 92, 194, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
                         {
@@ -477,7 +494,7 @@ namespace DataYRAN
                     }
                     if (i == 4)
                     {
-                        radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 40, 152, 228)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                       // radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 40, 152, 228)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
                         {
@@ -486,7 +503,7 @@ namespace DataYRAN
                     }
                     if (i == 5)
                     {
-                        radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 60, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                      //  radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 60, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
                         {
@@ -495,7 +512,7 @@ namespace DataYRAN
                     }
                     if (i == 6)
                     {
-                        radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 210, 202, 202)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                      //  radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 210, 202, 202)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
                         {
@@ -504,7 +521,7 @@ namespace DataYRAN
                     }
                     if (i == 7)
                     {
-                        radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 67, 67, 67)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                   //     radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 67, 67, 67)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
                         {
@@ -513,7 +530,7 @@ namespace DataYRAN
                     }
                     if (i == 8)
                     {
-                        radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 255, 156)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                  //      radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 255, 156)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
                         {
@@ -522,7 +539,7 @@ namespace DataYRAN
                     }
                     if (i == 9)
                     {
-                        radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 109, 49, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                       // radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 109, 49, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
                         {
@@ -531,7 +548,7 @@ namespace DataYRAN
                     }
                     if (i == 10)
                     {
-                        radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 178, 161)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                     //   radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 178, 161)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
                         {
@@ -540,7 +557,7 @@ namespace DataYRAN
                     }
                     if (i == 11)
                     {
-                        radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 109, 255, 0)) });
+                    //    radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 109, 255, 0)) });
                         _ClassTable.NewAddLine();
                         foreach (int p in _ClassTable.collectionGraf.ElementAt(i).collectionGraf)
                         {
@@ -549,10 +566,10 @@ namespace DataYRAN
                     }
                     // await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     // {
-                    radChart.Series[i].Name = _ClassTable.collectionGraf.ElementAt(i).name;
-                    radChart.Series[i].LegendTitle = _ClassTable.collectionGraf.ElementAt(i).name;
+                  //  radChart.Series[i].Name = _ClassTable.collectionGraf.ElementAt(i).name;
+                   // radChart.Series[i].LegendTitle = _ClassTable.collectionGraf.ElementAt(i).name;
                     //  radChart.Series[i].ShowLabels = true;
-                    radChart.Series[i].DisplayName = _ClassTable.collectionGraf.ElementAt(i).name;
+                   // radChart.Series[i].DisplayName = _ClassTable.collectionGraf.ElementAt(i).name;
                     //  radChart.Series[i].ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf;
                     // });
 
@@ -581,7 +598,7 @@ namespace DataYRAN
 private async void saveButton_Click(object sender, RoutedEventArgs e)
         {
             RenderTargetBitmap rtb = new RenderTargetBitmap();
-            await rtb.RenderAsync(_grid);
+           // await rtb.RenderAsync(_grid);
 
             var pixelBuffer = await rtb.GetPixelsAsync();
             var pixels = pixelBuffer.ToArray();
@@ -628,8 +645,8 @@ private async void saveButton_Click(object sender, RoutedEventArgs e)
             ContentDialogResult result = await noWifiDialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                radChart.HorizontalAxis.LabelInterval = noWifiDialog.StepX;
-                radChart.VerticalAxis.LabelInterval = noWifiDialog.StepY;
+              //  radChart.HorizontalAxis.LabelInterval = noWifiDialog.StepX;
+              //  radChart.VerticalAxis.LabelInterval = noWifiDialog.StepY;
                 
 
 
@@ -669,10 +686,10 @@ private async void saveButton_Click(object sender, RoutedEventArgs e)
             }
 
             _ClassTable.collectionGraf.Clear();
-            radChart.Series.Clear();
+          //  radChart.Series.Clear();
             _ClassTable.newGrafSer(vs1);
             border.Visibility = Visibility.Collapsed;
-            TabHeadRazGraf1.IsSelected = true;
+          //  TabHeadRazGraf1.IsSelected = true;
             for (int i = 0; i < _ClassTable.collectionGraf.Count; i++)
             {
                 if (i == 0)
@@ -680,7 +697,7 @@ private async void saveButton_Click(object sender, RoutedEventArgs e)
                       await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                     () =>
                      {
-                         radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 128, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                     //    radChart.Series.Add(new LineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 128, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                       });
                     //_ClassTable.NewAddLine();
                     try
@@ -704,55 +721,55 @@ private async void saveButton_Click(object sender, RoutedEventArgs e)
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
       () =>
       {
-          radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 96, 194, 25)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+         // radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 96, 194, 25)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
       });
                 }
                 if (i == 2)
                 {
-                    radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 16, 194, 235)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                 //   radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 16, 194, 235)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 3)
                 {
-                    radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 92, 194, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                   // radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 92, 194, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 4)
                 {
-                    radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 40, 152, 228)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                 //   radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 40, 152, 228)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 5)
                 {
-                    radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 60, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                   // radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 60, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 6)
                 {
-                    radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 210, 202, 202)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                   // radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 210, 202, 202)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 7)
                 {
-                    radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 67, 67, 67)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                  //  radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 67, 67, 67)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 8)
                 {
-                    radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 255, 156)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                   // radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 255, 156)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 9)
                 {
-                    radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 109, 49, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                 //   radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 109, 49, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 10)
                 {
-                    radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 178, 161)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                 //   radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 178, 161)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 11)
                 {
-                    radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 109, 255, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                 //   radChart.Series.Add(new StepLineSeries() { Stroke = new SolidColorBrush(Color.FromArgb(255, 109, 255, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 // await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 // {
-                radChart.Series[i].Name = _ClassTable.collectionGraf.ElementAt(i).name;
-                radChart.Series[i].LegendTitle = _ClassTable.collectionGraf.ElementAt(i).name;
+              //  radChart.Series[i].Name = _ClassTable.collectionGraf.ElementAt(i).name;
+             //   radChart.Series[i].LegendTitle = _ClassTable.collectionGraf.ElementAt(i).name;
                 //  radChart.Series[i].ShowLabels = true;
-                radChart.Series[i].DisplayName = _ClassTable.collectionGraf.ElementAt(i).name;
+               // radChart.Series[i].DisplayName = _ClassTable.collectionGraf.ElementAt(i).name;
                 //  radChart.Series[i].ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf;
                 // });
 
@@ -793,10 +810,10 @@ private async void saveButton_Click(object sender, RoutedEventArgs e)
             }
 
             _ClassTable.collectionGraf.Clear();
-            radChart.Series.Clear();
+        //    radChart.Series.Clear();
             _ClassTable.newGrafSer(vs1);
             border.Visibility = Visibility.Collapsed;
-            TabHeadRazGraf1.IsSelected = true;
+         //   TabHeadRazGraf1.IsSelected = true;
             for (int i = 0; i < _ClassTable.collectionGraf.Count; i++)
             {
                 if (i == 0)
@@ -804,7 +821,7 @@ private async void saveButton_Click(object sender, RoutedEventArgs e)
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
       () =>
       {
-          radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 255, 128, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+         // radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 255, 128, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
       });
                 }
                 if (i == 1)
@@ -812,55 +829,55 @@ private async void saveButton_Click(object sender, RoutedEventArgs e)
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
       () =>
       {
-          radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 96, 194, 25)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+       //   radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 96, 194, 25)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
       });
                 }
                 if (i == 2)
                 {
-                    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 16, 194, 235)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+               //     radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 16, 194, 235)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 3)
                 {
-                    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 92, 194, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+               //     radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 92, 194, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 4)
                 {
-                    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 40, 152, 228)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+               //     radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 40, 152, 228)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 5)
                 {
-                    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 255, 60, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+               //     radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 255, 60, 0)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 6)
                 {
-                    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 210, 202, 202)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                //    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 210, 202, 202)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 7)
                 {
-                    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 67, 67, 67)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                 //   radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 67, 67, 67)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 8)
                 {
-                    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 0, 255, 156)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                 //   radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 0, 255, 156)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 9)
                 {
-                    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 109, 49, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                 //   radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 109, 49, 255)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 10)
                 {
-                    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 0, 178, 161)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
+                 //   radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 0, 178, 161)), ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf });
                 }
                 if (i == 11)
                 {
-                    radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 109, 255, 0)) });
+                   // radChart.Series.Add(new BarSeries() { Background = new SolidColorBrush(Color.FromArgb(255, 109, 255, 0)) });
                 }
                 // await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 // {
-                radChart.Series[i].Name = _ClassTable.collectionGraf.ElementAt(i).name;
-                radChart.Series[i].LegendTitle = _ClassTable.collectionGraf.ElementAt(i).name;
+              //  radChart.Series[i].Name = _ClassTable.collectionGraf.ElementAt(i).name;
+               // radChart.Series[i].LegendTitle = _ClassTable.collectionGraf.ElementAt(i).name;
                 //  radChart.Series[i].ShowLabels = true;
-                radChart.Series[i].DisplayName = _ClassTable.collectionGraf.ElementAt(i).name;
+             //   radChart.Series[i].DisplayName = _ClassTable.collectionGraf.ElementAt(i).name;
                 //  radChart.Series[i].ItemsSource = _ClassTable.collectionGraf.ElementAt(i).collectionGraf;
                 // });
 

@@ -174,59 +174,34 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </SplitView.Pane>
-            <controls:TabView UseLayoutRounding="True" ItemsSource="{x:Bind _ClassViewModalTab._DataColecViewDoc}">
+            <controls:TabView UseLayoutRounding="True" ItemsSource="{x:Bind _ClassViewModalTab._DataColecViewDoc}" CanCloseTabs="True" IsCloseButtonOverlay="True">
                 <controls:TabView.ItemHeaderTemplate >
                     <DataTemplate  x:DataType="local:ClassTabs" >
                         <TextBlock Text="{x:Bind name}" FontSize="14"  VerticalAlignment="Center" Tag="{x:Bind tag}" ></TextBlock>
                     </DataTemplate>
                 </controls:TabView.ItemHeaderTemplate>
-                <controls:TabViewItem x:Name="TabHead1" Header="Таблица1">
-                    <Pivot>
-                        <PivotItem Header="Таблица">
-                            <controls:DataGrid UseLayoutRounding="True" Tag="Data1" AutoGenerateColumns="False" Loading="DataGrid1_Loading" ItemsSource="{x:Bind _ClassTable.collection}" IsReadOnly="False"/>
-                        </PivotItem>
-                        <PivotItem Header="График">
-                            <Grid x:Name="_grid">
-                                <lvc:CartesianChart x:Name="chart" Series="{x:Bind _ClassTable.ss}"/>
-                            </Grid>
-                           
-                        </PivotItem>
-                    </Pivot>
-               </controls:TabViewItem>
-                <controls:TabViewItem x:Name="TabHead2" Header="Таблица2">
-                    <TextBox x:Name="texte1T" Grid.Row="2" AcceptsReturn="True" TextWrapping="Wrap"
-         ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch" Margin="4"/>
-                </controls:TabViewItem>
-                <controls:TabViewItem x:Name="TabHeadRaz" Header="Таблица3">
-                    <TextBox x:Name="textT" Grid.Row="2" AcceptsReturn="True" TextWrapping="Wrap"
-         ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch" Margin="4"/>
-                </controls:TabViewItem>
-                <controls:TabViewItem x:Name="TabHeadRazGraf1" Header="График" UseLayoutRounding="True">
-                    <Grid UseLayoutRounding="True">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-                        <telerikChart:RadCartesianChart x:Name="radChart" UseLayoutRounding="True">
-                            <telerikChart:RadCartesianChart.Annotations>
-                                <telerikChart:CartesianCustomLineAnnotation x:Name="From"/>
-                            </telerikChart:RadCartesianChart.Annotations>
-                            <telerikChart:RadCartesianChart.Behaviors>
-                            <telerikChart:ChartPanAndZoomBehavior x:Name="Zomm" ZoomMode="Both" PanMode="Both"/>
-                        </telerikChart:RadCartesianChart.Behaviors>
-                        <telerikChart:RadCartesianChart.HorizontalAxis>
-                                <telerikChart:CategoricalAxis IsDoubleTapEnabled="True" DoubleTapped="LinearAxis_DoubleTapped"/>
-                            </telerikChart:RadCartesianChart.HorizontalAxis>
-                        <telerikChart:RadCartesianChart.VerticalAxis>
-                            <telerikChart:LinearAxis IsTapEnabled="True" DoubleTapped="LinearAxis_DoubleTapped" IsDoubleTapEnabled="True"/>
-                        </telerikChart:RadCartesianChart.VerticalAxis>
-                        
-                      
-                    </telerikChart:RadCartesianChart>
-                      
-                    </Grid>
-                </controls:TabViewItem>
-                
+                <controls:TabView.ItemTemplate>
+                    <DataTemplate x:DataType="local:ClassTabs">
+                        <controls:TabView ItemsSource="{x:Bind collectionPage}">
+                            <controls:TabView.ItemHeaderTemplate >
+                                <DataTemplate  x:DataType="Grid" >
+                                    <TextBlock Text="{x:Bind Tag}" FontSize="14"  VerticalAlignment="Center" ></TextBlock>
+                                </DataTemplate>
+                                
+                            </controls:TabView.ItemHeaderTemplate>
+                          
+                        </controls:TabView>
+                    </DataTemplate>
+                </controls:TabView.ItemTemplate>
+
+                <controls:TabView.TabActionHeader>
+                    <CommandBar DefaultLabelPosition="Collapsed">
+                        <AppBarButton Icon="Add" />
+                    </CommandBar>
+                </controls:TabView.TabActionHeader>
+
+
+
             </controls:TabView>
         </SplitView>
         <CommandBar Grid.Row="3"  IsOpen="False" DefaultLabelPosition="Right">

@@ -11,8 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.Popups;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using Binding = Windows.UI.Xaml.Data.Binding;
 
 namespace DataYRAN
 {
@@ -59,8 +62,10 @@ namespace DataYRAN
             ss[ser].Values.Add(point);
         }
         public DataGrid dataGrid = new DataGrid();
-        public void newTab(string name)
+        public void newTabl()
         {
+         
+            dataGrid.AutoGenerateColumns = false;
             //  bookStore = new DataSet("BookStore");
             booksTable = new DataTable(name);
 
@@ -74,25 +79,71 @@ namespace DataYRAN
             idColumn.AutoIncrementStep = 1; // приращении при добавлении новой строки
 
             booksTable.Columns.Add(idColumn);
-
+        
             // определяем первичный ключ таблицы books
             booksTable.PrimaryKey = new DataColumn[] { booksTable.Columns["I"] };
-          
-           
+            //newColums("Колонка 1", dataGrid1);
 
+
+            DataGrid1_Loading();
+          
+        
+           
+            Grid grid = new Grid() { Tag = name };
+            grid.Children.Add(dataGrid);
+            collectionPage.Add(grid);
+            dataGrid.ItemsSource = collection;
 
             // добавляем вторую строку
         }
+        private void DataGrid1_Loading()
+        {
 
-        public string newColums(string nameKolun)
+          
+           
+            if (booksTable != null) // table is a DataTable
+            {
+                dataGrid.Columns.Clear();
+                int i = 0;
+                foreach (DataColumn col in booksTable.Columns)
+                {
+                    // booksTable.Columns.Add(
+                    //  new DataGridTextColumn
+                    //  {
+                    //    Header = col.ColumnName,
+
+                    //   Binding = new Binding(string.Format("[{0}]", col.ColumnName))
+
+
+
+                    //  });
+
+                    dataGrid.Columns.Add(new Microsoft.Toolkit.Uwp.UI.Controls.DataGridTextColumn()
+                    {
+                        Header = col.ColumnName,
+                        Binding = new Binding { Path = new PropertyPath("[" + col.ColumnName.ToString() + "]") },
+                        IsReadOnly = false
+                    });
+
+                }
+
+            }
+        }
+        public string newColums()
         {
             if (booksTable != null) // table is a DataTable
             {
                 int x = booksTable.Columns.Count;
                 DataColumn priceColumn = new DataColumn("Колонка " + x.ToString(), Type.GetType("System.Int32"));
+                string nameKolun = "Колонка " + x.ToString();
                 priceColumn.AllowDBNull = true;
                 booksTable.Columns.Add(priceColumn);
-
+                dataGrid.Columns.Add(new Microsoft.Toolkit.Uwp.UI.Controls.DataGridTextColumn()
+                {
+                    Header = nameKolun,
+                    Binding = new Binding { Path = new PropertyPath("[" + nameKolun + "]") },
+                    IsReadOnly = false
+                });
                 return "Колонка " + x.ToString();
 
             }
@@ -145,6 +196,19 @@ namespace DataYRAN
 
 
 
+        }
+      public  Page page { get; set; }
+        ObservableCollection<Grid> _collectionPage = new ObservableCollection<Grid>();
+        public ObservableCollection<Grid> collectionPage
+        {
+            get
+            {
+                return _collectionPage;
+            }
+            set
+            {
+                _collectionPage = value;
+            }
         }
     }
 }
