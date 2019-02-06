@@ -4,7 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage.Streams;
 using Windows.UI.Popups;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Data;
+using System.Xml.Linq;
 
 namespace DataYRAN
 {
@@ -46,25 +50,62 @@ namespace DataYRAN
                     //     messageDialog1 = new MessageDialog("client sent the request: \"{0}\"", request);
                     //  await messageDialog1.ShowAsync();
                     // Read data from the echo server.
-                    string response;
+                    string response = null;
+                    List<byte> list = new List<byte>();
+                    byte[] Buffer1 = new byte[1024];
+                     Windows.Storage.StorageFolder storageFolder =
+Windows.Storage.ApplicationData.Current.LocalFolder;
+                    Windows.Storage.StorageFile sampleFile =
+                         await storageFolder.CreateFileAsync("sample.xml",
+                             Windows.Storage.CreationCollisionOption.ReplaceExisting);
                     using (Stream inputStream = streamSocket.InputStream.AsStreamForRead())
                     {
-                        using (StreamReader streamReader = new StreamReader(inputStream))
+                       
+                        int Count;
+                        while ((Count = inputStream.Read(Buffer1, 0, Buffer1.Length)) > 0)
                         {
-                            response = await streamReader.ReadToEndAsync();
+                            // Преобразуем эти данные в строку и добавим ее к переменной Request
+                         for(int i=0;i< Count; i++)
+                            {
+                                list.Add(Buffer1[i]);
+                            }
+                           
+                            // Запрос должен обрываться последовательностью \r\n\r\n
+                            // Либо обрываем прием данных сами, если длина строки Request превышает 4 килобайта
+                            // Нам не нужно получать данные из POST-запроса (и т. п.), а обычный запрос
+                            // по идее не должен быть больше 4 килобайт
+                           
+                        }
+                      
+                        if (list.Count!=0)
+                        {
+
+
+                            MessageDialog messageDialog12 = new MessageDialog(list.Count.ToString());
+                            await messageDialog12.ShowAsync();
+                            //  IBuffer buffer = Buffer1.AsBuffer();
+                            await Windows.Storage.FileIO.WriteBytesAsync(sampleFile, list.ToArray());
+                            MessageDialog messageDialog112 = new MessageDialog("файл создан");
+                            await messageDialog112.ShowAsync();
+
                         }
                     }
-                    if (response != String.Empty)
+                    if (list.Count != 0)
                     {
-
-                        await ParserTabSob(response);
+                         DataSet ds = new DataSet();
+                       // XDocument d= System.Xml.Linq.XDocument.Load(sampleFile.Path);
+                        ds.ReadXml(sampleFile.Path);
+                        // выбираем первую таблицу
+                        DataTable dt = ds.Tables[0];
+                       
+                         await ParserTabSobData(dt);
                         // ViewModel.SostoYs = vs[0];
 
                         // if (vs.Length > 1)
                         // {
 
                         // }
-                        
+
                     }
 
                     else
@@ -241,6 +282,89 @@ namespace DataYRAN
                 }
 
             }
+
+
+        }
+        public async Task ParserTabSobData(DataTable dt)
+        {
+            double[] Amp = new double[12];
+            double[] Nul = new double[12];
+            int[] coutN1 = new int[12];
+            double[] sig = new double[12];
+            string time1 = null;
+            string nameFile = null;
+            foreach (DataRow row in dt.Rows)
+            {
+                var cells = row.ItemArray;
+                int x = 0;
+               
+                    
+                       
+                          
+                          
+                            for (int j = 5; j < 17; j++)
+                            {
+                                try
+                                {
+
+
+                                    Amp[x] = Convert.ToDouble(cells[j]);
+                                    x++;
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageDialog messageDialog = new MessageDialog("1" + " " + j + " " + cells[j]);
+                                    await messageDialog.ShowAsync();
+                                }
+
+                            }
+                            x = 0;
+                            for (int j = 18; j < 30; j++)
+                            {
+                                coutN1[x] = Convert.ToInt32(cells[j]);
+                                x++;
+
+                            }
+                            x = 0;
+                            for (int j = 31; j < 43; j++)
+                            {
+                                try
+                                {
+                                    Nul[x] = Convert.ToDouble(cells[j]);
+                                    x++;
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageDialog messageDialog = new MessageDialog("2" + " " + j + " " + cells[j]);
+                                    await messageDialog.ShowAsync();
+                                }
+                            }
+                            x = 0;
+                            for (int j = 43; j < 54; j++)
+                            {
+                                try
+                                {
+                                    string text1 = cells[j].ToString().Replace(".", ",");
+                                    sig[x] = Convert.ToDouble(text1);
+                                    x++;
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageDialog messageDialog = new MessageDialog("3" + " " + j + " " + cells[j]);
+                                    await messageDialog.ShowAsync();
+                                }
+
+                            }
+                            string[] timeS = new string[12];
+                            await addSobIzBD(cells[2].ToString(), cells[3].ToString(), cells[1].ToString(), Amp, Nul, coutN1, sig, timeS);
+                        
+
+                    
+                
+                    
+             
+            }
+           
 
 
         }

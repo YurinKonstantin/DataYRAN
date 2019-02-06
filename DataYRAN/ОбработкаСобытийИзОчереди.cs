@@ -32,12 +32,13 @@ namespace DataYRAN
                 }
         }
 
-        private  int[] neutron(int[,] n, string timeSob, double[] masnul, string nemeF, bool bad, List<ClassSobNeutron> listNet)//out int[] coutN,
+        private async Task<int[]> neutron(int[,] n, string timeSob, double[] masnul, string nemeF, bool bad)//out int[] coutN,
         {
             //List<ClassSobNeutron> listNet= new List<ClassSobNeutron>();
             int? dlitOtb = ClassUserSetUp.DlitN3;
             int? AmpOtbora = ClassUserSetUp.PorogN;
             int[] coutN = new int[12];
+     
             for (int i = 0; i < 12; i++)
             {
 
@@ -122,13 +123,12 @@ namespace DataYRAN
                                     countnutron++;
                                     if (!bad)
                                     {
-                                    listNet.Add(new ClassSobNeutron() { nameFile = nemeF, D = dd, Amp = Amp, time = timeSob, TimeAmp = countmaxtime, TimeEnd = countendtime, TimeEnd3 = countendtime3, TimeFirst = countfirsttime, TimeFirst3 = countfirsttime3});
-                               // });
-                                    //  Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                                     //   {
-                                       //     ViewModel.ClassSobNeutrons.Add(new ClassSobNeutron()
-                                        //    { nameFile = nemeF, D = dd, Amp = Amp, time = timeSob, TimeAmp = countmaxtime, TimeEnd = countendtime, TimeEnd3 = countendtime3, TimeFirst = countfirsttime, TimeFirst3 = countfirsttime3 });
-                                       // });
+                                  
+                                    await  Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                        {
+                                            ViewModel.ClassSobNeutrons.Add(new ClassSobNeutron()
+                                            { nameFile = nemeF, D = dd, Amp = Amp, time = timeSob, TimeAmp = countmaxtime, TimeEnd = countendtime, TimeEnd3 = countendtime3, TimeFirst = countfirsttime, TimeFirst3 = countfirsttime3 });
+                                        });
                                     }
                                 }
                                 catch 
@@ -144,6 +144,7 @@ namespace DataYRAN
                coutN[i] = countnutron;
   
             }
+            
             return coutN;
 
         }
@@ -188,7 +189,7 @@ namespace DataYRAN
                         {
 
 
-                          await Task.Run(()=> ObrSigData(ObrD.НулеваяЛиния, ObrD.NameFile, ObrD.NameBaaR12.ToString(), data1, dataTail1, time1));
+                          await ObrSigData(ObrD.НулеваяЛиния, ObrD.NameFile, ObrD.NameBaaR12.ToString(), data1, dataTail1, time1);
                         }
                         catch
                         {
@@ -208,7 +209,7 @@ namespace DataYRAN
             }
         }
 
-        public async void ObrSigData(int[] nul, string nameFile, string nemeBAAK,   int[,] data1, int[,] dataTail1, string time1)
+        public async Task ObrSigData(int[] nul, string nameFile, string nemeBAAK,   int[,] data1, int[,] dataTail1, string time1)
         {
             double[] Amp = new double[12];
             double[] Nul = new double[12];
@@ -245,16 +246,12 @@ namespace DataYRAN
              
                     ParserBAAK12.ParseBinFileBAAK12.SumSig(data1S, out sumDetQ);
                 }
-                List<ClassSobNeutron> listNet = new List<ClassSobNeutron>();
+                
                 if(ClassUserSetUp.TipTail)
                 {
-                    coutN1 = await Task<int[]>.Run(() => neutron(dataTail1, time1, Nul, nameFile, bad, listNet));
-                    foreach (var vv in listNet)
-                    {
-                       await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                            ViewModel.ClassSobNeutrons.Add(new ClassSobNeutron() { nameFile = vv.nameFile, D = vv.D, Amp = vv.Amp, time = vv.time, TimeAmp = vv.TimeAmp, TimeEnd = vv.TimeEnd, TimeEnd3 = vv.TimeEnd3, TimeFirst = vv.TimeFirst, TimeFirst3 = vv.TimeFirst3 });
-                        });
-                    }
+                    coutN1 = await neutron(dataTail1, time1, Nul, nameFile, bad);
+                 
+                   
 
                 }
               
@@ -270,7 +267,7 @@ namespace DataYRAN
             string[] array = nameFile.Split('_');
             if (!bad)
             {
-
+              
             await  Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
         () => {
             ViewModel.ClassSobs.Add(new ClassSob()
@@ -361,6 +358,7 @@ namespace DataYRAN
             }
             else
             {
+               
             await  Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
         () => {
             _DataColecSobPlox.Add(new ClassSob()
@@ -433,7 +431,7 @@ namespace DataYRAN
                 Nnull11 = Convert.ToInt16(Nul[11])
             });
         });
-               
+              
             }
         }
     }

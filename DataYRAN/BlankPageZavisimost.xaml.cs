@@ -47,71 +47,94 @@ namespace DataYRAN
             picker.FileTypeFilter.Add(".doc");
             picker.FileTypeFilter.Add(".data");
             picker.FileTypeFilter.Add(".txt");
-            
-            Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
-            if (file != null)
-
+            try
             {
-                
-                IList<string> g = await Windows.Storage.FileIO.ReadLinesAsync(file);
-                int h=0;
-                foreach(string f in g)
-                {if(h>0)
+
+
+                Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+                if (file != null)
+
+                {
+
+                    IList<string> g = await Windows.Storage.FileIO.ReadLinesAsync(file);
+                    int h = 0;
+                    int x = 0;
+                    try
                     {
-                        string[] stroc = f.Split("\t");
-                        _DataColecSob.Add(new ClassSob()
+
+
+                        foreach (string f in g)
                         {
-                            nameFile = stroc[1],
-                            nameklaster = stroc[2],
-                            nameBAAK = stroc[3],
-                            time = stroc[4],
-                            Amp0 = Convert.ToInt16(stroc[7]),
-                            Amp1 = Convert.ToInt16(stroc[8]),
-                            Amp2 = Convert.ToInt16(stroc[9]),
-                            Amp3 = Convert.ToInt16(stroc[10]),
-                            Amp4 = Convert.ToInt16(stroc[11]),
-                            Amp5 = Convert.ToInt16(stroc[12]),
-                            Amp6 = Convert.ToInt16(stroc[13]),
-                            Amp7 = Convert.ToInt16(stroc[14]),
-                            Amp8 = Convert.ToInt16(stroc[15]),
-                            Amp9 = Convert.ToInt16(stroc[16]),
-                            Amp10 = Convert.ToInt16(stroc[17]),
-                            Amp11 = Convert.ToInt16(stroc[18]),
-                            Nnut0 = Convert.ToInt16(stroc[19]),
-                            Nnut1 = Convert.ToInt16(stroc[20]),
-                            Nnut2 = Convert.ToInt16(stroc[21]),
-                            Nnut3 = Convert.ToInt16(stroc[22]),
-                            Nnut4 = Convert.ToInt16(stroc[23]),
-                            Nnut5 = Convert.ToInt16(stroc[24]),
-                            Nnut6 = Convert.ToInt16(stroc[25]),
-                            Nnut7 = Convert.ToInt16(stroc[26]),
-                            Nnut8 = Convert.ToInt16(stroc[27]),
-                            Nnut9 = Convert.ToInt16(stroc[28]),
-                            Nnut10 = Convert.ToInt16(stroc[29]),
-                            Nnut11 = Convert.ToInt16(stroc[30]),
-                            SumAmp = Convert.ToInt32(stroc[5]),
-                            SumNeu= Convert.ToInt32(stroc[6])
-                           
-                           
-                        });
+                            if (h > 0)
+                            {
+                                string[] stroc = f.Split("\t");
+                                _DataColecSob.Add(new ClassSob()
+                                {
+                                    nameFile = stroc[1],
+                                    nameklaster = stroc[2],
+                                    nameBAAK = stroc[3],
+                                    time = stroc[4],
+                                    Amp0 = Convert.ToInt16(stroc[7]),
+                                    Amp1 = Convert.ToInt16(stroc[8]),
+                                    Amp2 = Convert.ToInt16(stroc[9]),
+                                    Amp3 = Convert.ToInt16(stroc[10]),
+                                    Amp4 = Convert.ToInt16(stroc[11]),
+                                    Amp5 = Convert.ToInt16(stroc[12]),
+                                    Amp6 = Convert.ToInt16(stroc[13]),
+                                    Amp7 = Convert.ToInt16(stroc[14]),
+                                    Amp8 = Convert.ToInt16(stroc[15]),
+                                    Amp9 = Convert.ToInt16(stroc[16]),
+                                    Amp10 = Convert.ToInt16(stroc[17]),
+                                    Amp11 = Convert.ToInt16(stroc[18]),
+                                    Nnut0 = Convert.ToInt16(stroc[19]),
+                                    Nnut1 = Convert.ToInt16(stroc[20]),
+                                    Nnut2 = Convert.ToInt16(stroc[21]),
+                                    Nnut3 = Convert.ToInt16(stroc[22]),
+                                    Nnut4 = Convert.ToInt16(stroc[23]),
+                                    Nnut5 = Convert.ToInt16(stroc[24]),
+                                    Nnut6 = Convert.ToInt16(stroc[25]),
+                                    Nnut7 = Convert.ToInt16(stroc[26]),
+                                    Nnut8 = Convert.ToInt16(stroc[27]),
+                                    Nnut9 = Convert.ToInt16(stroc[28]),
+                                    Nnut10 = Convert.ToInt16(stroc[29]),
+                                    Nnut11 = Convert.ToInt16(stroc[30]),
+                                    SumAmp = Convert.ToInt32(stroc[5]),
+                                    SumNeu = Convert.ToInt32(stroc[6])
 
-    
+
+                                });
+                                x++;
+
+
+                            }
+                            else
+                            {
+                                h++;
+                                x++;
+                            }
+
+
+
+                        }
                     }
-                   else
+                    catch (Exception)
                     {
-                        h++;
+                        MessageDialog g1 = new MessageDialog("Ошибка в строке " + x.ToString());
+                        await g1.ShowAsync();
                     }
-                   
+                    //  MessageDialog g = new MessageDialog(text);
+                    // await g.ShowAsync();
 
-                    
                 }
-                //  MessageDialog g = new MessageDialog(text);
-                // await g.ShowAsync();
+                else
+                {
 
+                }
             }
-            else
+            catch(Exception)
             {
-               
+                var mess = new MessageDialog("Ошибка");
+                await mess.ShowAsync();
             }
           
         }
@@ -120,18 +143,18 @@ namespace DataYRAN
         {
             int porog = 10;
             int trig = 4;
-            int step = 200;
+            int step = 400;
             int g = 0;
             List<int> listsob = new List<int>();
             double sredN = 0;
             for (int i= 1; i<2048*12; i++)
             {
                 g++;
-                foreach (ClassSob sob in _DataColecSob)
+                foreach(ClassSob sob in _DataColecSob)
                 {
                     int c =0;
 
-                    if(sob.SumAmp==i&&sob.SumNeu<15)
+                    if(sob.SumAmp==i&&sob.SumNeu<50)
                     {
                         if(Convert.ToInt32(sob.Amp0)>=porog)
                         {

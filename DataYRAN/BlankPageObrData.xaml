@@ -46,7 +46,7 @@
                                 <Style x:Key="TitleContentControlStyle" BasedOn="{StaticResource BaseContentControlStyle}" TargetType="ContentControl">
                                     <Setter Property="FontFamily" Value="{ThemeResource PivotTitleFontFamily}"/>
                                     <Setter Property="FontWeight" Value="{ThemeResource PivotTitleThemeFontWeight}"/>
-                                    <Setter Property="FontSize" Value="10"/>
+                                    <Setter Property="FontSize" Value="14"/>
                                 </Style>
                           
                             </Grid.Resources>
@@ -335,7 +335,7 @@
            DisplayMode="Inline"
            OpenPaneLength="280">
             <SplitView.Pane>
-                <ListView FocusVisualSecondaryBrush="Black" CanDrag="True" UseLayoutRounding="True"  x:Name="listView1" AllowDrop="True"  DragOver="ListView1_DragOver" CanDragItems="True" Drop="ListView1_Drop"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
+                <ListView FocusVisualSecondaryBrush="Black" CanDrag="True" UseLayoutRounding="True" Header="Список файлов на обраблотку"  x:Name="listView1" AllowDrop="True"  DragOver="ListView1_DragOver" CanDragItems="True" Drop="ListView1_Drop"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
                     
                     <ListView.ItemTemplate>
                         <DataTemplate >
@@ -358,7 +358,7 @@
                     <AppBarButton Icon="Delete" Click="AppBarButton_Click_7" Label="Удалить" ToolTipService.ToolTip="Очистет все таблицы" Foreground="Red"/>
                     <AppBarSeparator/>
                     <AppBarButton Icon="Save" Click="AppBarButton_Click_6" Label="Сохранить"/>
-                    <AppBarButton Icon="SaveLocal" Label="Сохранить как..." Click="AppBarToggleButton_Click_4"/>
+                    <AppBarButton Icon="SaveLocal" Label="Сохранить с фильтром" Click="AppBarToggleButton_Click_4"/>
                     <AppBarSeparator/>
                     <AppBarButton Icon="Mail" Label="Отладка" VerticalAlignment="Stretch" Click="AppBarButton_Click_8" >
                     </AppBarButton>
@@ -453,11 +453,7 @@
                                                 </Grid.RowDefinitions>
 
                                                 <StackPanel Margin="8,0,0,0" UseLayoutRounding="True">
-                                                    <StackPanel Orientation="Horizontal" DataContext="{Binding SelectedItem, ElementName=DataGrid}">
-                                                        <TextBlock Text="Плата" Margin="12,4,0,0" FontSize="12"/>
-                                                        <TextBlock  Text="{Binding nameBAAK}" FontSize="12" Margin="12,4,0,0"/>
-                                                      
-                                                    </StackPanel>
+                                                  
                                                     <HyperlinkButton Content="Перейти к развертки" Click="Button_Click" Margin="0,8,0,0"/>
                                                  
                                                     <StackPanel x:Name="List54" DataContext="{Binding SelectedItem, ElementName=DataGrid}" Margin="0,4,0,0" UseLayoutRounding="True">
@@ -490,14 +486,14 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="1"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12"  VerticalAlignment="Center" Text="1"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp0}" >
                                                            
                                                             </TextBlock>
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut0}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig0}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull0}"/>
-                                                            <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS0}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut0}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig0}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnull0}"/>
+                                                            <TextBlock Grid.Column="5" FontSize="12"  VerticalAlignment="Center" Text="{Binding TimeS0}"/>
                                                             
                                                         </Grid>
                                                         <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" UseLayoutRounding="True">
@@ -525,12 +521,12 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="3"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12"  VerticalAlignment="Center" Text="3"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp2}" />
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut2}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig2}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull2}"/>
-                                                            <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS2}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut2}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig2}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnull2}"/>
+                                                            <TextBlock Grid.Column="5" FontSize="12" VerticalAlignment="Center" Text="{Binding TimeS2}"/>
                                                         </Grid>
                                                         <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
@@ -541,12 +537,12 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="4"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12" VerticalAlignment="Center" Text="4"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp3}" />
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut3}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig3}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull3}"/>
-                                                            <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS3}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut3}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig3}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnull3}"/>
+                                                            <TextBlock Grid.Column="5" FontSize="12"  VerticalAlignment="Center" Text="{Binding TimeS3}"/>
                                                         </Grid>
                                                         <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
@@ -557,12 +553,12 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="5"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12"  VerticalAlignment="Center" Text="5"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp4}" />
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut4}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig4}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull4}"/>
-                                                            <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS4}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut4}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig4}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnull4}"/>
+                                                            <TextBlock Grid.Column="5" FontSize="12"  VerticalAlignment="Center" Text="{Binding TimeS4}"/>
                                                         </Grid>
                                                         <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
@@ -573,12 +569,12 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="6"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12"  VerticalAlignment="Center" Text="6"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp5}" />
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut5}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig5}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull5}"/>
-                                                            <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS5}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut5}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig5}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnull5}"/>
+                                                            <TextBlock Grid.Column="5" FontSize="12"  VerticalAlignment="Center" Text="{Binding TimeS5}"/>
                                                         </Grid>
                                                         <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
@@ -589,12 +585,12 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="7"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12"  VerticalAlignment="Center" Text="7"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp6}" />
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut6}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig6}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull6}"/>
-                                                            <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS6}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut6}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig6}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnull6}"/>
+                                                            <TextBlock Grid.Column="5" FontSize="12"  VerticalAlignment="Center" Text="{Binding TimeS6}"/>
                                                         </Grid>
                                                         <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
@@ -605,11 +601,11 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="8"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12"  VerticalAlignment="Center" Text="8"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp7}" />
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut7}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig7}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull7}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut7}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig7}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnull7}"/>
                                                             <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS7}"/>
                                                         </Grid>
                                                         <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
@@ -621,12 +617,12 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="9"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12"  VerticalAlignment="Center" Text="9"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp8}" />
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut8}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig8}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull8}"/>
-                                                            <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS8}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut8}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig8}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnull8}"/>
+                                                            <TextBlock Grid.Column="5" FontSize="12" VerticalAlignment="Center" Text="{Binding TimeS8}"/>
                                                         </Grid>
                                                         <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
@@ -637,12 +633,12 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="10"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12"  VerticalAlignment="Center" Text="10"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp9}" />
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut9}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig9}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull9}"/>
-                                                            <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS9}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut9}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig9}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnull9}"/>
+                                                            <TextBlock Grid.Column="5" FontSize="12"  VerticalAlignment="Center" Text="{Binding TimeS9}"/>
                                                         </Grid>
                                                         <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
@@ -653,12 +649,12 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="11"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12"  VerticalAlignment="Center" Text="11"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp10}" />
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut10}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig10}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull10}"/>
-                                                            <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS10}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut10}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig10}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12" VerticalAlignment="Center" Text="{Binding Nnull10}"/>
+                                                            <TextBlock Grid.Column="5" FontSize="12"  VerticalAlignment="Center" Text="{Binding TimeS10}"/>
                                                         </Grid>
                                                         <Grid Height="30" AutomationProperties.Name="x:String" Padding="6" >
                                                             <Grid.ColumnDefinitions>
@@ -669,12 +665,12 @@
                                                                 <ColumnDefinition Width="90"/>
                                                                 <ColumnDefinition Width="90"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" Text="12"/>
+                                                            <TextBlock Grid.Column="0" FontSize="12"  VerticalAlignment="Center" Text="12"/>
                                                             <TextBlock Grid.Column="1"  VerticalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Amp11}" />
-                                                            <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="{Binding Nnut11}"/>
-                                                            <TextBlock Grid.Column="3"  VerticalAlignment="Center" Text="{Binding sig11}"/>
-                                                            <TextBlock Grid.Column="4"  VerticalAlignment="Center" Text="{Binding Nnull11}"/>
-                                                            <TextBlock Grid.Column="5"  VerticalAlignment="Center" Text="{Binding TimeS11}"/>
+                                                            <TextBlock Grid.Column="2" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnut11}"/>
+                                                            <TextBlock Grid.Column="3" FontSize="12"  VerticalAlignment="Center" Text="{Binding sig11}"/>
+                                                            <TextBlock Grid.Column="4" FontSize="12"  VerticalAlignment="Center" Text="{Binding Nnull11}"/>
+                                                            <TextBlock Grid.Column="5" FontSize="12"  VerticalAlignment="Center" Text="{Binding TimeS11}"/>
 
                                                         </Grid>
 

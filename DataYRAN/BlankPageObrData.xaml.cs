@@ -451,7 +451,8 @@ namespace DataYRAN
                 {
 
                     Stopwatch watch = Stopwatch.StartNew();
-
+                    watch.Reset();
+                    watch.Start();
                     //  var messageDialog = new MessageDialog("Запустили поток");
                     // await messageDialog.ShowAsync();
                     List<ClassСписокList> l = new List<ClassСписокList>();
@@ -460,21 +461,28 @@ namespace DataYRAN
                         l.Add(g);
                     }
                     ZapicOcheredNaObrabotkyAsync(Y, 1, "1", l);
-                    await Task.Run(() => WriteInFileIzOcherediAsync(cancellationToken));
-                   
+                    await Task.Run(()=> WriteInFileIzOcherediAsync(cancellationToken));
+
                     // await WriteInFileIzOcherediAsync(cancellationToken);
+                    watch.Stop();
                     colstroc.Text = ViewModel.ClassSobs.Count.ToString();
                     duration.Text = $"Duration (ms): {watch.ElapsedMilliseconds}";
+                    if(watch.Elapsed.Seconds!=0)
                     sobInSec.Text = (ViewModel.ClassSobs.Count / watch.Elapsed.Seconds).ToString();
+                    else
+                    {
+                        sobInSec.Text = "Очень бычстро";
+                    }
+                   // watch.Reset();
                     var messq = new MessageDialog("Конец");
                     await messq.ShowAsync();
                     ObRing.IsActive = false;
                     
 
                 }
-                catch 
+                catch (Exception ex)
                 {
-                    var mes = new MessageDialog("Ошибка");
+                    var mes = new MessageDialog("Ошибка"+ex.ToString());
                     await mes.ShowAsync();
                 }
 
@@ -494,7 +502,7 @@ namespace DataYRAN
         /// охраняем данные о событии
         /// </summary>
         public SaveFileSob SaveFileSobDelegate;
-        public delegate void ObrSig(int[] nul, string nameFile, string nemeBAAK, int[,] data1, int[,] dataTail1, string time1);//
+        public delegate Task ObrSig(int[] nul, string nameFile, string nemeBAAK, int[,] data1, int[,] dataTail1, string time1);//
 
         /// <summary>
         /// охраняем пакет в файл
@@ -3108,12 +3116,10 @@ namespace DataYRAN
                 int MinClust = Convert.ToInt16(MinClustDec.Text);
                 int Clust = 0;
                 _DataColecSobCopy = new ObservableCollection<ClassSob>();
-                foreach (ClassSob cl in ViewModel.ClassSobs)
-                {
-                    _DataColecSobCopy.Add(cl);
-                }
-                int max = _DataColecSobCopy.Count;
-                for (int X = 0; X < max; X++)
+
+                _DataColecSobCopy = ViewModel.ClassSobs;
+             
+                for (int X = 0; X < _DataColecSobCopy.Count; X++)
                 {
                     ClassSob clF = _DataColecSobCopy[X];
                     int SummNeutr = clF.SumNeu, SummAmpl = clF.SumAmp, SummDetect = 1, SumDecUp = 0, SumDecUptmp = 0;
@@ -3124,7 +3130,7 @@ namespace DataYRAN
                     SumDecUp += SumDecUptmp;
                     SumDecUptmp = 0;
 
-                    for (int Y = 0; Y < max; Y++)
+                    for (int Y = 0; Y < _DataColecSobCopy.Count; Y++)
                     {
                         ClassSob clS = _DataColecSobCopy[Y];
                         if (!clF.Equals(clS))
@@ -3144,8 +3150,8 @@ namespace DataYRAN
                                 SumDecUp += SumDecUptmp;
                                 SumDecUptmp = 0;
                                 Clust++;
-                                _DataColecSobCopy.Remove(clS);
-                                max--;
+                                // _DataColecSobCopy.Remove(clS);
+                                Y++;
                             }
 
                         }

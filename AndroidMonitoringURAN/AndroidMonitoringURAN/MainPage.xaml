@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:AndroidMonitoringURAN"
+             x:Class="AndroidMonitoringURAN.MainPage">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+   
+            <!-- Place new controls here -->
+            <Label Text="Состояние установки:" FontSize="14"/>
+        <Label Grid.Row="1" x:Name="LRData" FontSize="14"/>
+
+        <ListView x:Name="ListKl" Grid.Row="2" HasUnevenRows="True"    IsPullToRefreshEnabled="true" Refreshing="OnRefresh"
+              CachingStrategy="RecycleElement" Margin="4">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell >
+                   
+                            <Grid  Padding="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="20"/>
+                                </Grid.RowDefinitions>
+                                <StackLayout  Orientation="Horizontal" Grid.Row="0" >
+                                    <Label Text="Кластер № " />
+                                    <Label Margin="4,0,0,0" Text="{Binding NomerKl}"/>
+                                </StackLayout>
+                                <StackLayout  Orientation="Horizontal" Grid.Row="1" >
+                                    <Label Text="Состояние " />
+                                    <Label Margin="4,0,0,0" Text="{Binding SostoKl}" />
+                                </StackLayout>
+                                <StackLayout  Orientation="Horizontal" Grid.Row="2" >
+                            <Label Text="Количество пакетов "/>
+                            <Label Margin="4,0,0,0" Text="{Binding KolPac}" />
+                                  </StackLayout>
+                                <StackLayout  Orientation="Horizontal" Grid.Row="3" >
+                                    <Label Text="Темп счета " />
+                                    <Label Margin="4,0,0,0" Text="{Binding KolTemp}" />
+                                </StackLayout>
+
+                            </Grid>
+                 
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Grid.Row="3"  Text="Стоп" Clicked="Button_Clicked"/>
+    </Grid>
+    
+
+</ContentPage>
