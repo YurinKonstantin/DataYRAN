@@ -137,7 +137,7 @@ Windows.Storage.ApplicationData.Current.LocalFolder;
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
        () =>
        {
-           ViewModel.ClassSobs.Add(new ClassSob()
+           ViewModel.ClassSobsT.Add(new ClassSob()
            {
                nameFile = nameFile,
                nameklaster = array[0],

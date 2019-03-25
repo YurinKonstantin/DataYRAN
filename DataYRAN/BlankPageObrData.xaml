@@ -335,7 +335,8 @@
            DisplayMode="Inline"
            OpenPaneLength="280">
             <SplitView.Pane>
-                <ListView FocusVisualSecondaryBrush="Black" CanDrag="True" UseLayoutRounding="True" Header="Список файлов на обраблотку"  x:Name="listView1" AllowDrop="True"  DragOver="ListView1_DragOver" CanDragItems="True" Drop="ListView1_Drop"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
+          
+                    <ListView FocusVisualSecondaryBrush="Black" CanDrag="True" UseLayoutRounding="True" Header="Список файлов на обраблотку"  x:Name="listView1" AllowDrop="True"  DragOver="ListView1_DragOver" CanDragItems="True" Drop="ListView1_Drop"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"  SelectionChanged="ListView1_SelectionChanged" SelectionMode="Extended">
                     
                     <ListView.ItemTemplate>
                         <DataTemplate >
@@ -352,9 +353,22 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-            </SplitView.Pane>
+                 
+                
+             
+    </SplitView.Pane>
             <Grid x:Name="gridpan" UseLayoutRounding="True">
-                <CommandBar  VerticalAlignment="Stretch" Background="Transparent" ClosedDisplayMode="Compact"  HorizontalAlignment="Right" UseLayoutRounding="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                 
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <CommandBar VerticalAlignment="Stretch" Background="Transparent" ClosedDisplayMode="Compact"  HorizontalAlignment="Right" UseLayoutRounding="True">
                     <AppBarButton Icon="Delete" Click="AppBarButton_Click_7" Label="Удалить" ToolTipService.ToolTip="Очистет все таблицы" Foreground="Red"/>
                     <AppBarSeparator/>
                     <AppBarButton Icon="Save" Click="AppBarButton_Click_6" Label="Сохранить"/>
@@ -381,49 +395,74 @@
                                         <AppBarButton Icon="Save" Label="Сохранить" Click="SaveUserSetUp_clic" />
                                         <AppBarButton Icon="Refresh" Label="Обновить" />
                                     </CommandBar>
-                                    <StackPanel Grid.Row="1" Orientation="Vertical" Margin="16,16,0,0" Padding="0,0,0,0">
+                                    <Pivot Title="Настройки по типам данных"  Grid.Row="1" MaxWidth="400">
+                                        <PivotItem Header="Общие">
+                                            <StackPanel Orientation="Vertical" Margin="16,16,0,0" Padding="0,0,0,0">
 
-                                        <TextBlock Text="Тип данных" Style="{ThemeResource BaseTextBlockStyle}"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <RadioButton Content="С хвостом" x:Name="TailCh" Tag="Tail" Checked="RadioButton_Checked" IsChecked="True" />
-                                            <RadioButton Content="200 без хвоста" x:Name="NoTailCh" Checked="RadioButton_Checked" Tag="NoTail" />
+                                                <TextBlock Text="Тип данных" Style="{ThemeResource BaseTextBlockStyle}"/>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <RadioButton Content="С хвостом" x:Name="TailCh" Tag="Tail" Checked="RadioButton_Checked" IsChecked="True" />
+                                                    <RadioButton Content="200 без хвоста" x:Name="NoTailCh" Checked="RadioButton_Checked" Tag="NoTail" />
 
-                                        </StackPanel>
+                                                </StackPanel>
 
-                                        <TextBlock Text="Авто настройки" FontSize="16" />
-                                        <ToggleSwitch x:Name="ToggleSwitchAuto" Toggled="Avto_Toggled"/>
-                                        <TextBox Header="Порог отбора сигнала" Text="{x:Bind ViewModel.PorogS, Mode=TwoWay}" PlaceholderText="Значение от 1 до 2048" />
-                                        <Line X1="320"  Y1="0"   Margin="0,10,0,0" StrokeThickness="3" Stroke="Black"></Line>
-                                        <TextBlock FontSize="6"/>
-                                        <TextBlock Text="Настройки отбора нейтрона"  FontSize="16"/>
-                                        <TextBlock FontSize="6"/>
+                                                <TextBlock Text="Авто настройки" FontSize="16" />
+                                                <ToggleSwitch x:Name="ToggleSwitchAuto" Toggled="Avto_Toggled"/>
+                                              
 
-                                        <TextBox x:Name="TextBloxPorogN" Header="Порог отбора" PlaceholderText="Значение от 1 до 2047" IsReadOnly="False" TextChanging="TextBloxPorogN_TextChanging" HorizontalAlignment="Left"  />
-                                        <TextBlock FontSize="4"/>
+                                                <TextBlock Text="Сохранять развертку" FontSize="16" />
+                                                <ToggleSwitch x:Name="ToggleSwitchSaveRaz" Toggled="sigSave1_Toggled"/>
+                                                <Button Content="парамеры"/>
+                                                <TextBlock FontSize="16"/>
+                                                <TextBlock Text="Настройка обработки"  FontSize="16"/>
+                                                <TextBlock FontSize="6"/>
+                                                <TextBlock Text="Обрабатывать сигнал" FontSize="13" />
+                                                <ToggleSwitch x:Name="ToggleSwitchObrSig" Toggled="obrSig_Toggled"/>
+                                                <TextBlock FontSize="12"/>
+                                                <TextBlock Text="Параметры отбора шумов"  FontSize="16"/>
+                                                <TextBlock FontSize="4"/>
+                                                <TextBlock Text="Отбирать шумы" FontSize="13" />
+                                                <ToggleSwitch x:Name="ToggleSwitchObrNoise" Toggled="ToggleSwitchObrNoise_Toggled" />
+                                                <TextBlock FontSize="4"/>
+                                                <TextBox x:Name="TextBloxKoefNoise" PlaceholderText="значение от 0 до 1" Header="коэффициент шумового сигнла" TextChanging="TextBloxKoefNoise_TextChanging" HorizontalAlignment="Left" />
+                                                <TextBlock FontSize="4"/>
 
-                                        <TextBox x:Name="TextBloxDlitN" PlaceholderText="Значение от 1 " Header="Длительность сигнала на уровне 3" HorizontalAlignment="Left" TextChanging="TextBloxDlitN_TextChanging" />
-                                        <TextBlock FontSize="16"/>
+                                                <TextBox x:Name="TextBloxAmpNoise" HorizontalAlignment="Left" PlaceholderText="значение от 1 до 2048" Header="Апмплитуда шума" TextChanging="TextBloxAmpNoise_TextChanging" />
+                                                <TextBlock Text="Корректировать результативное время события, мин"/>
+                                                <TextBox x:Name="TimeCorect" Text="0"/>
+                                            </StackPanel>
+                                        </PivotItem>
+                                        <PivotItem Header="БААК12-200Т">
+                                            <StackPanel Orientation="Vertical" Margin="16,16,0,0" Padding="0,0,0,0">
+                                                <TextBox Header="Порог отбора сигнала" Text="{x:Bind ViewModel.PorogS, Mode=TwoWay}" PlaceholderText="Значение от 1 до 2048" />
+                                                <Line X1="320"  Y1="0"   Margin="0,10,0,0" StrokeThickness="3" Stroke="Black"></Line>
+                                                <TextBlock FontSize="6"/>
+                                                <TextBlock Text="Настройки отбора нейтрона"  FontSize="16"/>
+                                                <TextBlock FontSize="6"/>
 
-                                        <TextBlock Text="Сохранять развертку" FontSize="16" />
-                                        <ToggleSwitch x:Name="ToggleSwitchSaveRaz" Toggled="sigSave1_Toggled"/>
-                                        <Button Content="парамеры"/>
-                                        <TextBlock FontSize="16"/>
-                                        <TextBlock Text="Настройка обработки"  FontSize="16"/>
-                                        <TextBlock FontSize="6"/>
-                                        <TextBlock Text="Обрабатывать сигнал" FontSize="13" />
-                                        <ToggleSwitch x:Name="ToggleSwitchObrSig" Toggled="obrSig_Toggled"/>
-                                        <TextBlock FontSize="12"/>
-                                        <TextBlock Text="Параметры отбора шумов"  FontSize="16"/>
-                                        <TextBlock FontSize="4"/>
-                                        <TextBlock Text="Отбирать шумы" FontSize="13" />
-                                        <ToggleSwitch x:Name="ToggleSwitchObrNoise" Toggled="ToggleSwitchObrNoise_Toggled" />
-                                        <TextBlock FontSize="4"/>
-                                        <TextBox x:Name="TextBloxKoefNoise" PlaceholderText="значение от 0 до 1" Header="коэффициент шумового сигнла" TextChanging="TextBloxKoefNoise_TextChanging" HorizontalAlignment="Left" />
-                                        <TextBlock FontSize="4"/>
+                                                <TextBox x:Name="TextBloxPorogN" Header="Порог отбора" PlaceholderText="Значение от 1 до 2047" IsReadOnly="False" TextChanging="TextBloxPorogN_TextChanging" HorizontalAlignment="Left"  />
+                                                <TextBlock FontSize="4"/>
 
-                                        <TextBox x:Name="TextBloxAmpNoise" HorizontalAlignment="Left" PlaceholderText="значение от 1 до 2048" Header="Апмплитуда шума" TextChanging="TextBloxAmpNoise_TextChanging" />
+                                                <TextBox x:Name="TextBloxDlitN" PlaceholderText="Значение от 1 " Header="Длительность сигнала на уровне 3" HorizontalAlignment="Left" TextChanging="TextBloxDlitN_TextChanging" />
+                                                <TextBlock FontSize="16"/>
 
-                                    </StackPanel>
+                                             
+                                         
+                                            </StackPanel>
+                                        </PivotItem>
+                                        <PivotItem Header="БААК12-200">
+                                            <StackPanel Orientation="Vertical" Margin="16,16,0,0" Padding="0,0,0,0">
+                                                <TextBox Header="Порог отбора сигнала" Text="{x:Bind ViewModel.PorogS, Mode=TwoWay}" PlaceholderText="Значение от 1 до 2048" />
+                                                <Line X1="320"  Y1="0"   Margin="0,10,0,0" StrokeThickness="3" Stroke="Black"></Line>
+                                                <TextBlock FontSize="6"/>
+                                            </StackPanel>
+                                        </PivotItem>
+                                        <PivotItem Header="БААК12-100">
+                                            <TextBlock Text="flagged emails go here." />
+                                        </PivotItem>
+                                   
+                                    </Pivot>
+                                    
                                 </Grid>
                             </Flyout>
                         </FlyoutBase.AttachedFlyout>
@@ -432,7 +471,7 @@
                         <AppBarButton Label="Настройки программы" Click="UserSetUp_Click" />
                     </CommandBar.SecondaryCommands>
                 </CommandBar>
-                <controls:TabView x:Name="rootPivot"   FontStyle="Normal" MinWidth="900"  Margin="8" UseLayoutRounding="True">
+                <controls:TabView  x:Name="rootPivot" Grid.Row="1"  FontStyle="Normal" MinWidth="900"  Margin="8" UseLayoutRounding="True">
                     <controls:TabView.Resources>
                         <x:Double x:Key="TabViewItemHeaderMinHeight">32</x:Double>
                         <x:Double x:Key="TabViewItemHeaderMinWidth">48</x:Double>
@@ -951,7 +990,7 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                        <CommandBar Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" UseLayoutRounding="True">
+                                        <CommandBar Grid.ColumnSpan="2" Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" UseLayoutRounding="True">
                                             <AppBarButton Icon="Pictures" Label="визуализация" Click="AppBarButtonMap_Click"/>
                                             <AppBarToggleButton Icon="OutlineStar" Label="Статистика" Click="AppBarToggleButton_Click_6"/>
                                             <AppBarToggleButton Label="Гистограмма" Click="AppBarToggleButton_Click_7">
@@ -959,16 +998,38 @@
                                             </AppBarToggleButton>
                                             
                                         </CommandBar>
-                                        <telerikGrid:RadDataGrid x:Name="DataGrid"  ItemsSource="{x:Bind ViewModel.ClassSobs}" UseLayoutRounding="True"  AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
+                                        <telerikGrid:RadDataGrid x:Name="DataGrid"  ItemsSource="{x:Bind ViewModel.ClassSobsT}" UseLayoutRounding="True"  AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
                                             <telerikGrid:RadDataGrid.Columns>
 
                                                 <telerikGrid:DataGridTextColumn PropertyName="time" Header="Время события" />
                                                 <telerikGrid:DataGridTextColumn PropertyName="nameFile" Header="Имя файла"/>
                                                 <telerikGrid:DataGridTextColumn PropertyName="nameklaster" Header="Кластер №"/>
-                                                <telerikGrid:DataGridTextColumn PropertyName="SumAmp" Header="Суммарная амплитуда"/>
-                                                <telerikGrid:DataGridTextColumn PropertyName="SumNeu" Header="Сумма нейтронов" x:Name="dataN"/>
+                                                <telerikGrid:DataGridTextColumn PropertyName="SumAmp" Header="Суммарная амплитуда" x:Name="dataAmp"/>
+                                                <telerikGrid:DataGridTextColumn PropertyName="SumNeu" Header="Сумма нейтронов" x:Name="dataN" />
+                                                <telerikGrid:DataGridTextColumn PropertyName="AmpNV" Header="Амплитуда нейтрона" x:Name="dataNV" IsVisible="False"/>
+                                                <telerikGrid:DataGridTextColumn PropertyName="nV" Header="Номер Детектора" x:Name="ampNV" IsVisible="False"/>
+                                                <telerikGrid:DataGridTextColumn PropertyName="FirstTimeV" Header="время начала" x:Name="ftNV" IsVisible="False"/>
+                                                <telerikGrid:DataGridTextColumn PropertyName="MaxTime" Header="время максимума" x:Name="mtNV" IsVisible="False"/>
+                                      
+                                               
                                             </telerikGrid:RadDataGrid.Columns>
                                         </telerikGrid:RadDataGrid>
+                                        <telerikGrid:RadDataGrid x:Name="DataGrid1" Visibility="Collapsed"  ItemsSource="{x:Bind ViewModel._DataSobColli}" UseLayoutRounding="True"  AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
+                                            <telerikGrid:RadDataGrid.Columns>
+
+                                                <telerikGrid:DataGridTextColumn PropertyName="StartTime" Header="Время события" />
+
+
+                                                <telerikGrid:DataGridTextColumn PropertyName="SummAmpl" Header="Суммарная амплитуда" x:Name="dataAmp1"/>
+                                                <telerikGrid:DataGridTextColumn PropertyName="SummNeu" Header="Сумма нейтронов" x:Name="dataN1" />
+                                           
+                                                <telerikGrid:DataGridTextColumn PropertyName="EndTime" Header="Последнее событие" IsVisible="False"/>
+                                                
+                                                <telerikGrid:DataGridTextColumn PropertyName="SumClast" Header="Сработавших кластеров" />
+
+                                            </telerikGrid:RadDataGrid.Columns>
+                                        </telerikGrid:RadDataGrid>
+
                                         <Grid x:Name="GridStatictik" Visibility="Collapsed" UseLayoutRounding="True">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="auto"/>
@@ -1483,8 +1544,20 @@
          ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch"/>
                         </StackPanel>
                     </controls:TabViewItem>
-                </controls:TabView>
-                <ProgressRing x:Name="ObRing" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="7" Grid.RowSpan="2" HorizontalAlignment="Center" Height="80" Width="80"/>
+                </controls:TabView >
+                <ProgressRing x:Name="ObRing"  Grid.ColumnSpan="2" Grid.Row="7" Grid.RowSpan="2" HorizontalAlignment="Center" Height="80" Width="80"/>
+                <controls:Expander Grid.Row="1" Header="Список доступных данных плат" Grid.Column="1" Foreground="White" Background="Gray" IsExpanded="False" VerticalContentAlignment="Top"  Grid.RowSpan="3" ExpandDirection="Left" >
+                    
+                    <ListView Header="Список доступных данных плат" SelectionChanged="ListViewVid_SelectionChanged" VerticalAlignment="Top" HorizontalAlignment="Left" x:Name="listViewVid" Width="280">
+                        <x:String>БААК12-200Т</x:String>
+                        <x:String>БААК12-200</x:String>
+                        <x:String>БААК12-100</x:String>
+                        <x:String>БААК12-200Т+БААК12-200</x:String>
+                        <x:String>БААК12-200Т общие</x:String>
+                        <x:String>Невод-ШАЛ</x:String>
+                        <x:String>УРАН+Невод-ШАЛ</x:String>
+                    </ListView>
+                </controls:Expander>
             </Grid>
 
         </SplitView>
@@ -1501,7 +1574,35 @@
         <controls:InAppNotification Grid.Row="1" Grid.Column="1" x:Name="ExampleInAppNotification">
             <!-- InAppNotification content -->
         </controls:InAppNotification>
-      
+        <Grid Visibility="Collapsed" x:Name="gridMenedger" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Grid.RowSpan="3"  Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Менеджер сохранения" Margin="40,40,0,0"/>
+            <ListView Grid.Row="1" Margin="40,8,0,0" FocusVisualSecondaryBrush="Black" ItemsSource="{x:Bind ViewModel._DataColecViewSaveMenedger}" UseLayoutRounding="True" Header="Параметры сохранения"  x:Name="listViewMeneger" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" VerticalAlignment="Stretch" >
+
+                <ListView.ItemTemplate >
+                    <DataTemplate x:DataType="local:ClassSaveSetUp">
+                        <StackPanel Margin="12">
+                            <CheckBox IsChecked="{x:Bind save}"/>
+                            <TextBlock Text="Путь для сохранения"/>
+                            <TextBox Text="{x:Bind Folder.Path}"/>
+                            <Button Content="Путь" Click="{x:Bind ViborPath}"/>
+                            <TextBlock Text="Имя файла"/>
+                            <TextBox Text="{x:Bind NameFile, Mode=TwoWay}"/>
+                            <TextBlock Text="Тип файла"/>
+                            <TextBox Text="{x:Bind tip, Mode=TwoWay}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="8" VerticalAlignment="Bottom">
+                <Button Content="Сохранить" Margin="4" Click="Button_Click_2"/>
+                <Button Content="Отмена" Margin="4" Click="Button_Click_1"/>
+            </StackPanel>
+        </Grid>
       
     </Grid>
 </Page>

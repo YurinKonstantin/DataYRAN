@@ -103,10 +103,10 @@ namespace DataYRAN
         ObservableCollection<Data> data = new ObservableCollection<Data>();
         ObservableCollection<ObservableCollection<Data>> collection = new ObservableCollection<ObservableCollection<Data>>();
         ObservableCollection<ClassСписокList> _DataColec = new ObservableCollection<ClassСписокList>();
-      //  ObservableCollection<ClassSob> _DataColecSob = new ObservableCollection<ClassSob>();
+
         ObservableCollection<ClassSob> _DataColecSobPlox = new ObservableCollection<ClassSob>();
-        ObservableCollection<ClassSob> _DataColecSobCopy { get; set; }
-        ObservableCollection<ClassSobColl> _DataSobColli = new ObservableCollection<ClassSobColl>();
+   
+      
        // ObservableCollection<ClassSobNeutron> _DataColecNeu = new ObservableCollection<ClassSobNeutron>();
     
         ClassСписокList _СписокФайловОбработки = new ClassСписокList();
@@ -187,7 +187,7 @@ namespace DataYRAN
 
                 }
                 listView1.ItemsSource = _DataColec;
-                ColDataGrid.ItemsSource = _DataSobColli;
+               
               //  DataGrid.ItemsSource = _DataColecSob;
                 DataGridPlox.ItemsSource = _DataColecSobPlox;
                // DataGridnNeutron.ItemsSource = _DataColecNeu;
@@ -296,12 +296,14 @@ namespace DataYRAN
                 
                 listDataAll = new List<byte>();
                 bool flagUserSetup = true;
-
-              // foreach(ClassСписокList d1 in _DataColec)
-             //   {
-               //     if(d1==d)
+                string tipN = "T";
+                tipN = d.file1.DisplayName.Split('_')[2];
+                
+                // foreach(ClassСписокList d1 in _DataColec)
+                //   {
+                //     if(d1==d)
                 //    {
-                        d.Status = true;
+                d.Status = true;
                     //    break;
                  //   }
                // }
@@ -354,7 +356,8 @@ namespace DataYRAN
                                                     countFlagEnt++;
                                                    if (countFlagEnt == 4)
                                                    {
-                                                    OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.NameFile, Buf00 = dataOnePac, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan });
+                                             
+                                                    OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.NameFile, Buf00 = dataOnePac, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName=tipN });
                                                     pac++;
                                                     dataOnePac = new Byte[504648];
                                                     d.StatusSize+= 504648;
@@ -465,10 +468,10 @@ namespace DataYRAN
 
                     // await WriteInFileIzOcherediAsync(cancellationToken);
                     watch.Stop();
-                    colstroc.Text = ViewModel.ClassSobs.Count.ToString();
+                    colstroc.Text = ViewModel.ClassSobsT.Count.ToString();
                     duration.Text = $"Duration (ms): {watch.ElapsedMilliseconds}";
                     if(watch.Elapsed.Seconds!=0)
-                    sobInSec.Text = (ViewModel.ClassSobs.Count / watch.Elapsed.Seconds).ToString();
+                    sobInSec.Text = (ViewModel.ClassSobsT.Count / watch.Elapsed.Seconds).ToString();
                     else
                     {
                         sobInSec.Text = "Очень бычстро";
@@ -502,7 +505,7 @@ namespace DataYRAN
         /// охраняем данные о событии
         /// </summary>
         public SaveFileSob SaveFileSobDelegate;
-        public delegate Task ObrSig(int[] nul, string nameFile, string nemeBAAK, int[,] data1, int[,] dataTail1, string time1);//
+        public delegate Task ObrSig(int[] nul, string nameFile, string nemeBAAK, int[,] data1, int[,] dataTail1, string time1, string tipName);//
 
         /// <summary>
         /// охраняем пакет в файл
@@ -618,7 +621,7 @@ namespace DataYRAN
                 {
                     
                     await Delite();
-                    ViewModel.ClassSobs.Clear();
+                    ViewModel.ClassSobsT.Clear();
                     _DataColecSobPlox.Clear();
                     ViewModel.ClassSobNeutrons.Clear();
                    
@@ -655,7 +658,7 @@ namespace DataYRAN
 
 
                 ObRing.IsActive = true;
-                ViewModel.ClassSobs.Clear();
+                ViewModel.ClassSobsT.Clear();
 
                 ViewModel.ClassSobNeutrons.Clear();
 
@@ -683,7 +686,7 @@ namespace DataYRAN
             
             
            
-            MessageDialog messageDialog = new MessageDialog(ViewModel.ClassSobs.Count.ToString());
+            MessageDialog messageDialog = new MessageDialog(ViewModel.ClassSobsT.Count.ToString()+"\n"+ViewModel.ClassSobsN.Count.ToString());
            await messageDialog.ShowAsync();
 
         }
@@ -726,37 +729,8 @@ namespace DataYRAN
 
         private async void AppBarToggleButton_Click_4(object sender, RoutedEventArgs e)
         {
-            ObRing.IsActive = true;
-            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-            folderPicker.FileTypeFilter.Add("*");
-
-            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
-            {
-                // Application now has read/write access to all contents in the picked folder
-                // (including other sub-folder contents)
-                Windows.Storage.AccessCache.StorageApplicationPermissions.
-                FutureAccessList.AddOrReplace("PickedFolderToken", folder);
-
-                StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
-
-                StorageFolder storageFolderSob = await storageFolder.CreateFolderAsync("События", CreationCollisionOption.OpenIfExists);
-                IReadOnlyList<StorageFile> fileList1 =
-                await storageFolderSob.GetFilesAsync();
-
-                foreach (StorageFile file in fileList1)
-                {
-                    await file.CopyAsync(folder);
-                }
-
-
-            }
-            else
-            {
-
-            }
-            ObRing.IsActive = false;
+            gridMenedger.Visibility = Visibility.Visible;
+            SaveAllMenedger();
         }
 
         private async void AppBarToggleButton_Click_5(object sender, RoutedEventArgs e)
@@ -3056,7 +3030,7 @@ namespace DataYRAN
                 StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
 
                 int i = 0;
-                if (_DataSobColli.Count != 0)
+                if (ViewModel._DataSobColli.Count != 0)
                 {
                     using (StreamWriter writer =
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
@@ -3066,7 +3040,7 @@ namespace DataYRAN
 
 
                         await writer.WriteLineAsync(sSob);
-                        foreach (ClassSobColl sob in _DataSobColli)
+                        foreach (ClassSobColl sob in ViewModel._DataSobColli)
                         {
                             i++;
                             string Sob = i + "\t" + sob.StartTime + "\t" + sob.SummAmpl + "\t" + sob.SummNeu + "\t" + sob.SumClast + "\t" + sob.SumClastUp;
@@ -3106,144 +3080,7 @@ namespace DataYRAN
         }
         private async void AppBarButton_Play(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                ProgressBar1.IsActive = true;
-
-
-                int MaxDur = Convert.ToInt16(TimeGate.Text);
-                int MaxAmpl = Convert.ToInt16(MinAmplDetect.Text);
-                int MinClust = Convert.ToInt16(MinClustDec.Text);
-                int Clust = 0;
-                _DataColecSobCopy = new ObservableCollection<ClassSob>();
-
-                _DataColecSobCopy = ViewModel.ClassSobs;
-             
-                for (int X = 0; X < _DataColecSobCopy.Count; X++)
-                {
-                    ClassSob clF = _DataColecSobCopy[X];
-                    int SummNeutr = clF.SumNeu, SummAmpl = clF.SumAmp, SummDetect = 1, SumDecUp = 0, SumDecUptmp = 0;
-
-                    Clust = 1;
-
-                    CountPorogs(clF, MaxAmpl, out SumDecUptmp);
-                    SumDecUp += SumDecUptmp;
-                    SumDecUptmp = 0;
-
-                    for (int Y = 0; Y < _DataColecSobCopy.Count; Y++)
-                    {
-                        ClassSob clS = _DataColecSobCopy[Y];
-                        if (!clF.Equals(clS))
-                        {
-                            //  0  1  2  3  4      5          6
-                            // DD.HH.MM.SS.mSmSmS.mcSmcSmcS.nSnSnS
-
-
-
-                            if (DateNanos.isEventSimul(clF.time, clS.time, MaxDur))
-                            {
-                                SummNeutr += clS.SumNeu;
-                                SummAmpl += clS.SumAmp;
-                                SummDetect++;
-
-                                CountPorogs(clS, MaxAmpl, out SumDecUptmp);
-                                SumDecUp += SumDecUptmp;
-                                SumDecUptmp = 0;
-                                Clust++;
-                                // _DataColecSobCopy.Remove(clS);
-                                Y++;
-                            }
-
-                        }
-                    }
-                    if (Clust >= MinClust)
-                    {
-                        _DataSobColli.Add(new ClassSobColl() { StartTime = clF.time, SumClast = SummDetect, SummAmpl = SummAmpl, SummNeu = SummNeutr, SumClastUp = SumDecUp });
-                    }
-                }
-
-
-
-
-
-
-
-                int trig = Convert.ToInt16(MinDetectUp.Text);
-                int step = Convert.ToInt16(StepsAmpl.Text);
-                int g = 0;
-                List<int> listsob = new List<int>();
-                double sredN = 0;
-                for (int i = 1; i < 2048 * 60; i++)
-                {
-                    g++;
-                    foreach (ClassSobColl sob in _DataSobColli)
-                    {
-                        int c = 0;
-
-                        if (sob.SummAmpl == i && sob.SummNeu < 15)
-                        {
-                            c = sob.SumClastUp;
-                            if (c >= trig)
-                            {
-                                listsob.Add(sob.SummNeu);
-                            }
-
-
-                        }
-                    }
-                    if (g == step)
-                    {
-                        if (listsob.Count == 0)
-                        {
-
-                            // _DataColecSob2.Add(new ClassSobObrZav()
-                            //  {
-                            //    amp = i,
-                            //   sredN = 0,
-                            //   sig = 0
-
-                            // });
-                        }
-                        else
-                        {
-                            sredN = listsob.Average();
-                            _DataColecSob2.Add(new ClassSobObrZav()
-                            {
-                                amp = i,
-                                sredN = listsob.Average(),
-                                sig = Math.Sqrt(Sum(listsob, sredN) / listsob.Count)
-
-                            });
-                        }
-                        g = 0;
-                        listsob = new List<int>();
-                        sredN = 0;
-
-                    }
-
-
-
-
-
-                }
-
-            }
-
-
-
-
-
-
-
-            catch (Exception ex)
-            {
-                await new MessageDialog(ex.ToString()).ShowAsync();
-            }
-            finally
-            {
-                ProgressBar1.IsActive = false;
-                await new MessageDialog("Обработка завершена").ShowAsync();
-            }
+           
 
         }
         private Double Sum(List<int> n, double x)
@@ -3311,7 +3148,7 @@ namespace DataYRAN
         }
         private void AppBarButton_Clear(object sender, RoutedEventArgs e)
         {
-            _DataSobColli.Clear();
+            ViewModel._DataSobColli.Clear();
         }
 
         private void ToggleSwitchObrNoise_Toggled(object sender, RoutedEventArgs e)
@@ -3497,12 +3334,12 @@ namespace DataYRAN
 
         private void AppBarToggleButton_Click_6(object sender, RoutedEventArgs e)
         {
-            if(DataGrid.Visibility==Visibility.Visible && ViewModel.ClassSobs.Count!=0 || GridGistogram.Visibility == Visibility.Visible)
+            if(DataGrid.Visibility==Visibility.Visible && ViewModel.ClassSobsT.Count!=0 || GridGistogram.Visibility == Visibility.Visible)
             {
                 DataGrid.Visibility = Visibility.Collapsed;
                 GridGistogram.Visibility = Visibility.Collapsed;
                 GridStatictik.Visibility = Visibility.Visible;
-                List<ClassSob> classSobs = ViewModel.ClassSobs.ToList<ClassSob>();
+                List<ClassSob> classSobs = ViewModel.ClassSobsT.ToList<ClassSob>();
                 string stat = "Статистика общая"+"\n";
 
                 stat += "Средняя нулевая линия" + "\n";
@@ -3787,12 +3624,12 @@ namespace DataYRAN
         }
         private async void AppBarToggleButton_Click_7(object sender, RoutedEventArgs e)
         {
-            if (DataGrid.Visibility == Visibility.Visible && ViewModel.ClassSobs.Count != 0 || GridStatictik.Visibility==Visibility.Visible)
+            if (DataGrid.Visibility == Visibility.Visible && ViewModel.ClassSobsT.Count != 0 || GridStatictik.Visibility==Visibility.Visible)
             {
                 DataGrid.Visibility = Visibility.Collapsed;
                 GridStatictik.Visibility= Visibility.Collapsed;
                 GridGistogram.Visibility = Visibility.Visible;
-                List<ClassSob> classSobs = ViewModel.ClassSobs.ToList<ClassSob>();
+                List<ClassSob> classSobs = ViewModel.ClassSobsT.ToList<ClassSob>();
                 List<int> listFregAll = new List<int>();
                 List<int> listFregCh1 = new List<int>();
                 string stat=String.Empty;
@@ -3833,7 +3670,7 @@ namespace DataYRAN
 
         private async void AppBarButtonMap_Click(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(BlankPageShowMap), ViewModel.ClassSobs);
+            this.Frame.Navigate(typeof(BlankPageShowMap), ViewModel.ClassSobsT);
             /* CoreApplicationView newView = CoreApplication.CreateNewView();
                int newViewId = 0;
                await newView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -3917,6 +3754,207 @@ namespace DataYRAN
         private async void MenuFlyoutItemTabNew_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(BlankPageRazverta));
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            gridMenedger.Visibility = Visibility.Collapsed;
+
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            gridMenedger.Visibility = Visibility.Collapsed;
+        }
+
+        private async void ListViewVid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListView listView = (ListView)sender;
+            int d = listView.SelectedIndex;
+            if(d==0)
+            {
+                DataGrid.Visibility= Visibility.Visible;
+                DataGrid1.Visibility = Visibility.Collapsed;
+                TextBloxPorogN.IsEnabled = true;
+                TextBloxDlitN.IsEnabled = true;
+                dataNV.IsVisible = false;
+              //  ClassUserSetUp.TipTail = true;
+                dataN.IsVisible = true;
+                dataAmp.IsVisible = true;
+                ampNV.IsVisible = false;
+                mtNV.IsVisible = false;
+                ftNV.IsVisible = false;
+                List55.Visibility = Visibility.Collapsed;
+                List54.Visibility = Visibility.Visible;
+                DataGrid.ItemsSource = ViewModel.ClassSobsT;
+                colstroc.Text = ViewModel.ClassSobsT.Count.ToString();
+
+            }
+            if (d == 1)
+            {
+                DataGrid.Visibility = Visibility.Visible;
+                DataGrid1.Visibility = Visibility.Collapsed;
+                // ClassUserSetUp.TipTail = false;
+                dataN.IsVisible = false;
+                dataAmp.IsVisible = true;
+                dataNV.IsVisible = false;
+                ampNV.IsVisible = false;
+                ftNV.IsVisible = false;
+                mtNV.IsVisible = false;
+                List55.Visibility = Visibility.Visible;
+                List54.Visibility = Visibility.Collapsed;
+                DataGrid.ItemsSource = ViewModel.ClassSobsN;
+                colstroc.Text = ViewModel.ClassSobsN.Count.ToString();
+            }
+            if (d == 2)
+            {
+                DataGrid.Visibility = Visibility.Visible;
+                DataGrid1.Visibility = Visibility.Collapsed;
+                TextBloxPorogN.IsEnabled = false;
+                TextBloxDlitN.IsEnabled = false;
+              //  ClassUserSetUp.TipTail = false;
+                dataN.IsVisible = false;
+                dataNV.IsVisible = true;
+                dataAmp.IsVisible = false;
+                ampNV.IsVisible = true;
+                mtNV.IsVisible = true;
+                ftNV.IsVisible = true;
+                List55.Visibility = Visibility.Visible;
+                List54.Visibility = Visibility.Collapsed;
+                DataGrid.ItemsSource = ViewModel.ClassSobsV;
+                colstroc.Text = ViewModel.ClassSobsV.Count.ToString();
+            }
+            if (d == 3)
+            {
+                DataGrid.Visibility = Visibility.Visible;
+                DataGrid1.Visibility = Visibility.Collapsed;
+                dataN.IsVisible = false;
+                dataAmp.IsVisible = true;
+                ampNV.IsVisible = false;
+                mtNV.IsVisible = false;
+                ftNV.IsVisible = false;
+                dataN.IsVisible = false;
+                dataNV.IsVisible = false;
+                dataAmp.IsVisible = false;
+                List55.Visibility = Visibility.Visible;
+                List54.Visibility = Visibility.Collapsed;
+                List<ClassSob> sobs = new List<ClassSob>();
+                foreach(ClassSob classSob in ViewModel.ClassSobsN)
+                {
+                    sobs.Add(classSob);
+                }
+                foreach (ClassSob classSob in ViewModel.ClassSobsT)
+                {
+                    sobs.Add(classSob);
+                }
+                DataGrid.ItemsSource = sobs;
+                colstroc.Text = (ViewModel.ClassSobsN.Count+ViewModel.ClassSobsT.Count).ToString();
+            }
+            if(d==4)
+            {
+                try
+                {
+                    DataGrid.Visibility = Visibility.Collapsed;
+                    DataGrid1.Visibility = Visibility.Visible;
+                  
+
+               
+
+
+                  
+
+ftNV.IsVisible = true;
+
+
+
+                    int MaxDur = Convert.ToInt16(TimeGate.Text);
+                    int MaxAmpl = Convert.ToInt16(MinAmplDetect.Text);
+                    int MinClust = Convert.ToInt16(MinClustDec.Text);
+                  ObchSobURAN(MaxDur, MaxAmpl, MinClust);
+               
+            
+                }
+                catch(Exception ex)
+                {
+                    MessageDialog messageDialog = new MessageDialog(ex.ToString());
+                   await messageDialog.ShowAsync();
+                }
+
+
+            }
+
+
+
+
+
+        }
+        public async void ObchSobURAN(int MaxDur, int MaxAmpl, int MinClust)
+        {
+            try
+            {
+              
+
+
+             
+                int Clust = 0;
+              // ViewModel._DataColecSobCopy = new ObservableCollection<ClassSob>();
+              foreach(ClassSob classSob in ViewModel.ClassSobsT)
+                {
+                    ViewModel._DataColecSobCopy.Add(classSob);
+                }
+                
+            
+               while(ViewModel._DataColecSobCopy.Count!=0)
+                {
+                    ClassSobColl classSobColl = new ClassSobColl();
+                    ClassSob clF = ViewModel._DataColecSobCopy.ElementAt(0);
+                 classSobColl.col.Add(clF);
+                    ViewModel._DataColecSobCopy.RemoveAt(0);
+                    
+                  if (ViewModel._DataColecSobCopy.Count != 0)
+                  {
+                        int xr = 0;
+                      foreach (ClassSob classSob in ViewModel._DataColecSobCopy)
+                      {
+                          if (DateNanos.isEventSimul(clF.time, classSob.time, MaxDur))
+                          {
+                              classSobColl.col.Add(classSob);
+                                ViewModel._DataColecSobCopy.RemoveAt(xr);
+                               
+                          }
+                           
+                      }
+                  }
+                 
+                   
+                    int x = 0;
+                    foreach(ClassSob classSob in classSobColl.col)
+                    {
+                        if(x!=0)
+                        {
+                            ViewModel._DataColecSobCopy.Remove(classSob);
+                            x--;
+                        }
+                        x++;
+                    }
+                   
+                   classSobColl.SumAmpAndNeutronAndClaster();
+                   classSobColl.StartTime = clF.time;
+                   ViewModel._DataSobColli.Add(classSobColl);
+                   
+
+                }
+
+            }
+
+
+            catch (Exception ex)
+            {
+
+    await new MessageDialog(ex.ToString()).ShowAsync();
+
+            }
+         
         }
     }
 }

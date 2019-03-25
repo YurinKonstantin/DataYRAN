@@ -123,6 +123,48 @@ namespace DataYRAN
                 
             }
         }
+        int porogSN = 10;
+        public int PorogSN
+        {
+            get
+            {
+                return porogSN;
+            }
+            set
+            {
+                porogSN = value;
+                this.OnPropertyChanged();
+
+            }
+        }
+        int lengSV = 1;
+        public int LengSV
+        {
+            get
+            {
+                return lengSV;
+            }
+            set
+            {
+                lengSV = value;
+                this.OnPropertyChanged();
+
+            }
+        }
+        int lengSN = 1;
+        public int LengSN
+        {
+            get
+            {
+                return lengSN;
+            }
+            set
+            {
+                lengSN = value;
+                this.OnPropertyChanged();
+
+            }
+        }
         static int? dlitN3 = 2;
         static public int? DlitN3
         {

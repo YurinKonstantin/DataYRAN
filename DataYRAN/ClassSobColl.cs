@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace DataYRAN
 {
-    class ClassSobColl
+  public  class ClassSobColl
     {
         string startTime;
         public string StartTime
         { get { return startTime; } set { startTime = value; } }
+        string endTime;
+        public string EndTime
+        { get { return endTime; } set { endTime = value; } }
         int summAmpl;
         public int SummAmpl
         { get { return summAmpl; } set { summAmpl = value; } }
@@ -25,8 +28,26 @@ namespace DataYRAN
         int sumClastUp;
         public int SumClastUp
         { get { return sumClastUp; } set { sumClastUp = value; } }
+        public void SumAmpAndNeutronAndClaster()
+        {
+            foreach(ClassSob classSob in col)
+            {
+                SummAmpl = SummAmpl + classSob.SumAmp;
+                SummNeu = SummNeu + classSob.SumNeu;
+                
+            }
+            SumClast = col.Count;
+        }
+        public void FirstTimeS()
+        {
+            foreach (ClassSob classSob in col)
+            {
+                SummAmpl = SummAmpl + classSob.SumAmp;
+                SummNeu = SummNeu + classSob.SumNeu;
 
-
+            }
+        }
+       public List<ClassSob> col = new List<ClassSob>();
 
     }
 }

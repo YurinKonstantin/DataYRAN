@@ -15,7 +15,7 @@ namespace DataYRAN
         class MyclasDataizFile
         {
 
-            int lenghtChenel = 2;
+          public  int lenghtChenel = 2;
             string nameFile = "r";
 
             string ran = "0";
@@ -29,6 +29,7 @@ namespace DataYRAN
             public int[] НулеваяЛиния { get => нулеваяЛиния; set => нулеваяЛиния = value; }
             public string NameBaaR12 { get => nameBaaR12; set => nameBaaR12 = value; }
             public string Ran { get => ran; set => ran = value; }
+            public string tipName = "T";
         }
      
       

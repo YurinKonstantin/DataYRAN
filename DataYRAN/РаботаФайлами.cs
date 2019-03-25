@@ -96,16 +96,52 @@ namespace DataYRAN
         {
            
             ObRing.IsActive = true;
-       if(ClassUserSetUp.TipTail)
+            string cul = "en-US";
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
             {
-               await SaveAll();
+                // Application now has read/write access to all contents in the picked folder
+                // (including other sub-folder contents)
+                Windows.Storage.AccessCache.StorageApplicationPermissions.
+                FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+
+                StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+
+                StorageFolder storageFolderRazvertka = await storageFolder.CreateFolderAsync("Развертка", CreationCollisionOption.OpenIfExists);
+
+                IReadOnlyList<StorageFile> fileList =
+                    await storageFolderRazvertka.GetFilesAsync();
+                if (fileList.Count != 0)
+                {
+                    StorageFolder storageFolderSave = await folder.CreateFolderAsync("Развертка", CreationCollisionOption.GenerateUniqueName);
+                    foreach (StorageFile file in fileList)
+                    {
+                        await file.CopyAsync(storageFolderSave);
+                    }
+                }
+
+                await SaveSob(folder, "СобытияФайлаT", "txt", cul);
+                await SaveSobPlox(folder, "СобытияФайлаBadT", "txt", cul);
+
+                await SaveSobNeutron(folder, "НейтроныФайлаT", "txt", cul);
+                await SaveSobN(folder, "СобытияФайлаN", "txt", cul);
+                await SaveSobPloxN(folder, "СобытияФайлаBadN", "txt", cul);
+                await SaveSobV(folder, "СобытияФайлаV", "txt", cul);
+                await SaveSobPloxV(folder, "СобытияФайлаBadV", "txt", cul);
+
+
+
             }
-            if (!ClassUserSetUp.TipTail)
+            else
             {
-                await SaveAllNoTail();
+
             }
 
-                ObRing.IsActive = false;
+            ObRing.IsActive = false;
             var mess = new MessageDialog("Сохранение завершено");
             await mess.ShowAsync();
 
@@ -158,7 +194,7 @@ namespace DataYRAN
                     }
                 }
                 int i = 0;
-                if (ViewModel.ClassSobs.Count != 0)
+                if (ViewModel.ClassSobsT.Count != 0)
                 {
                     using (StreamWriter writer =
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
@@ -170,7 +206,7 @@ namespace DataYRAN
 
 
                         await writer.WriteLineAsync(sSob);
-                        foreach (ClassSob sob in ViewModel.ClassSobs)
+                        foreach (ClassSob sob in ViewModel.ClassSobsT)
                         {
                             i++;
                             string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" + sob.SumAmp + "\t" + sob.SumNeu + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t" + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" + sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() +
@@ -210,6 +246,201 @@ namespace DataYRAN
 
             }
         }
+        public async Task SaveSob(StorageFolder folder, String name, string tip, string cul)
+        {
+            int i = 0;
+            if (ViewModel.ClassSobsT.Count != 0)
+            {
+                using (StreamWriter writer =
+               new StreamWriter(await folder.OpenStreamForWriteAsync(
+               name+"."+tip, CreationCollisionOption.GenerateUniqueName)))
+                {
+                    string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SN" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "AD10" + "\t" + "AD11" + "\t" + "AD12" +
+                               "\t" + "ND1" + "\t" + "ND2" + "\t" + "ND3" + "\t" + "ND4" + "\t" + "ND5" + "\t" + "ND6" + "\t" + "ND7" + "\t" + "ND8" + "\t" + "ND9" + "\t" + "ND10" + "\t" + "ND11" + "\t" + "ND12" + "\t" +
+                               "SigD1" + "\t" + "SigD2" + "\t" + "SigD3" + "\t" + "SigD4" + "\t" + "SigD5" + "\t" + "SigD6" + "\t" + "SigD7" + "\t" + "SigD8" + "\t" + "SigD9" + "\t" + "SigD10" + "\t" + "SigD11" + "\t" + "SigD12" + "\t" + "NullD1" + "\t" + "NullD2"
+                               + "\t" + "NullD3" + "\t" + "NullD4" + "\t" + "NullD5" + "\t" + "NullD6" + "\t" + "NullD7" + "\t" + "NullD8" + "\t" + "NullD9" + "\t" + "NullD10" + "\t" + "NullD11" + "\t" + "NullD12";
+
+
+                    await writer.WriteLineAsync(sSob);
+                    foreach (ClassSob sob in ViewModel.ClassSobsT)
+                    {
+                        i++;
+                        string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" + sob.SumAmp + "\t" + sob.SumNeu + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t" + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" + sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() +
+                           "\t" + sob.Nnut0.ToString() + "\t" + sob.Nnut1.ToString() + "\t" + sob.Nnut2.ToString() + "\t" + sob.Nnut3.ToString() + "\t" + sob.Nnut4.ToString() + "\t" + sob.Nnut5.ToString() + "\t" + sob.Nnut6.ToString() + "\t" + sob.Nnut7.ToString() + "\t" + sob.Nnut8.ToString() + "\t" + sob.Nnut9.ToString() + "\t" + sob.Nnut10.ToString() + "\t" + sob.Nnut11.ToString() + "\t" +
+                            sob.sig0.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig1.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig2.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig3.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig4.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig5.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig6.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig7.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig8.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig9.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig10.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig11.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.Nnull0
+                             + "\t" + sob.Nnull1 + "\t" + sob.Nnull2 + "\t" + sob.Nnull3 + "\t" + sob.Nnull4 + "\t" + sob.Nnull5 + "\t" + sob.Nnull6 + "\t" + sob.Nnull7 + "\t" + sob.Nnull8 + "\t" + sob.Nnull9 + "\t" + sob.Nnull10 + "\t" + sob.Nnull11;
+                        await writer.WriteLineAsync(Sob);
+                    }
+                }
+            }
+
+        }
+        public async Task SaveSobN(StorageFolder folder, String name, string tip, string cul)
+        {
+            int i = 0;
+            if (ViewModel.ClassSobsN.Count != 0)
+            {
+                using (StreamWriter writer =
+               new StreamWriter(await folder.OpenStreamForWriteAsync(
+               name+tip, CreationCollisionOption.GenerateUniqueName)))
+                {
+                    string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SQ" + "\t" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "aD10" + "\t" + "AD11" + "\t" + "AD12" +
+                               "\t" + "QD1" + "\t" + "QD2" + "\t" + "QD3" + "\t" + "QD4" + "\t" + "QD5" + "\t" + "QD6" + "\t" + "QD7" + "\t" + "QD8" + "\t" + "QD9" + "\t" + "QD10" + "\t" + "QD11" + "\t" + "QD12";
+
+
+                    await writer.WriteLineAsync(sSob);
+                    foreach (ClassSob sob in ViewModel.ClassSobsN)
+                    {
+                        i++;
+                        string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" +
+                       sob.SumAmp + "\t" + sob.Qsum.Sum().ToString() + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t"
+                       + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" +
+                       sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t"
+                       + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" +
+                       sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t";
+                        await writer.WriteLineAsync(Sob);
+                    }
+                }
+            }
+
+        }
+        public async Task SaveSobV(StorageFolder folder, String name, string tip, string cul)
+        {
+            int i = 0;
+            if (ViewModel.ClassSobsV.Count != 0)
+            {
+                using (StreamWriter writer =
+               new StreamWriter(await folder.OpenStreamForWriteAsync(
+               name + tip, CreationCollisionOption.GenerateUniqueName)))
+                {
+                    string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SQ" + "\t" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "aD10" + "\t" + "AD11" + "\t" + "AD12" +
+                               "\t" + "QD1" + "\t" + "QD2" + "\t" + "QD3" + "\t" + "QD4" + "\t" + "QD5" + "\t" + "QD6" + "\t" + "QD7" + "\t" + "QD8" + "\t" + "QD9" + "\t" + "QD10" + "\t" + "QD11" + "\t" + "QD12";
+
+
+                    await writer.WriteLineAsync(sSob);
+                    foreach (ClassSob sob in ViewModel.ClassSobsV)
+                    {
+                        i++;
+                        string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" +
+                       sob.SumAmp + "\t" + sob.Qsum.Sum().ToString() + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t"
+                       + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" +
+                       sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t"
+                       + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" +
+                       sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t";
+                        await writer.WriteLineAsync(Sob);
+                    }
+                }
+            }
+
+        }
+        public async Task SaveSobPlox(StorageFolder folder, String name, string tip, string cul)
+        {
+            int i = 0;
+            if (_DataColecSobPlox.Count != 0)
+            {
+                using (StreamWriter writer =
+               new StreamWriter(await folder.OpenStreamForWriteAsync(
+               name + "." + tip, CreationCollisionOption.GenerateUniqueName)))
+                {
+                    string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SN" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "AD10" + "\t" + "AD11" + "\t" + "AD12" +
+                               "\t" + "ND1" + "\t" + "ND2" + "\t" + "ND3" + "\t" + "ND4" + "\t" + "ND5" + "\t" + "ND6" + "\t" + "ND7" + "\t" + "ND8" + "\t" + "ND9" + "\t" + "ND10" + "\t" + "ND11" + "\t" + "ND12" + "\t" +
+                               "SigD1" + "\t" + "SigD2" + "\t" + "SigD3" + "\t" + "SigD4" + "\t" + "SigD5" + "\t" + "SigD6" + "\t" + "SigD7" + "\t" + "SigD8" + "\t" + "SigD9" + "\t" + "SigD10" + "\t" + "SigD11" + "\t" + "SigD12" + "\t" + "NullD1" + "\t" + "NullD2"
+                               + "\t" + "NullD3" + "\t" + "NullD4" + "\t" + "NullD5" + "\t" + "NullD6" + "\t" + "NullD7" + "\t" + "NullD8" + "\t" + "NullD9" + "\t" + "NullD10" + "\t" + "NullD11" + "\t" + "NullD12";
+
+
+                    await writer.WriteLineAsync(sSob);
+                    foreach (ClassSob sob in _DataColecSobPlox)
+                    {
+                        i++;
+                        string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" + sob.SumAmp + "\t" + sob.SumNeu + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t" + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" + sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() +
+                           "\t" + sob.Nnut0.ToString() + "\t" + sob.Nnut1.ToString() + "\t" + sob.Nnut2.ToString() + "\t" + sob.Nnut3.ToString() + "\t" + sob.Nnut4.ToString() + "\t" + sob.Nnut5.ToString() + "\t" + sob.Nnut6.ToString() + "\t" + sob.Nnut7.ToString() + "\t" + sob.Nnut8.ToString() + "\t" + sob.Nnut9.ToString() + "\t" + sob.Nnut10.ToString() + "\t" + sob.Nnut11.ToString() + "\t" +
+                            sob.sig0.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig1.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig2.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig3.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig4.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig5.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig6.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig7.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig8.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig9.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig10.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig11.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.Nnull0
+                             + "\t" + sob.Nnull1 + "\t" + sob.Nnull2 + "\t" + sob.Nnull3 + "\t" + sob.Nnull4 + "\t" + sob.Nnull5 + "\t" + sob.Nnull6 + "\t" + sob.Nnull7 + "\t" + sob.Nnull8 + "\t" + sob.Nnull9 + "\t" + sob.Nnull10 + "\t" + sob.Nnull11;
+                        await writer.WriteLineAsync(Sob);
+                    }
+                }
+            }
+
+        }
+        public async Task SaveSobPloxN(StorageFolder folder, String name, string tip, string cul)
+        {
+            int i = 0;
+            if (ViewModel.ClassSobsN.Count != 0)
+            {
+                using (StreamWriter writer =
+               new StreamWriter(await folder.OpenStreamForWriteAsync(
+               name + tip, CreationCollisionOption.GenerateUniqueName)))
+                {
+                    string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SQ" + "\t" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "aD10" + "\t" + "AD11" + "\t" + "AD12" +
+                               "\t" + "QD1" + "\t" + "QD2" + "\t" + "QD3" + "\t" + "QD4" + "\t" + "QD5" + "\t" + "QD6" + "\t" + "QD7" + "\t" + "QD8" + "\t" + "QD9" + "\t" + "QD10" + "\t" + "QD11" + "\t" + "QD12";
+
+
+                    await writer.WriteLineAsync(sSob);
+                    foreach (ClassSob sob in ViewModel.ClassSobsN)
+                    {
+                        i++;
+                        string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" +
+                       sob.SumAmp + "\t" + sob.Qsum.Sum().ToString() + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t"
+                       + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" +
+                       sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t"
+                       + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" +
+                       sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t";
+                        await writer.WriteLineAsync(Sob);
+                    }
+                }
+            }
+
+        }
+        public async Task SaveSobPloxV(StorageFolder folder, String name, string tip, string cul)
+        {
+            int i = 0;
+            if (ViewModel.ClassSobsV.Count != 0)
+            {
+                using (StreamWriter writer =
+               new StreamWriter(await folder.OpenStreamForWriteAsync(
+               name + tip, CreationCollisionOption.GenerateUniqueName)))
+                {
+                    string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SQ" + "\t" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "aD10" + "\t" + "AD11" + "\t" + "AD12" +
+                               "\t" + "QD1" + "\t" + "QD2" + "\t" + "QD3" + "\t" + "QD4" + "\t" + "QD5" + "\t" + "QD6" + "\t" + "QD7" + "\t" + "QD8" + "\t" + "QD9" + "\t" + "QD10" + "\t" + "QD11" + "\t" + "QD12";
+
+
+                    await writer.WriteLineAsync(sSob);
+                    foreach (ClassSob sob in ViewModel.ClassSobsV)
+                    {
+                        i++;
+                        string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" +
+                       sob.SumAmp + "\t" + sob.Qsum.Sum().ToString() + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t"
+                       + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" +
+                       sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t"
+                       + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" +
+                       sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t" + sob.QS0.ToString() + "\t";
+                        await writer.WriteLineAsync(Sob);
+                    }
+                }
+            }
+
+        }
+        public async Task SaveSobNeutron(StorageFolder folder, String name, string tip, string cul)
+        {
+            int ii = 0;
+            if (ViewModel.ClassSobNeutrons.Count != 0)
+            {
+                using (StreamWriter writer =
+               new StreamWriter(await folder.OpenStreamForWriteAsync(
+               name+"."+tip, CreationCollisionOption.GenerateUniqueName)))
+                {
+                    string sNeu = "n" + "\t" + "file" + "\t" + "D" + "\t" + "A" + "\t" + "Time" + "\t" + "tf" + "\t" + "tf3" + "\t" + "tmax" + "\t" + "tend3" + "\t" + "tend";
+                    await writer.WriteLineAsync(sNeu);
+                    foreach (ClassSobNeutron sob in ViewModel.ClassSobNeutrons)
+                    {
+                        ii++;
+                        string Sob = ii.ToString() + "\t" + sob.nameFile + "\t" + sob.D.ToString("00") + "\t" + sob.Amp.ToString() + "\t" + sob.time + "\t" + sob.TimeFirst.ToString() + "\t" + sob.TimeFirst3.ToString() + "\t" + sob.TimeAmp.ToString() + "\t" + sob.TimeEnd3.ToString() + "\t" + sob.TimeEnd3.ToString();
+                        await writer.WriteLineAsync(Sob);
+                    }
+                }
+            }
+
+        }
         public async Task SaveAll()
         {
             string cul = "en-US";
@@ -239,73 +470,18 @@ namespace DataYRAN
                         await file.CopyAsync(storageFolderSave);
                     }
                 }
-                int i = 0;
-                if (ViewModel.ClassSobs.Count != 0)
-                {
-                    using (StreamWriter writer =
-                   new StreamWriter(await folder.OpenStreamForWriteAsync(
-                   "СобытияФайла.txt", CreationCollisionOption.GenerateUniqueName)))
-                    {
-                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SN" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "AD10" + "\t" + "AD11" + "\t" + "AD12" +
-                                   "\t" + "ND1" + "\t" + "ND2" + "\t" + "ND3" + "\t" + "ND4" + "\t" + "ND5" + "\t" + "ND6" + "\t" + "ND7" + "\t" + "ND8" + "\t" + "ND9" + "\t" + "ND10" + "\t" + "ND11" + "\t" + "ND12" + "\t" +
-                                   "SigD1" + "\t" + "SigD2" + "\t" + "SigD3" + "\t" + "SigD4" + "\t" + "SigD5" + "\t" + "SigD6" + "\t" + "SigD7" + "\t" + "SigD8" + "\t" + "SigD9" + "\t" + "SigD10" + "\t" + "SigD11" + "\t" + "SigD12" + "\t" + "NullD1" + "\t" + "NullD2"
-                                   + "\t" + "NullD3" + "\t" + "NullD4" + "\t" + "NullD5" + "\t" + "NullD6" + "\t" + "NullD7" + "\t" + "NullD8" + "\t" + "NullD9" + "\t" + "NullD10" + "\t" + "NullD11" + "\t" + "NullD12";
+
+              await  SaveSob(folder, "СобытияФайлаT", "txt", cul);
+                await SaveSobPlox(folder, "СобытияФайлаBadT", "txt", cul);
+
+                await SaveSobNeutron(folder, "НейтроныФайлаT", "txt", cul);
+                await SaveSobN(folder, "СобытияФайла", "txt", cul);
+                await SaveSobPloxN(folder, "СобытияФайлаBad", "txt", cul);
+                await SaveSobV(folder, "СобытияФайла", "txt", cul);
+                await SaveSobPloxV(folder, "СобытияФайлаBad", "txt", cul);
 
 
-                        await writer.WriteLineAsync(sSob);
-                        foreach (ClassSob sob in ViewModel.ClassSobs)
-                        {
-                            i++;
-                            string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" + sob.SumAmp + "\t" + sob.SumNeu + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t" + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" + sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() +
-                               "\t" + sob.Nnut0.ToString() + "\t" + sob.Nnut1.ToString() + "\t" + sob.Nnut2.ToString() + "\t" + sob.Nnut3.ToString() + "\t" + sob.Nnut4.ToString() + "\t" + sob.Nnut5.ToString() + "\t" + sob.Nnut6.ToString() + "\t" + sob.Nnut7.ToString() + "\t" + sob.Nnut8.ToString() + "\t" + sob.Nnut9.ToString() + "\t" + sob.Nnut10.ToString() + "\t" + sob.Nnut11.ToString() + "\t" +
-                                sob.sig0.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig1.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig2.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig3.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig4.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig5.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig6.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig7.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig8.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig9.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig10.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig11.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.Nnull0
-                                 + "\t" + sob.Nnull1 + "\t" + sob.Nnull2 + "\t" + sob.Nnull3 + "\t" + sob.Nnull4 + "\t" + sob.Nnull5 + "\t" + sob.Nnull6 + "\t" + sob.Nnull7 + "\t" + sob.Nnull8 + "\t" + sob.Nnull9 + "\t" + sob.Nnull10 + "\t" + sob.Nnull11;
-                            await writer.WriteLineAsync(Sob);
-                        }
-                    }
-                }
-                i = 0;
-                if (_DataColecSobPlox.Count != 0)
-                {
-                    using (StreamWriter writer =
-                   new StreamWriter(await folder.OpenStreamForWriteAsync(
-                   "СобытияФайлаBad.txt", CreationCollisionOption.GenerateUniqueName)))
-                    {
-                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "PSB" + "\t" + "Time" + "\t" + "SA" + "\t" + "SN" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t" + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "AD10" + "\t" + "AD11" + "\t" + "AD12" +
-                                   "\t" + "ND1" + "\t" + "ND2" + "\t" + "ND3" + "\t" + "ND4" + "\t" + "ND5" + "\t" + "ND6" + "\t" + "ND7" + "\t" + "ND8" + "\t" + "ND9" + "\t" + "ND10" + "\t" + "ND11" + "\t" + "ND12" + "\t" +
-                                   "SigD1" + "\t" + "SigD2" + "\t" + "SigD3" + "\t" + "SigD4" + "\t" + "SigD5" + "\t" + "SigD6" + "\t" + "SigD7" + "\t" + "SigD8" + "\t" + "SigD9" + "\t" + "SigD10" + "\t" + "SigD11" + "\t" + "SigD12" + "\t" + "NullD1" + "\t" + "NullD2"
-                                   + "\t" + "NullD3" + "\t" + "NullD4" + "\t" + "NullD5" + "\t" + "NullD6" + "\t" + "NullD7" + "\t" + "NullD8" + "\t" + "NullD9" + "\t" + "NullD10" + "\t" + "NullD11" + "\t" + "NullD12";
 
-
-                        await writer.WriteLineAsync(sSob);
-                        foreach (ClassSob sob in _DataColecSobPlox)
-                        {
-                            i++;
-                            string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" + sob.SumAmp + "\t" + sob.SumNeu + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t" + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" + sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() +
-                               "\t" + sob.Nnut0.ToString() + "\t" + sob.Nnut1.ToString() + "\t" + sob.Nnut2.ToString() + "\t" + sob.Nnut3.ToString() + "\t" + sob.Nnut4.ToString() + "\t" + sob.Nnut5.ToString() + "\t" + sob.Nnut6.ToString() + "\t" + sob.Nnut7.ToString() + "\t" + sob.Nnut8.ToString() + "\t" + sob.Nnut9.ToString() + "\t" + sob.Nnut10.ToString() + "\t" + sob.Nnut11.ToString() + "\t" +
-                                sob.sig0.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig1.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig2.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig3.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig4.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig5.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig6.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig7.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig8.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig9.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig10.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.sig11.ToString("0.00", CultureInfo.GetCultureInfo(cul)) + "\t" + sob.Nnull0
-                                 + "\t" + sob.Nnull1 + "\t" + sob.Nnull2 + "\t" + sob.Nnull3 + "\t" + sob.Nnull4 + "\t" + sob.Nnull5 + "\t" + sob.Nnull6 + "\t" + sob.Nnull7 + "\t" + sob.Nnull8 + "\t" + sob.Nnull9 + "\t" + sob.Nnull10 + "\t" + sob.Nnull11;
-                            await writer.WriteLineAsync(Sob);
-                        }
-                    }
-                }
-                int ii = 0;
-                if (ViewModel.ClassSobNeutrons.Count != 0)
-                {
-                    using (StreamWriter writer =
-                   new StreamWriter(await folder.OpenStreamForWriteAsync(
-                   "НейтроныФайла.txt", CreationCollisionOption.GenerateUniqueName)))
-                    {
-                        string sNeu = "n" + "\t" + "file" + "\t" + "D" + "\t" + "A" + "\t" + "Time" + "\t" + "tf" + "\t" + "tf3" + "\t" + "tmax" + "\t" + "tend3" + "\t" + "tend";
-                        await writer.WriteLineAsync(sNeu);
-                        foreach (ClassSobNeutron sob in ViewModel.ClassSobNeutrons)
-                        {
-                            ii++;
-                            string Sob = ii.ToString() + "\t" + sob.nameFile + "\t" + sob.D.ToString("00") + "\t" + sob.Amp.ToString() + "\t" + sob.time + "\t" + sob.TimeFirst.ToString() + "\t" + sob.TimeFirst3.ToString() + "\t" + sob.TimeAmp.ToString() + "\t" + sob.TimeEnd3.ToString() + "\t" + sob.TimeEnd3.ToString();
-                            await writer.WriteLineAsync(Sob);
-                        }
-                    }
-                }
             }
             else
             {
@@ -338,7 +514,7 @@ namespace DataYRAN
                     
                 }
                 int i = 0;
-                if (ViewModel.ClassSobs.Count != 0)
+                if (ViewModel.ClassSobsT.Count != 0)
                 {
                     using (StreamWriter writer =
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
@@ -349,7 +525,7 @@ namespace DataYRAN
 
 
                         await writer.WriteLineAsync(sSob);
-                        foreach (ClassSob sob in ViewModel.ClassSobs)
+                        foreach (ClassSob sob in ViewModel.ClassSobsT)
                         {
                             i++;
                             string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" +
@@ -485,7 +661,7 @@ namespace DataYRAN
                     }
                 }
                 int i = 0;
-                if (ViewModel.ClassSobs.Count != 0)
+                if (ViewModel.ClassSobsT.Count != 0)
                 {
                     using (StreamWriter writer =
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
@@ -498,7 +674,7 @@ namespace DataYRAN
 
 
                         await writer.WriteLineAsync(sSob);
-                        foreach (ClassSob sob in ViewModel.ClassSobs)
+                        foreach (ClassSob sob in ViewModel.ClassSobsT)
                         {
                             i++;
                             string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.nameBAAK.ToString() + "\t" + sob.time + "\t" + sob.SumAmp + "\t" + sob.SumNeu + "\t" + sob.Amp0.ToString() + "\t" + sob.Amp1.ToString() + "\t" + sob.Amp2.ToString() + "\t" + sob.Amp3.ToString() + "\t" + sob.Amp4.ToString() + "\t" + sob.Amp5.ToString() + "\t" + sob.Amp6.ToString() + "\t" + sob.Amp7.ToString() + "\t" + sob.Amp8.ToString() + "\t" + sob.Amp9.ToString() + "\t" + sob.Amp10.ToString() + "\t" + sob.Amp11.ToString() +
@@ -556,6 +732,29 @@ namespace DataYRAN
             {
 
             }
+        }
+
+
+        public async Task SaveAllMenedger()
+        {
+            string cul = "en-US";
+
+            // Application now has read/write access to all contents in the picked folder
+            // (including other sub-folder contents)
+            StorageFolder folder = ApplicationData.Current.LocalFolder;
+            ViewModel._DataColecViewSaveMenedger.Add(new ClassSaveSetUp() { Folder = folder, NameFile = "СобытияФайлаT", tip = ".txt", save = true });
+            ViewModel._DataColecViewSaveMenedger.Add(new ClassSaveSetUp() { Folder = folder, NameFile = "СобытияФайлаBadT", tip = ".txt", save = true });
+            ViewModel._DataColecViewSaveMenedger.Add(new ClassSaveSetUp() { Folder = folder, NameFile = "НейтроныФайлаT", tip = ".txt", save = true });
+
+            ViewModel._DataColecViewSaveMenedger.Add(new ClassSaveSetUp() { Folder = folder, NameFile = "СобытияФайлаN", tip = ".txt", save = true });
+            ViewModel._DataColecViewSaveMenedger.Add(new ClassSaveSetUp() { Folder = folder, NameFile = "СобытияФайлаBadN", tip = ".txt", save = true });
+            ViewModel._DataColecViewSaveMenedger.Add(new ClassSaveSetUp() { Folder = folder, NameFile = "СобытияФайлаV", tip = ".txt", save = true });
+            ViewModel._DataColecViewSaveMenedger.Add(new ClassSaveSetUp() { Folder = folder, NameFile = "СобытияФайлаBadV", tip = ".txt", save = true });
+
+
+
+
+
         }
     }
 }

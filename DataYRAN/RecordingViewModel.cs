@@ -51,9 +51,44 @@ namespace DataYRAN
             ClassUserSetUp.saveUseSet();
         }
         private ObservableCollection<ClassSob> classSobs = new ObservableCollection<ClassSob>();
-        public ObservableCollection<ClassSob> ClassSobs { get { return this.classSobs; } }
-
+        /// <summary>
+        /// Коллекция сигналов БААК12-200Т
+        /// </summary>
+        public ObservableCollection<ClassSob> ClassSobsT { get { return this.classSobs; } }
+        /// <summary>
+        /// Коллекция событий платы БААК12-200
+        /// </summary>
+        public ObservableCollection<ClassSob> ClassSobsN = new ObservableCollection<ClassSob>();
+        /// <summary>
+        /// Коллекция событий платы БААК12-100
+        /// </summary>
+        public ObservableCollection<ClassSob> ClassSobsV = new ObservableCollection<ClassSob>();
         ObservableCollection<ClassSobNeutron> classSobNeutrons = new ObservableCollection<ClassSobNeutron>();
         public ObservableCollection<ClassSobNeutron> ClassSobNeutrons { get { return this.classSobNeutrons; } }
+        public ObservableCollection<ClassSaveSetUp> _DataColecViewSaveMenedger = new ObservableCollection<ClassSaveSetUp>();
+
+       /// <summary>
+       /// Коллекция шумовых сигналов платы БААК12-200Т
+       /// </summary>
+       public ObservableCollection<ClassSob> _DataColecSobPloxT = new ObservableCollection<ClassSob>();
+
+        /// <summary>
+        /// Коллекция шумовых сигналов платы БААК12-200
+        /// </summary>
+        public ObservableCollection<ClassSob> _DataColecSobPloxN = new ObservableCollection<ClassSob>();
+
+        /// <summary>
+        /// Коллекция шумовых сигналов платы БААК12-100
+        /// </summary>
+        public ObservableCollection<ClassSob> _DataColecSobPloxV = new ObservableCollection<ClassSob>();
+
+        /// <summary>
+        /// Коллекция общих событий кластеров УРАН
+        /// </summary>
+       public ObservableCollection<ClassSobColl> _DataSobColli = new ObservableCollection<ClassSobColl>();
+        /// <summary>
+        /// Коллекция промежуточного результата общих событий кластеров УРАН
+        /// </summary>
+       public ObservableCollection<ClassSob> _DataColecSobCopy = new ObservableCollection<ClassSob>();
     }
 }
