@@ -38,6 +38,8 @@ using Windows.UI;
 using System.Net;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.FileProperties;
+using System.Data;
+using System.Runtime.InteropServices.ComTypes;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -621,9 +623,8 @@ namespace DataYRAN
                 {
                     
                     await Delite();
-                    ViewModel.ClassSobsT.Clear();
-                    _DataColecSobPlox.Clear();
-                    ViewModel.ClassSobNeutrons.Clear();
+                    ViewModel.ClearData();
+                 
                    
                 
                     Split1.IsPaneOpen = false;
@@ -682,15 +683,192 @@ namespace DataYRAN
         }
         private async  void AppBarButton_Click_8(object sender, RoutedEventArgs e)
         {
+            DataPackage dataPackage = new DataPackage();
+           await OutputClipboardText();
+            /* var picker = new Windows.Storage.Pickers.FileOpenPicker();
+             picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+             picker.SuggestedStartLocation =
+                 Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+             picker.FileTypeFilter.Add(".doc");
+             picker.FileTypeFilter.Add(".data");
+             picker.FileTypeFilter.Add(".txt");
+             picker.FileTypeFilter.Add(".xml");
 
-            
-            
-           
-            MessageDialog messageDialog = new MessageDialog(ViewModel.ClassSobsT.Count.ToString()+"\n"+ViewModel.ClassSobsN.Count.ToString());
-           await messageDialog.ShowAsync();
+
+             try
+             {
+                 Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+                 if (file != null)
+                 {
+
+                     DataSet ds = new DataSet();
+                     // XDocument d= System.Xml.Linq.XDocument.Load(sampleFile.Path);
+                     ds.ReadXml(file.Path);
+                     // выбираем первую таблицу
+                     DataTable dt = ds.Tables[0];
+
+                     await ParserTabSobData(dt);
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageDialog messageDialog = new MessageDialog(ex.ToString());
+               await  messageDialog.ShowAsync();
+             }
+ */
 
         }
+        async Task OutputClipboardText()
+        {
+            int count = 0;
+            try
+            {
 
+
+                DataPackageView dataPackageView = Clipboard.GetContent();
+                if (dataPackageView.Contains(StandardDataFormats.Text))
+                {
+                    string text = await dataPackageView.GetTextAsync();
+                    // To output the text from this example, you need a TextBlock control
+                    char[] rowSplitter = { '\r', '\n' };
+                    string[] rowsInClipboard = text.Split(rowSplitter, StringSplitOptions.RemoveEmptyEntries);
+                    for (int i = 1; i < rowsInClipboard.Length; i++)
+                    {
+                        string[] rows = rowsInClipboard[i].Split('\t');
+                        count = Convert.ToInt32(rows[0]);
+                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+           () =>
+           {
+               ViewModel.ClassSobsT.Add(new ClassSob()
+               {
+                   nameFile = rows[2],
+                   nameklaster = rows[4],
+                   nameBAAK = rows[3],
+                   time = rows[1],
+                   Amp0 = Convert.ToInt16(rows[7]),
+                   Amp1 = Convert.ToInt16(rows[8]),
+                   Amp2 = Convert.ToInt16(rows[9]),
+                   Amp3 = Convert.ToInt16(rows[10]),
+                   Amp4 = Convert.ToInt16(rows[11]),
+                   Amp5 = Convert.ToInt16(rows[12]),
+                   Amp6 = Convert.ToInt16(rows[13]),
+                   Amp7 = Convert.ToInt16(rows[14]),
+                   Amp8 = Convert.ToInt16(rows[15]),
+                   Amp9 = Convert.ToInt16(rows[16]),
+                   Amp10 = Convert.ToInt16(rows[17]),
+                   Amp11 = Convert.ToInt16(rows[18]),
+                   Nnut0 = Convert.ToInt16(rows[19]),
+                   Nnut1 = Convert.ToInt16(rows[20]),
+                   Nnut2 = Convert.ToInt16(rows[21]),
+                   Nnut3 = Convert.ToInt16(rows[22]),
+                   Nnut4 = Convert.ToInt16(rows[23]),
+                   Nnut5 = Convert.ToInt16(rows[24]),
+                   Nnut6 = Convert.ToInt16(rows[25]),
+                   Nnut7 = Convert.ToInt16(rows[26]),
+                   Nnut8 = Convert.ToInt16(rows[27]),
+                   Nnut9 = Convert.ToInt16(rows[28]),
+                   Nnut10 = Convert.ToInt16(rows[29]),
+                   Nnut11 = Convert.ToInt16(rows[30]),
+
+                   sig0 = Convert.ToDouble(rows[43]),
+                   sig1 = Convert.ToDouble(rows[44]),
+                   sig2 = Convert.ToDouble(rows[45]),
+                   sig3 = Convert.ToDouble(rows[46]),
+                   sig4 = Convert.ToDouble(rows[47]),
+                   sig5 = Convert.ToDouble(rows[48]),
+                   sig6 = Convert.ToDouble(rows[49]),
+                   sig7 = Convert.ToDouble(rows[50]),
+                   sig8 = Convert.ToDouble(rows[51]),
+                   sig9 = Convert.ToDouble(rows[52]),
+                   sig10 = Convert.ToDouble(rows[53]),
+                   sig11 = Convert.ToDouble(rows[54]),
+                   SumAmp = Convert.ToInt32(rows[5]),
+                   SumNeu = Convert.ToInt16(rows[6]),
+                   Nnull0 = Convert.ToInt16(rows[31]),
+                   Nnull1 = Convert.ToInt16(rows[32]),
+                   Nnull2 = Convert.ToInt16(rows[33]),
+                   Nnull3 = Convert.ToInt16(rows[34]),
+                   Nnull4 = Convert.ToInt16(rows[35]),
+                   Nnull5 = Convert.ToInt16(rows[36]),
+                   Nnull6 = Convert.ToInt16(rows[37]),
+                   Nnull7 = Convert.ToInt16(rows[38]),
+                   Nnull8 = Convert.ToInt16(rows[39]),
+                   Nnull9 = Convert.ToInt16(rows[40]),
+                   Nnull10 = Convert.ToInt16(rows[41]),
+                   Nnull11 = Convert.ToInt16(rows[42])
+               });
+
+           });
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageDialog messageDialog = new MessageDialog(ex.ToString());
+                await messageDialog.ShowAsync();
+            }
+        }
+        private static void ReadXmlFile(string filename)
+        {
+            // Создаем экземпляр Xml документа.
+            var doc = new XmlDocument();
+
+            // Загружаем данные из файла.
+            doc.Load(filename);
+
+            // Получаем корневой элемент документа.
+            var root = doc.DocumentElement;
+
+            // Используем метод для рекурсивного обхода документа.
+            PrintItem(root);
+        }
+
+        /// <summary>
+        /// Метод для отображения содержимого xml элемента.
+        /// </summary>
+        /// <remarks>
+        /// Получает элемент xml, отображает его имя, затем все атрибуты
+        /// после этого переходит к зависимым элементам.
+        /// Отображает зависимые элементы со смещением вправо от начала строки.
+        /// </remarks>
+        /// <param name="item"> Элемент Xml. </param>
+        /// <param name="indent"> Количество отступов от начала строки. </param>
+        private static void PrintItem(XmlElement item, int indent = 0)
+        {
+            // Выводим имя самого элемента.
+            // new string('\t', indent) - создает строку состоящую из indent табов.
+            // Это нужно для смещения вправо.
+            // Пробел справа нужен чтобы атрибуты не прилипали к имени.
+            Console.Write($"{new string('\t', indent)}{item.LocalName} ");
+
+            // Если у элемента есть атрибуты, 
+            // то выводим их поочередно, каждый в квадратных скобках.
+            foreach (XmlAttribute attr in item.Attributes)
+            {
+                Console.Write($"[{attr.InnerText}]");
+            }
+
+            // Если у элемента есть зависимые элементы, то выводим.
+            foreach (var child in item.ChildNodes)
+            {
+                if (child is XmlElement node)
+                {
+                    // Если зависимый элемент тоже элемент,
+                    // то переходим на новую строку 
+                    // и рекурсивно вызываем метод.
+                    // Следующий элемент будет смещен на один отступ вправо.
+                    Console.WriteLine();
+                    PrintItem(node, indent + 1);
+                }
+
+                if (child is XmlText text)
+                {
+                    // Если зависимый элемент текст,
+                    // то выводим его через тире.
+                    Console.Write($"- {text.InnerText}");
+                }
+            }
+        }
         private async void AppBarToggleButton_Click_3(object sender, RoutedEventArgs e)
         {
             ObRing.IsActive = true;
@@ -3788,6 +3966,7 @@ namespace DataYRAN
                 List54.Visibility = Visibility.Visible;
                 DataGrid.ItemsSource = ViewModel.ClassSobsT;
                 colstroc.Text = ViewModel.ClassSobsT.Count.ToString();
+                textHeader.Text = "Таблица данных БААК12-200Т";
 
             }
             if (d == 1)
@@ -3805,6 +3984,7 @@ namespace DataYRAN
                 List54.Visibility = Visibility.Collapsed;
                 DataGrid.ItemsSource = ViewModel.ClassSobsN;
                 colstroc.Text = ViewModel.ClassSobsN.Count.ToString();
+                textHeader.Text = "Таблица данных БААК12-200";
             }
             if (d == 2)
             {
@@ -3823,6 +4003,7 @@ namespace DataYRAN
                 List54.Visibility = Visibility.Collapsed;
                 DataGrid.ItemsSource = ViewModel.ClassSobsV;
                 colstroc.Text = ViewModel.ClassSobsV.Count.ToString();
+                textHeader.Text = "Таблица данных БААК12-100";
             }
             if (d == 3)
             {
@@ -3849,6 +4030,7 @@ namespace DataYRAN
                 }
                 DataGrid.ItemsSource = sobs;
                 colstroc.Text = (ViewModel.ClassSobsN.Count+ViewModel.ClassSobsT.Count).ToString();
+                textHeader.Text = "Таблица данных БААК12-200Т+200";
             }
             if(d==4)
             {
@@ -3871,8 +4053,9 @@ ftNV.IsVisible = true;
                     int MaxAmpl = Convert.ToInt16(MinAmplDetect.Text);
                     int MinClust = Convert.ToInt16(MinClustDec.Text);
                   ObchSobURAN(MaxDur, MaxAmpl, MinClust);
-               
-            
+                    textHeader.Text = "Таблица данных общие";
+
+
                 }
                 catch(Exception ex)
                 {
@@ -3914,29 +4097,24 @@ ftNV.IsVisible = true;
                   if (ViewModel._DataColecSobCopy.Count != 0)
                   {
                         int xr = 0;
-                      foreach (ClassSob classSob in ViewModel._DataColecSobCopy)
-                      {
-                          if (DateNanos.isEventSimul(clF.time, classSob.time, MaxDur))
-                          {
-                              classSobColl.col.Add(classSob);
+                        for(int i=0; i< ViewModel._DataColecSobCopy.Count; i++)
+                        {
+                            ClassSob classSob = ViewModel._DataColecSobCopy.ElementAt(i);
+                            if (DateNanos.isEventSimul(clF.time, classSob.time, MaxDur))
+                            {
+                                classSobColl.col.Add(classSob);
                                 ViewModel._DataColecSobCopy.RemoveAt(xr);
-                               
-                          }
-                           
-                      }
+                                i--;
+
+                            }
+
+                        }
+                        
+                      
                   }
                  
                    
-                    int x = 0;
-                    foreach(ClassSob classSob in classSobColl.col)
-                    {
-                        if(x!=0)
-                        {
-                            ViewModel._DataColecSobCopy.Remove(classSob);
-                            x--;
-                        }
-                        x++;
-                    }
+                   
                    
                    classSobColl.SumAmpAndNeutronAndClaster();
                    classSobColl.StartTime = clF.time;
@@ -3955,6 +4133,240 @@ ftNV.IsVisible = true;
 
             }
          
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            gridMenedgerAddFile.Visibility = Visibility.Collapsed;
+        }
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            gridMenedgerAddFile.Visibility = Visibility.Visible;
+        }
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            if (ChklAll != null && Chkl6 != null)
+            {
+
+
+                if (ChklAll.IsChecked == true)
+                {
+                    Chkl1.IsChecked = false;
+                    Chkl2.IsChecked = false;
+                    Chkl3.IsChecked = false;
+                    Chkl4.IsChecked = false;
+                    Chkl5.IsChecked = false;
+                    Chkl6.IsChecked = false;
+                }
+                else
+                {
+                    ChklAll.IsChecked = false;
+                }
+            }
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+        StorageFolder storage;
+        private async void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                PathAddFile.Text = folder.Path;
+                storage = folder;
+                // Application now has read/write access to all contents in the picked folder
+                // (including other sub-folder contents)
+                /*  Windows.Storage.AccessCache.StorageApplicationPermissions.
+                  FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+
+
+
+
+                  IReadOnlyList<StorageFolder> folderList = await folder.GetFoldersAsync();
+
+                  foreach (StorageFolder folder1 in folderList)
+                  {
+                      IReadOnlyList<StorageFile> fileList = await folder1.GetFilesAsync();
+
+                      // Print the month and number of files in this group.
+                      //  //outputText.AppendLine(folder.Name + " (" + fileList.Count + ")");
+                      //  var messageDialog = new MessageDialog(folder1.Name + " (" + fileList.Count + ")");
+                      //  await messageDialog.ShowAsync();
+
+                      foreach (StorageFile file in fileList)
+                      {
+                          if (file.FileType == ".bin")
+                          {
+                              string FileName = file.DisplayName;
+                              string FilePath = file.Path;
+                              _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                              // Print the name of the file.
+                              // outputText.AppendLine("   " + file.Name);
+                          }
+                      }
+                  }
+
+      */
+                // var messageDialog = new MessageDialog(folder.Name);
+                //await messageDialog.ShowAsync();
+
+            }
+            else
+            {
+
+            }
+
+        }
+
+        private async void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            if (storage != null)
+            {
+                String sConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;";
+                // Application now has read/write access to all contents in the picked folder
+                // (including other sub-folder contents)
+
+
+
+
+
+
+
+
+                IReadOnlyList<StorageFile> fileList = await storage.GetFilesAsync();
+
+                      // Print the month and number of files in this group.
+                      //  //outputText.AppendLine(folder.Name + " (" + fileList.Count + ")");
+                      //  var messageDialog = new MessageDialog(folder1.Name + " (" + fileList.Count + ")");
+                      //  await messageDialog.ShowAsync();
+
+                      foreach (StorageFile file in fileList)
+                      {
+                          if (file.FileType == ".bin")
+                          {
+                              string FileName = file.DisplayName;
+                              string FilePath = file.Path;
+                        if(!Convert.ToBoolean(ChTime.IsChecked))
+                        {
+                            if (Convert.ToBoolean(ChklAll.IsChecked))
+                            {
+                                _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                            }
+                            else
+                            {
+                                string[] s = FileName.Split('_');
+                                if (s[0] == "1" && Chkl1.IsChecked == true)
+                                {
+                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                }
+                                if (s[0] == "2" && Chkl2.IsChecked == true)
+                                {
+                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                }
+                                if (s[0] == "3" && Chkl3.IsChecked == true)
+                                {
+                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                }
+                                if (s[0] == "4" && Chkl4.IsChecked == true)
+                                {
+                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                }
+                                if (s[0] == "5" && Chkl5.IsChecked == true)
+                                {
+                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                }
+                                if (s[0] == "6" && Chkl6.IsChecked == true)
+                                {
+                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                }
+
+
+
+
+                            }
+                        }
+                        else
+                        {
+                            string[] s = FileName.Split('_');
+                            string[] ss = s[1].Split(' ');
+                            DateTime dateTime = new DateTime(2018, 12, 12);
+                            dateTime = MyDate1.Date.Value.DateTime;
+                            string t = dateTime.Day.ToString() + "." + dateTime.Month.ToString() + "." + dateTime.Year.ToString();
+                            string[] dd = ss[0].Split('.');
+                            DateTime dateTime1 = new DateTime(Convert.ToInt32(dd[2]), Convert.ToInt32(dd[1]), Convert.ToInt32(dd[0]));
+                           
+                            if (dateTime1.Date == dateTime.Date)
+                            {
+                               
+                                if (Convert.ToBoolean(ChklAll.IsChecked))
+                                {
+                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                }
+                                else
+                                {
+
+                                    if (s[0] == "1" && Chkl1.IsChecked == true)
+                                    {
+                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                    }
+                                    if (s[0] == "2" && Chkl2.IsChecked == true)
+                                    {
+                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                    }
+                                    if (s[0] == "3" && Chkl3.IsChecked == true)
+                                    {
+                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                    }
+                                    if (s[0] == "4" && Chkl4.IsChecked == true)
+                                    {
+                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                    }
+                                    if (s[0] == "5" && Chkl5.IsChecked == true)
+                                    {
+                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                    }
+                                    if (s[0] == "6" && Chkl6.IsChecked == true)
+                                    {
+                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                                    }
+
+
+
+
+                                }
+                            }
+                        }
+                      
+                  
+                       
+
+                        // Print the name of the file.
+                        // outputText.AppendLine("   " + file.Name);
+                    }
+                      }
+
+                gridMenedgerAddFile.Visibility = Visibility.Collapsed;
+
+                // var messageDialog = new MessageDialog(folder.Name);
+                //await messageDialog.ShowAsync();
+
+            }
+        }
+
+        private async void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            DataPackage dataPackage = new DataPackage();
+            await OutputClipboardText();
+            MessageDialog messageDialog = new MessageDialog("Данные вставлены!!!");
+           await messageDialog.ShowAsync();
         }
     }
 }

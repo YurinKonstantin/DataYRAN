@@ -279,14 +279,16 @@ mess.ShowAsync();// КолПакетовОчер++;
                         ParserBAAK12.ParseBinFileBAAK12.SumSig(data1S, out sumDetQ);
                         break;
                     case "V":
-                       
-                        ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
+                  ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
+
+
                         ObrabotcaURAN.Obrabotca.AmpAndTime(data1, Nul, out maxTime, out maxAmp);
-                      bool dN=  ObrabotcaURAN.Obrabotca.Dneutron(maxTime, classUserSetUp.PorogSN, out d);
-                        if(dN)
-                        {
-                            firstTimeN= ObrabotcaURAN.Obrabotca.FirstTme(maxTime[d], maxAmp[d], classUserSetUp.PorogS, data1, Nul, d);
-                        }
+
+
+                        bool dN =  ObrabotcaURAN.Obrabotca.Dneutron(maxAmp, classUserSetUp.PorogSN, out d);
+                 
+                            firstTimeN= ObrabotcaURAN.Obrabotca.FirstTme(maxTime[d], maxAmp[d], classUserSetUp.PorogS, data1, Nul, d-1);
+                        
                     
                         break;
                     default:
@@ -522,10 +524,10 @@ mess.ShowAsync();// КолПакетовОчер++;
             Nnull9 = Convert.ToInt16(Nul[9]),
             Nnull10 = Convert.ToInt16(Nul[10]),
             Nnull11 = Convert.ToInt16(Nul[11]),
-            AmpNV = maxAmp[d],
+            AmpNV = maxAmp[d-1],
             nV=d,
             FirstTimeV= firstTimeN,
-            MaxTime= maxTime[d]
+            MaxTime= maxTime[d-1]
 
            
 

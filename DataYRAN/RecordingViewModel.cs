@@ -90,5 +90,41 @@ namespace DataYRAN
         /// Коллекция промежуточного результата общих событий кластеров УРАН
         /// </summary>
        public ObservableCollection<ClassSob> _DataColecSobCopy = new ObservableCollection<ClassSob>();
+        public void ClearData()
+        {
+            ClassSobsT.Clear();
+            ClassSobsN.Clear();
+            ClassSobsV.Clear();
+            ClassSobNeutrons.Clear();
+            _DataColecSobPloxT.Clear();
+            _DataColecSobPloxN.Clear();
+            _DataSobColli.Clear();
+        }
+        public void ClearDataBAAK12_200T()
+        {
+            ClassSobsT.Clear();
+            ClassSobsN.Clear();
+            ClassSobNeutrons.Clear();
+            _DataColecSobPloxT.Clear();
+         
+        }
+        public void ClearDataBAAK12_200()
+        {
+            ClassSobsN.Clear();
+            _DataColecSobPloxN.Clear();
+
+        }
+        public void ClearDataBAAK12_100()
+        {
+            ClassSobsV.Clear();
+            _DataColecSobPloxV.Clear();
+
+        }
+        public void ClearDataBAAK12_200TAll()
+        {
+            ClassSobsV.Clear();
+            _DataColecSobPloxV.Clear();
+
+        }
     }
 }
