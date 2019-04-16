@@ -407,6 +407,7 @@ namespace DataYRAN
 () =>
 {
     d.StatusSize += 504648;
+    ViewModel.CountNaObrabZ++;
 });
                                                     //Thread.Sleep(1000);
                                                     countFlagEnt = 0;
@@ -531,7 +532,8 @@ namespace DataYRAN
                     }
                    
                     FirstDiagnosticFile(l);
-                    Task.Run(() => ZapicOcheredNaObrabotkyAsync(Y, 1, "1", l));
+                            ViewModel.CountNaObrabZ = 0;
+                            Task.Run(() => ZapicOcheredNaObrabotkyAsync(Y, 1, "1", l));
                  //   MessageDialog messageDialog = new MessageDialog("dd");
                    // messageDialog.ShowAsync();
 

@@ -1494,7 +1494,7 @@
             </Grid>
 
         </SplitView>
-        <StackPanel UseLayoutRounding="True" Grid.Row="2" HorizontalAlignment="Stretch" Orientation="Horizontal" Height="24" Grid.ColumnSpan="2" Background="{ThemeResource ListPickerFlyoutPresenterSelectedItemForegroundThemeBrush}" > 
+        <StackPanel UseLayoutRounding="True" Grid.Row="2" HorizontalAlignment="Stretch" Orientation="Horizontal" Height="28" Grid.ColumnSpan="2" Background="{ThemeResource ListPickerFlyoutPresenterSelectedItemForegroundThemeBrush}" > 
             <TextBlock VerticalAlignment="Center"  Text="Время обработки: " Foreground="White" FontFamily="Georgia" FontStyle="Italic" />
             <TextBlock VerticalAlignment="Center"  x:Name="duration" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0" />
 
@@ -1503,11 +1503,10 @@
 
             <TextBlock VerticalAlignment="Center"  Text="событий в сек:" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="16,0,0,0" />
             <TextBlock VerticalAlignment="Center"  x:Name="sobInSec" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0" />
-          
 
-              
-                <ProgressBar HorizontalAlignment="Right" Maximum="{x:Bind ViewModel.CountNaObrabSob, Mode=OneWay}" Height="12" Value="{x:Bind ViewModel.CountObrabSob, Mode=OneWay}" Background="WhiteSmoke" Foreground="Yellow"  Width="600" Margin="8,0,0,0"/>
-       
+            <telerik:RadBulletGraph LabelOffset="20" FeaturedMeasureThickness="4"  FeaturedMeasureBrush="Yellow" ProjectedMeasureBrush="Red"  Width="600" Height="26"  FeaturedMeasure="{x:Bind ViewModel.CountObrabSob, Mode=OneWay}" VerticalAlignment="Stretch" StartValue="0" EndValue="{x:Bind ViewModel.CountNaObrabSob, Mode=OneWay}" FeaturedMeasureStartValue="0" ComparativeMeasure="{x:Bind ViewModel.CountNaObrabZ, Mode=OneWay}"/>
+
+           
             <TextBlock VerticalAlignment="Center"  Text=" Событий на обработку:" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0"/>
             <TextBlock VerticalAlignment="Center"  Text="{x:Bind ViewModel.CountNaObrabSob, Mode=OneWay}" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0"/>
             <TextBlock VerticalAlignment="Center"  Text="Обработано:" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0"/>

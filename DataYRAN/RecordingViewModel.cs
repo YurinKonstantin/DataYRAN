@@ -27,6 +27,20 @@ namespace DataYRAN
                 this.OnPropertyChanged(nameof(CountNaObrab));
             }
         }
+        int countNaObrabZ = 0;
+        public int CountNaObrabZ
+        {
+            get
+            {
+                return countNaObrabZ;
+            }
+            set
+            {
+                countNaObrabZ = value;
+                this.OnPropertyChanged(nameof(CountNaObrabZ));
+            }
+        }
+       
         int countObrabSob = 0;
         public int CountObrabSob
         {
