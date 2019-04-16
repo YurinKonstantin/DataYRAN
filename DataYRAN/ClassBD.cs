@@ -131,7 +131,7 @@ Windows.Storage.ApplicationData.Current.LocalFolder;
                 messageDialog.ShowAsync();
             }
         }
-        public async Task addSobIzBD(string nameFile, string nemeBAAK, string time1, double[] Amp, double[] Nul, int[] coutN1, Double[] sig, string[] timeS)
+        public async Task addSobIzBD(string nameFile, string nemeBAAK, string time1, int[] Amp, double[] Nul, int[] coutN1, Double[] sig, string[] timeS)
         {
             string[] array = nameFile.Split('_');
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
@@ -143,18 +143,8 @@ Windows.Storage.ApplicationData.Current.LocalFolder;
                nameklaster = array[0],
                nameBAAK = nemeBAAK,
                time = time1,
-               Amp0 = Convert.ToInt16(Amp[0]),
-               Amp1 = Convert.ToInt16(Amp[1]),
-               Amp2 = Convert.ToInt16(Amp[2]),
-               Amp3 = Convert.ToInt16(Amp[3]),
-               Amp4 = Convert.ToInt16(Amp[4]),
-               Amp5 = Convert.ToInt16(Amp[5]),
-               Amp6 = Convert.ToInt16(Amp[6]),
-               Amp7 = Convert.ToInt16(Amp[7]),
-               Amp8 = Convert.ToInt16(Amp[8]),
-               Amp9 = Convert.ToInt16(Amp[9]),
-               Amp10 = Convert.ToInt16(Amp[10]),
-               Amp11 = Convert.ToInt16(Amp[11]),
+               mAmp=Amp,
+
                Nnut0 = Convert.ToInt16(coutN1[0]),
                Nnut1 = Convert.ToInt16(coutN1[1]),
                Nnut2 = Convert.ToInt16(coutN1[2]),
@@ -212,7 +202,7 @@ Windows.Storage.ApplicationData.Current.LocalFolder;
         }
         public async Task ParserTabSob(string text)
         {
-            double[] Amp = new double[12];
+            int[] Amp = new int[12];
             double[] Nul = new double[12];
             int[] coutN1 = new int[12];
             double[] sig = new double[12];
@@ -231,7 +221,7 @@ Windows.Storage.ApplicationData.Current.LocalFolder;
                         {
 
 
-                            Amp[x] = Convert.ToDouble(stroc[j]);
+                            Amp[x] = Convert.ToInt16(stroc[j]);
                             x++;
                         }
                         catch(Exception ex)
@@ -287,7 +277,7 @@ Windows.Storage.ApplicationData.Current.LocalFolder;
         }
         public async Task ParserTabSobData(DataTable dt)
         {
-            double[] Amp = new double[12];
+            int[] Amp = new int[12];
             double[] Nul = new double[12];
             int[] coutN1 = new int[12];
             double[] sig = new double[12];
@@ -308,7 +298,7 @@ Windows.Storage.ApplicationData.Current.LocalFolder;
                                 {
 
 
-                                    Amp[x] = Convert.ToDouble(cells[j]);
+                                    Amp[x] = Convert.ToInt16(cells[j]);
                                     x++;
                                 }
                                 catch (Exception ex)

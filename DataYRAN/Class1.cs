@@ -50,12 +50,11 @@ namespace DataYRAN
                         }
                         string FileName = file.DisplayName;
                         string FilePath = file.Path;
-                        BasicProperties basicProperties =
-       await file.GetBasicPropertiesAsync();
+                      
 
                         // Application now has read/write access to the picked file
-                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file, size = basicProperties.Size, StatusSize = 0 });
-                     
+                      // ViewModel.DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file, size = basicProperties.Size, StatusSize = 0 });
+                        ViewModel.AddFile(new ClassСписокList { Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
                     }
                     else
                     {
@@ -105,7 +104,10 @@ namespace DataYRAN
                         {
                             string FileName = file.DisplayName;
                             string FilePath = file.Path;
-                            _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                           
+                            // Application now has read/write access to the picked file
+                            ViewModel.AddFile(new ClassСписокList { Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
+                         
                             // Print the name of the file.
                             // outputText.AppendLine("   " + file.Name);
                         }
@@ -140,7 +142,7 @@ namespace DataYRAN
             {
                 string FileName = file.DisplayName;
                 string FilePath = file.Path;
-                КолекцияФайловРазвертки.Add(new ClassСписокList { NameFile = FileName, NemePapka = file.Path, Status = false, file1 = file });
+                КолекцияФайловРазвертки.Add(new ClassСписокList {Status = false, file1 = file, basicProperties = await file.GetBasicPropertiesAsync() });
             }
 
         }

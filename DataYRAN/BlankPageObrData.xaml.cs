@@ -40,6 +40,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.FileProperties;
 using System.Data;
 using System.Runtime.InteropServices.ComTypes;
+using Windows.ApplicationModel.ExtendedExecution;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -104,7 +105,7 @@ namespace DataYRAN
         ObservableCollection<ClassСписокList> КолекцияФайловРазвертки = new ObservableCollection<ClassСписокList>();
         ObservableCollection<Data> data = new ObservableCollection<Data>();
         ObservableCollection<ObservableCollection<Data>> collection = new ObservableCollection<ObservableCollection<Data>>();
-        ObservableCollection<ClassСписокList> _DataColec = new ObservableCollection<ClassСписокList>();
+      
 
         ObservableCollection<ClassSob> _DataColecSobPlox = new ObservableCollection<ClassSob>();
    
@@ -124,7 +125,7 @@ namespace DataYRAN
         {
             try
             {
-                if (_DataColec.Count>0)
+                if (ViewModel.DataColec.Count>0)
                 {
                   
 
@@ -188,7 +189,7 @@ namespace DataYRAN
                 {
 
                 }
-                listView1.ItemsSource = _DataColec;
+                listView1.ItemsSource = ViewModel.DataColec;
                
               //  DataGrid.ItemsSource = _DataColecSob;
                 DataGridPlox.ItemsSource = _DataColecSobPlox;
@@ -210,10 +211,12 @@ namespace DataYRAN
                 if (MainPage.FileEvent != null)
                 {for(int i=0; i< MainPage.FileEvent.Length; i++)
                     {
-                        string FileName = MainPage.FileEvent[i].DisplayName;
-                        string FilePath = MainPage.FileEvent[i].Path;
+                        StorageFile storageFile = MainPage.FileEvent[i];
+                        BasicProperties bb = await storageFile.GetBasicPropertiesAsync();
+
                         // Application now has read/write access to the picked file
-                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = MainPage.FileEvent[i] });
+                        ViewModel.AddFile(new ClassСписокList { Status = false, file1 = storageFile, StatusSize = 0, basicProperties = await storageFile.GetBasicPropertiesAsync() });
+                       
                     }
                     
                     listView1.SelectedIndex = 0;
@@ -227,11 +230,7 @@ namespace DataYRAN
 
         }
      
-        public void AddDataColec(String nameFile, string namePapka, string stat)
-        {
-            _DataColec.Add(new ClassСписокList() { NameFile = nameFile, NemePapka = namePapka, Status = false });
-
-        }
+    
 
         private void AppBarButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -283,10 +282,10 @@ namespace DataYRAN
         /// <param name="nameRan"></param>
         /// 
         bool flagFileSetup = false;
-        private async Task ZapicOcheredNaObrabotkyAsync(string nBaaK, int leng, string nameRan, List<ClassСписокList> listt)
+        private async void ZapicOcheredNaObrabotkyAsync(string nBaaK, int leng, string nameRan, List<ClassСписокList> listt)
         {
-            
 
+            int ccc = 0;
             int[] masNul = new int[12];
             for (int i = 0; i < 12; i++)
             {
@@ -296,16 +295,29 @@ namespace DataYRAN
             foreach (ClassСписокList d in listt)
             {
                 
-                listDataAll = new List<byte>();
+                //listDataAll = new List<byte>();
                 bool flagUserSetup = true;
                 string tipN = "T";
-                tipN = d.file1.DisplayName.Split('_')[2];
-                
+               // tipN = d.file1.DisplayName.Split('_')[2];
+                string[] tipParser = d.file1.DisplayName.Split('_');
+                if(tipParser.Length>2)
+                {
+                    tipN = tipParser[2];
+                }
+                else
+                {
+
+                }
+
                 // foreach(ClassСписокList d1 in _DataColec)
                 //   {
                 //     if(d1==d)
                 //    {
-                d.Status = true;
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d.Status = true;
+});
                     //    break;
                  //   }
                // }
@@ -319,7 +331,7 @@ namespace DataYRAN
                             uint numBytesLoaded1 = 504648;
                             bool end = false;
                             uint kol = 0;
-                            Byte[] dataOnePac = new Byte[504648];
+                        byte[] dataOnePac = new byte[504648];
 
                         int tecpos = 0;
                             int countFlagEnt = 0;
@@ -345,11 +357,39 @@ namespace DataYRAN
                                         {
                                             for (int i = 0; i < numBytesLoaded; i++)
                                             {
-                                               // while (Count() > 1800)
-                                               // {
 
-                                               // }
-                                                var b = dataReader.ReadByte();
+                                            if (ccc == 1800)
+                                            {
+                                                while (Count() > 1800)
+                                                {
+                                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+    () =>
+    {
+        d.StatusP = true;
+    });
+                                                    long totalMemory = GC.GetTotalMemory(false);
+                                                    GC.Collect();
+                                                    GC.WaitForPendingFinalizers();
+                                                    // for(int f=0; f<10000; f++)
+                                                    //  {
+                                                    //      int xx = 0;
+                                                    //  }
+                                                    //Thread.Sleep(20000);
+                                                    while (Count() > 500)
+                                                    {
+                                                        int xx = 0;
+                                                        xx++;
+                                                    }
+                                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d.StatusP = true;
+});
+                                                }
+                                                ccc = Count();
+                                            }
+                                            ccc++;
+                                            var b = dataReader.ReadByte();
                                            
                                             dataOnePac[tecpos] = b;
                                             tecpos++;
@@ -359,10 +399,15 @@ namespace DataYRAN
                                                    if (countFlagEnt == 4)
                                                    {
                                              
-                                                    OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.NameFile, Buf00 = dataOnePac, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName=tipN });
+                                                    OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dataOnePac, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName=tipN });
                                                     pac++;
+                                                
                                                     dataOnePac = new Byte[504648];
-                                                    d.StatusSize+= 504648;
+                                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d.StatusSize += 504648;
+});
                                                     //Thread.Sleep(1000);
                                                     countFlagEnt = 0;
                                                     tecpos = 0;
@@ -381,6 +426,7 @@ namespace DataYRAN
                                 }
                                 kol++;
                             }
+                        stream.Dispose();
                     }
                     catch 
                     {
@@ -394,7 +440,7 @@ namespace DataYRAN
                 {
                    // string nBaaK1;
                     //string Ran;
-                    string b2 = d.NameFile;
+                    string b2 = d.file1.DisplayName;
 
                     String[] substrings = b2.Split('.');
                     string result = null;
@@ -405,11 +451,15 @@ namespace DataYRAN
                     result = result + substrings[substrings.Length - 2];
 
                 }
-                foreach (ClassСписокList d1 in _DataColec)
+                foreach (ClassСписокList d1 in ViewModel.DataColec)
                 {
                     if (d1 == d)
                     {
-                        d1.Status = false;
+                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d1.Status = false;
+});
                         break;
                     }
                 }
@@ -428,16 +478,29 @@ namespace DataYRAN
 
 
         CancellationTokenSource cancellationTokenSource;
-        public void ffg()
+        public void ffg(string text)
         {
             Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                        () => {
-                           ExampleInAppNotification.Show("Обработка запушена", 2000);
+                           ExampleInAppNotification.Show(text, 3000);
                        });
         }
         private async void AppBarButton_Click_5(object sender, RoutedEventArgs e)
         {
-            Task task = Task.Run(() => ffg());
+
+            var newSession = new ExtendedExecutionSession();
+            newSession.Reason = ExtendedExecutionReason.Unspecified;
+            newSession.Description = "Raising periodic toasts";
+           // newSession.Revoked += SessionRevoked;
+            ExtendedExecutionResult result = await newSession.RequestExtensionAsync();
+
+            switch (result)
+            {
+
+                case ExtendedExecutionResult.Allowed:
+                 
+             
+            Task task = Task.Run(() => ffg("Обработка запушена в фоновом режиме" + "\n" + "Можно свернуть экран"));
             cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             if (ToggleSwitchAuto.IsOn)
@@ -460,12 +523,18 @@ namespace DataYRAN
                     watch.Start();
                     //  var messageDialog = new MessageDialog("Запустили поток");
                     // await messageDialog.ShowAsync();
+                    ViewModel.CountObrabSob = 0;
                     List<ClassСписокList> l = new List<ClassСписокList>();
                     foreach(ClassСписокList g in listView1.SelectedItems)
                     {
                         l.Add(g);
                     }
-                    ZapicOcheredNaObrabotkyAsync(Y, 1, "1", l);
+                   
+                    FirstDiagnosticFile(l);
+                    Task.Run(() => ZapicOcheredNaObrabotkyAsync(Y, 1, "1", l));
+                 //   MessageDialog messageDialog = new MessageDialog("dd");
+                   // messageDialog.ShowAsync();
+
                     await Task.Run(()=> WriteInFileIzOcherediAsync(cancellationToken));
 
                     // await WriteInFileIzOcherediAsync(cancellationToken);
@@ -492,6 +561,18 @@ namespace DataYRAN
                 }
 
 
+
+            }
+                    break;
+
+                default:
+                case ExtendedExecutionResult.Denied:
+                    //   rootPage.NotifyUser("Extended execution denied.", NotifyType.ErrorMessage);
+
+
+                  //  ToastNotificationManager.CreateToastNotifier().Show(toast);
+                    newSession.Dispose();
+                    break;
             }
 
         }
@@ -683,8 +764,16 @@ namespace DataYRAN
         }
         private async  void AppBarButton_Click_8(object sender, RoutedEventArgs e)
         {
-            DataPackage dataPackage = new DataPackage();
-           await OutputClipboardText();
+          IDataView currentView = this.DataGrid.GetDataView();
+         foreach(object d in currentView)
+            {
+                MessageDialog messageDialog = new MessageDialog(d.ToString());
+                await messageDialog.ShowAsync();
+            }
+            
+               
+            
+          
             /* var picker = new Windows.Storage.Pickers.FileOpenPicker();
              picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
              picker.SuggestedStartLocation =
@@ -736,69 +825,146 @@ namespace DataYRAN
                     {
                         string[] rows = rowsInClipboard[i].Split('\t');
                         count = Convert.ToInt32(rows[0]);
-                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-           () =>
-           {
-               ViewModel.ClassSobsT.Add(new ClassSob()
-               {
-                   nameFile = rows[2],
-                   nameklaster = rows[4],
-                   nameBAAK = rows[3],
-                   time = rows[1],
-                   Amp0 = Convert.ToInt16(rows[7]),
-                   Amp1 = Convert.ToInt16(rows[8]),
-                   Amp2 = Convert.ToInt16(rows[9]),
-                   Amp3 = Convert.ToInt16(rows[10]),
-                   Amp4 = Convert.ToInt16(rows[11]),
-                   Amp5 = Convert.ToInt16(rows[12]),
-                   Amp6 = Convert.ToInt16(rows[13]),
-                   Amp7 = Convert.ToInt16(rows[14]),
-                   Amp8 = Convert.ToInt16(rows[15]),
-                   Amp9 = Convert.ToInt16(rows[16]),
-                   Amp10 = Convert.ToInt16(rows[17]),
-                   Amp11 = Convert.ToInt16(rows[18]),
-                   Nnut0 = Convert.ToInt16(rows[19]),
-                   Nnut1 = Convert.ToInt16(rows[20]),
-                   Nnut2 = Convert.ToInt16(rows[21]),
-                   Nnut3 = Convert.ToInt16(rows[22]),
-                   Nnut4 = Convert.ToInt16(rows[23]),
-                   Nnut5 = Convert.ToInt16(rows[24]),
-                   Nnut6 = Convert.ToInt16(rows[25]),
-                   Nnut7 = Convert.ToInt16(rows[26]),
-                   Nnut8 = Convert.ToInt16(rows[27]),
-                   Nnut9 = Convert.ToInt16(rows[28]),
-                   Nnut10 = Convert.ToInt16(rows[29]),
-                   Nnut11 = Convert.ToInt16(rows[30]),
+                        if(rows[1].Contains("T")|| rows[1].Contains("N") || rows[1].Contains("V"))
+                        {
+                            
+                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+      () =>
+      {
+          ViewModel.ClassSobsT.Add(new ClassSob()
+          {
+              nameFile = rows[1],
+              nameklaster = rows[2],
+              nameBAAK = rows[3],
+              time = rows[4],
+          /*  Amp0 = Convert.ToInt16(rows[7]),
+                Amp1 = Convert.ToInt16(rows[8]),
+                Amp2 = Convert.ToInt16(rows[9]),
+                Amp3 = Convert.ToInt16(rows[10]),
+                Amp4 = Convert.ToInt16(rows[11]),
+                Amp5 = Convert.ToInt16(rows[12]),
+                Amp6 = Convert.ToInt16(rows[13]),
+                Amp7 = Convert.ToInt16(rows[14]),
+                Amp8 = Convert.ToInt16(rows[15]),
+                Amp9 = Convert.ToInt16(rows[16]),
+                Amp10 = Convert.ToInt16(rows[17]),
+                Amp11 = Convert.ToInt16(rows[18]),
+                */
+                Nnut0 = Convert.ToInt16(rows[19]),
+                Nnut1 = Convert.ToInt16(rows[20]),
+                Nnut2 = Convert.ToInt16(rows[21]),
+                Nnut3 = Convert.ToInt16(rows[22]),
+                Nnut4 = Convert.ToInt16(rows[23]),
+                Nnut5 = Convert.ToInt16(rows[24]),
+                Nnut6 = Convert.ToInt16(rows[25]),
+                Nnut7 = Convert.ToInt16(rows[26]),
+                Nnut8 = Convert.ToInt16(rows[27]),
+                Nnut9 = Convert.ToInt16(rows[28]),
+                Nnut10 = Convert.ToInt16(rows[29]),
+                Nnut11 = Convert.ToInt16(rows[30]),
+ 
+                sig0 = Convert.ToDouble(rows[31].Replace(".", ",")),
+                sig1 = Convert.ToDouble(rows[32].Replace(".", ",")),
+                sig2 = Convert.ToDouble(rows[33].Replace(".", ",")),
+                sig3 = Convert.ToDouble(rows[34].Replace(".", ",")),
+                sig4 = Convert.ToDouble(rows[35].Replace(".", ",")),
+                sig5 = Convert.ToDouble(rows[36].Replace(".", ",")),
+                sig6 = Convert.ToDouble(rows[37].Replace(".", ",")),
+                sig7 = Convert.ToDouble(rows[38].Replace(".", ",")),
+                sig8 = Convert.ToDouble(rows[39].Replace(".", ",")),
+                sig9 = Convert.ToDouble(rows[40].Replace(".", ",")),
+                sig10 = Convert.ToDouble(rows[41].Replace(".", ",")),
 
-                   sig0 = Convert.ToDouble(rows[43]),
-                   sig1 = Convert.ToDouble(rows[44]),
-                   sig2 = Convert.ToDouble(rows[45]),
-                   sig3 = Convert.ToDouble(rows[46]),
-                   sig4 = Convert.ToDouble(rows[47]),
-                   sig5 = Convert.ToDouble(rows[48]),
-                   sig6 = Convert.ToDouble(rows[49]),
-                   sig7 = Convert.ToDouble(rows[50]),
-                   sig8 = Convert.ToDouble(rows[51]),
-                   sig9 = Convert.ToDouble(rows[52]),
-                   sig10 = Convert.ToDouble(rows[53]),
-                   sig11 = Convert.ToDouble(rows[54]),
-                   SumAmp = Convert.ToInt32(rows[5]),
-                   SumNeu = Convert.ToInt16(rows[6]),
-                   Nnull0 = Convert.ToInt16(rows[31]),
-                   Nnull1 = Convert.ToInt16(rows[32]),
-                   Nnull2 = Convert.ToInt16(rows[33]),
-                   Nnull3 = Convert.ToInt16(rows[34]),
-                   Nnull4 = Convert.ToInt16(rows[35]),
-                   Nnull5 = Convert.ToInt16(rows[36]),
-                   Nnull6 = Convert.ToInt16(rows[37]),
-                   Nnull7 = Convert.ToInt16(rows[38]),
-                   Nnull8 = Convert.ToInt16(rows[39]),
-                   Nnull9 = Convert.ToInt16(rows[40]),
-                   Nnull10 = Convert.ToInt16(rows[41]),
-                   Nnull11 = Convert.ToInt16(rows[42])
-               });
+                sig11 = Convert.ToDouble(rows[42].Replace(".", ",")),
+                
+              SumAmp = Convert.ToInt32(rows[5]),
+                SumNeu = Convert.ToInt16(rows[6]),
+                
+              Nnull0 = Convert.ToInt16(rows[43]),
+              Nnull1 = Convert.ToInt16(rows[44]),
+              Nnull2 = Convert.ToInt16(rows[45]),
+              Nnull3 = Convert.ToInt16(rows[46]),
+              Nnull4 = Convert.ToInt16(rows[47]),
+              Nnull5 = Convert.ToInt16(rows[48]),
+              Nnull6 = Convert.ToInt16(rows[49]),
+              Nnull7 = Convert.ToInt16(rows[50]),
+              Nnull8 = Convert.ToInt16(rows[51]),
+              Nnull9 = Convert.ToInt16(rows[52]),
+              Nnull10 = Convert.ToInt16(rows[53]),
+              Nnull11 = Convert.ToInt16(rows[54])
+             
+          });
 
-           });
+      });
+                        }
+                        else
+                        {
+                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+      () =>
+      {
+          ViewModel.ClassSobsT.Add(new ClassSob()
+          {
+              nameFile = rows[2],
+              nameklaster = rows[4],
+              nameBAAK = rows[3],
+              time = rows[1],
+             /* Amp0 = Convert.ToInt16(rows[7]),
+              Amp1 = Convert.ToInt16(rows[8]),
+              Amp2 = Convert.ToInt16(rows[9]),
+              Amp3 = Convert.ToInt16(rows[10]),
+              Amp4 = Convert.ToInt16(rows[11]),
+              Amp5 = Convert.ToInt16(rows[12]),
+              Amp6 = Convert.ToInt16(rows[13]),
+              Amp7 = Convert.ToInt16(rows[14]),
+              Amp8 = Convert.ToInt16(rows[15]),
+              Amp9 = Convert.ToInt16(rows[16]),
+              Amp10 = Convert.ToInt16(rows[17]),
+              Amp11 = Convert.ToInt16(rows[18]),
+              */
+              Nnut0 = Convert.ToInt16(rows[19]),
+              Nnut1 = Convert.ToInt16(rows[20]),
+              Nnut2 = Convert.ToInt16(rows[21]),
+              Nnut3 = Convert.ToInt16(rows[22]),
+              Nnut4 = Convert.ToInt16(rows[23]),
+              Nnut5 = Convert.ToInt16(rows[24]),
+              Nnut6 = Convert.ToInt16(rows[25]),
+              Nnut7 = Convert.ToInt16(rows[26]),
+              Nnut8 = Convert.ToInt16(rows[27]),
+              Nnut9 = Convert.ToInt16(rows[28]),
+              Nnut10 = Convert.ToInt16(rows[29]),
+              Nnut11 = Convert.ToInt16(rows[30]),
+
+              sig0 = Convert.ToDouble(rows[43]),
+              sig1 = Convert.ToDouble(rows[44]),
+              sig2 = Convert.ToDouble(rows[45]),
+              sig3 = Convert.ToDouble(rows[46]),
+              sig4 = Convert.ToDouble(rows[47]),
+              sig5 = Convert.ToDouble(rows[48]),
+              sig6 = Convert.ToDouble(rows[49]),
+              sig7 = Convert.ToDouble(rows[50]),
+              sig8 = Convert.ToDouble(rows[51]),
+              sig9 = Convert.ToDouble(rows[52]),
+              sig10 = Convert.ToDouble(rows[53]),
+              sig11 = Convert.ToDouble(rows[54]),
+              SumAmp = Convert.ToInt32(rows[5]),
+              SumNeu = Convert.ToInt16(rows[6]),
+              Nnull0 = Convert.ToInt16(rows[31]),
+              Nnull1 = Convert.ToInt16(rows[32]),
+              Nnull2 = Convert.ToInt16(rows[33]),
+              Nnull3 = Convert.ToInt16(rows[34]),
+              Nnull4 = Convert.ToInt16(rows[35]),
+              Nnull5 = Convert.ToInt16(rows[36]),
+              Nnull6 = Convert.ToInt16(rows[37]),
+              Nnull7 = Convert.ToInt16(rows[38]),
+              Nnull8 = Convert.ToInt16(rows[39]),
+              Nnull9 = Convert.ToInt16(rows[40]),
+              Nnull10 = Convert.ToInt16(rows[41]),
+              Nnull11 = Convert.ToInt16(rows[42])
+          });
+
+      });
+                        }
+                   
                     }
                 }
             }
@@ -974,2139 +1140,9 @@ namespace DataYRAN
 
         object ind;
       
-        public void ShowDeteClea()
-        {
-            k1d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k1d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-
-            k1d1.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d2.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d3.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d4.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d5.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d6.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d7.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d8.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d9.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d10.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d11.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k1d12.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-
-
-            k2d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k2d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-
-            k2d1.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d2.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d3.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d4.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d5.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d6.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d7.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d8.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d9.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d10.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d11.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k2d12.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-
-            k3d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k3d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-
-            k3d1.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d2.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d3.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d4.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d5.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d6.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d7.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d8.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d9.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d10.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d11.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k3d12.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-
-            k4d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k4d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-
-            k4d1.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d2.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d3.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d4.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d5.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d6.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d7.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d8.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d9.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d10.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d11.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k4d12.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-
-            k5d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k5d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-
-            k5d1.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d2.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d3.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d4.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d5.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d6.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d7.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d8.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d9.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d10.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d11.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k5d12.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-
-            k6d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-            k6d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Gray);
-
-            k6d1.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d2.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d3.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d4.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d5.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d6.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d7.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d8.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d9.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d10.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d11.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-            k6d12.Fill = new SolidColorBrush(Windows.UI.Colors.White);
-        }
-        public void ShowDetec(ClassSob classSob)
-        {
-            ShowDeteClea();
-            if (classSob.nameklaster == "1")
-            {
-                k1d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k1d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                SolidColorBrush myBrush = new SolidColorBrush(Color.FromArgb(255, 202, 24, 37));
-
-                short max = classSob.AmpSum().Max();
-                short min = classSob.AmpSum().Min();
-                double step = max / 5;
-
-                Text3.Text = step.ToString();
-                Text2.Text = (2 * step).ToString();
-                Text1.Text = (3 * step).ToString();
-                Text0.Text = (4 * step).ToString();
-                TextMax.Text = max.ToString();
-
-                if (classSob.Amp0 == 0)
-                {
-                    k1d1.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp0 > 0 && classSob.Amp0 < step)
-                {
-                    k1d1.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp0 >= step && classSob.Amp0 < 2*step)
-                {
-                    k1d1.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp0 >=  2*step && classSob.Amp0 < 3*step)
-                {
-                    k1d1.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp0 >= 3*step && classSob.Amp0 < 4*step)
-                {
-                    k1d1.Fill = new SolidColorBrush(Windows.UI.Colors.DarkRed);
-                }
-                if (classSob.Amp0 >= 4*step)
-                {
-                    k1d1.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp1 == 0)
-                {
-                    k1d2.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp1 > 0 && classSob.Amp1 < step)
-                {
-                    k1d2.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp1 >= step && classSob.Amp1 < 2 * step)
-                {
-                    k1d2.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp1 >= 2 * step && classSob.Amp1 < 3 * step)
-                {
-                    k1d2.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp1 >= 3 * step && classSob.Amp1 < 4 * step)
-                {
-                    k1d2.Fill = new SolidColorBrush(Windows.UI.Colors.OrangeRed);
-                }
-                if (classSob.Amp1 >= 4 * step)
-                {
-                    k1d2.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp2 == 0)
-                {
-                    k1d3.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp2 > 0 && classSob.Amp2 < step)
-                {
-                    k1d3.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp2 >= step && classSob.Amp2 < 2 * step)
-                {
-                    k1d3.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp2 >= 2 * step && classSob.Amp2 < 3 * step)
-                {
-                    k1d3.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp2 >= 3 * step && classSob.Amp2 < 4 * step)
-                {
-                    k1d3.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp2 >= 4 * step)
-                {
-                    k1d3.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp3 == 0)
-                {
-                    k1d4.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp3 > 0 && classSob.Amp3 < step)
-                {
-                    k1d4.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp3 >= step && classSob.Amp3 < 2 * step)
-                {
-                    k1d4.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp3 >= 2 * step && classSob.Amp3 < 3 * step)
-                {
-                    k1d4.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp3 >= 3 * step && classSob.Amp3 < 4 * step)
-                {
-                    k1d4.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp3 >= 4 * step)
-                {
-                    k1d4.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp4 == 0)
-                {
-                    k1d5.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp4 > 0 && classSob.Amp4 < step)
-                {
-                    k1d5.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp4 >= step && classSob.Amp4 < 2 * step)
-                {
-                    k1d5.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp4 >= 2 * step && classSob.Amp4 < 3 * step)
-                {
-                    k1d5.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp4 >= 3 * step && classSob.Amp4 < 4 * step)
-                {
-                    k1d5.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp4 >= 4 * step)
-                {
-                    k1d5.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp5 == 0)
-                {
-                    k1d6.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp5 > 0 && classSob.Amp5 < step)
-                {
-                    k1d6.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp5 >= step && classSob.Amp5 < 2 * step)
-                {
-                    k1d6.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp5 >= 2 * step && classSob.Amp5 < 3 * step)
-                {
-                    k1d6.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp5 >= 3 * step && classSob.Amp5 < 4 * step)
-                {
-                    k1d6.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp5 >= 4 * step)
-                {
-                    k1d6.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp6 == 0)
-                {
-                    k1d7.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp6 > 0 && classSob.Amp6 < step)
-                {
-                    k1d7.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp6 >= step && classSob.Amp6 < 2 * step)
-                {
-                    k1d7.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp6 >= 2 * step && classSob.Amp6 < 3 * step)
-                {
-                    k1d7.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp6 >= 3 * step && classSob.Amp6 < 4 * step)
-                {
-                    k1d7.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp6 >= 4 * step)
-                {
-                    k1d7.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp7 == 0)
-                {
-                    k1d8.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp7 > 0 && classSob.Amp7 < step)
-                {
-                    k1d8.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp7 >= step && classSob.Amp7 < 2 * step)
-                {
-                    k1d8.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp7 >= 2 * step && classSob.Amp7 < 3 * step)
-                {
-                    k1d8.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp7 >= 3 * step && classSob.Amp7 < 4 * step)
-                {
-                    k1d8.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp7 >= 4 * step)
-                {
-                    k1d8.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp8 == 0)
-                {
-                    k1d9.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp8 > 0 && classSob.Amp8 < step)
-                {
-                    k1d9.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp8 >= step && classSob.Amp8 < 2 * step)
-                {
-                    k1d9.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp8 >= 2 * step && classSob.Amp8 < 3 * step)
-                {
-                    k1d9.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp8 >= 3 * step && classSob.Amp8 < 4 * step)
-                {
-                    k1d9.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp8 >= 4 * step)
-                {
-                    k1d9.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp9 == 0)
-                {
-                    k1d10.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp9 > 0 && classSob.Amp9 < step)
-                {
-                    k1d10.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp9 >= step && classSob.Amp9 < 2 * step)
-                {
-                    k1d10.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp9 >= 2 * step && classSob.Amp9 < 3 * step)
-                {
-                    k1d10.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp9 >= 3 * step && classSob.Amp9 < 4 * step)
-                {
-                    k1d10.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp9 >= 4 * step)
-                {
-                    k1d10.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp10 == 0)
-                {
-                    k1d11.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp10 > 0 && classSob.Amp10 < step)
-                {
-                    k1d11.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp10 >= step && classSob.Amp10 < 2 * step)
-                {
-                    k1d11.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp10 >= 2 * step && classSob.Amp10 < 3 * step)
-                {
-                    k1d11.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp10 >= 3 * step && classSob.Amp10 < 4 * step)
-                {
-                    k1d11.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp10 >= 4 * step)
-                {
-                    k1d11.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp11 == 0)
-                {
-                    k1d12.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp11 > 0 && classSob.Amp11 < step)
-                {
-                    k1d12.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp11 >= step && classSob.Amp11 < 2 * step)
-                {
-                    k1d12.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp11 >= 2 * step && classSob.Amp11 < 3 * step)
-                {
-                    k1d12.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp11 >= 3 * step && classSob.Amp11 < 4 * step)
-                {
-                    k1d12.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp11 >= 4 * step)
-                {
-                    k1d12.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-            }
-            if (classSob.nameklaster == "2")
-            {
-                k2d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k2d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                SolidColorBrush myBrush = new SolidColorBrush(Color.FromArgb(255, 202, 24, 37));
-
-                short max = classSob.AmpSum().Max();
-                short min = classSob.AmpSum().Min();
-                int step = (max - min) / 4;
-
-                Text1.Text = step.ToString();
-                Text2.Text = (2 * step).ToString();
-                Text3.Text = (3 * step).ToString();
-                Text4.Text = (4 * step).ToString();
-
-                if (classSob.Amp0 == 0)
-                {
-                    k2d1.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp0 > 0 && classSob.Amp0 < step)
-                {
-                    k2d1.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp0 >= step && classSob.Amp0 < 2 * step)
-                {
-                    k2d1.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp0 >= 2 * step && classSob.Amp0 < 3 * step)
-                {
-                    k2d1.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp0 >= 3 * step && classSob.Amp0 < 4 * step)
-                {
-                    k2d1.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp0 >= 4 * step)
-                {
-                    k2d1.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp1 == 0)
-                {
-                    k2d2.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp1 > 0 && classSob.Amp1 < step)
-                {
-                    k2d2.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp1 >= step && classSob.Amp1 < 2 * step)
-                {
-                    k2d2.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp1 >= 2 * step && classSob.Amp1 < 3 * step)
-                {
-                    k2d2.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp1 >= 3 * step && classSob.Amp1 < 4 * step)
-                {
-                    k2d2.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp1 >= 4 * step)
-                {
-                    k2d2.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp2 == 0)
-                {
-                    k2d3.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp2 > 0 && classSob.Amp2 < step)
-                {
-                    k2d3.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp2 >= step && classSob.Amp2 < 2 * step)
-                {
-                    k2d3.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp2 >= 2 * step && classSob.Amp2 < 3 * step)
-                {
-                    k2d3.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp2 >= 3 * step && classSob.Amp2 < 4 * step)
-                {
-                    k2d3.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp2 >= 4 * step)
-                {
-                    k2d3.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp3 == 0)
-                {
-                    k2d4.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp3 > 0 && classSob.Amp3 < step)
-                {
-                    k2d4.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp3 >= step && classSob.Amp3 < 2 * step)
-                {
-                    k2d4.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp3 >= 2 * step && classSob.Amp3 < 3 * step)
-                {
-                    k2d4.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp3 >= 3 * step && classSob.Amp3 < 4 * step)
-                {
-                    k2d4.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp3 >= 4 * step)
-                {
-                    k2d4.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp4 == 0)
-                {
-                    k2d5.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp4 > 0 && classSob.Amp4 < step)
-                {
-                    k2d5.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp4 >= step && classSob.Amp4 < 2 * step)
-                {
-                    k2d5.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp4 >= 2 * step && classSob.Amp4 < 3 * step)
-                {
-                    k2d5.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp4 >= 3 * step && classSob.Amp4 < 4 * step)
-                {
-                    k2d5.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp4 >= 4 * step)
-                {
-                    k2d5.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp5 == 0)
-                {
-                    k2d6.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp5 > 0 && classSob.Amp5 < step)
-                {
-                    k2d6.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp5 >= step && classSob.Amp5 < 2 * step)
-                {
-                    k2d6.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp5 >= 2 * step && classSob.Amp5 < 3 * step)
-                {
-                    k2d6.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp5 >= 3 * step && classSob.Amp5 < 4 * step)
-                {
-                    k2d6.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp5 >= 4 * step)
-                {
-                    k2d6.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp6 == 0)
-                {
-                    k2d7.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp6 > 0 && classSob.Amp6 < step)
-                {
-                    k2d7.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp6 >= step && classSob.Amp6 < 2 * step)
-                {
-                    k2d7.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp6 >= 2 * step && classSob.Amp6 < 3 * step)
-                {
-                    k2d7.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp6 >= 3 * step && classSob.Amp6 < 4 * step)
-                {
-                    k2d7.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp6 >= 4 * step)
-                {
-                    k2d7.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp7 == 0)
-                {
-                    k2d8.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp7 > 0 && classSob.Amp7 < step)
-                {
-                    k2d8.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp7 >= step && classSob.Amp7 < 2 * step)
-                {
-                    k2d8.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp7 >= 2 * step && classSob.Amp7 < 3 * step)
-                {
-                    k2d8.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp7 >= 3 * step && classSob.Amp7 < 4 * step)
-                {
-                    k2d8.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp7 >= 4 * step)
-                {
-                    k2d8.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp8 == 0)
-                {
-                    k2d9.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp8 > 0 && classSob.Amp8 < step)
-                {
-                    k2d9.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp8 >= step && classSob.Amp8 < 2 * step)
-                {
-                    k2d9.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp8 >= 2 * step && classSob.Amp8 < 3 * step)
-                {
-                    k2d9.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp8 >= 3 * step && classSob.Amp8 < 4 * step)
-                {
-                    k2d9.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp8 >= 4 * step)
-                {
-                    k2d9.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp9 == 0)
-                {
-                    k2d10.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp9 > 0 && classSob.Amp9 < step)
-                {
-                    k2d10.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp9 >= step && classSob.Amp9 < 2 * step)
-                {
-                    k2d10.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp9 >= 2 * step && classSob.Amp9 < 3 * step)
-                {
-                    k2d10.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp9 >= 3 * step && classSob.Amp9 < 4 * step)
-                {
-                    k2d10.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp9 >= 4 * step)
-                {
-                    k2d10.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp10 == 0)
-                {
-                    k2d11.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp10 > 0 && classSob.Amp10 < step)
-                {
-                    k2d11.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp10 >= step && classSob.Amp10 < 2 * step)
-                {
-                    k2d11.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp10 >= 2 * step && classSob.Amp10 < 3 * step)
-                {
-                    k2d11.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp10 >= 3 * step && classSob.Amp10 < 4 * step)
-                {
-                    k2d11.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp10 >= 4 * step)
-                {
-                    k2d11.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp11 == 0)
-                {
-                    k2d12.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp11 > 0 && classSob.Amp11 < step)
-                {
-                    k2d12.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp11 >= step && classSob.Amp11 < 2 * step)
-                {
-                    k2d12.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp11 >= 2 * step && classSob.Amp11 < 3 * step)
-                {
-                    k2d12.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp11 >= 3 * step && classSob.Amp11 < 4 * step)
-                {
-                    k2d12.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp11 >= 4 * step)
-                {
-                    k2d12.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-            }
-            if (classSob.nameklaster == "3")
-            {
-                k3d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k3d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                SolidColorBrush myBrush = new SolidColorBrush(Color.FromArgb(255, 202, 24, 37));
-
-                short max = classSob.AmpSum().Max();
-                short min = classSob.AmpSum().Min();
-                int step = (max - min) / 4;
-
-                Text1.Text = step.ToString();
-                Text2.Text = (2 * step).ToString();
-                Text3.Text = (3 * step).ToString();
-                Text4.Text = (4 * step).ToString();
-
-                if (classSob.Amp0 == 0)
-                {
-                    k3d1.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp0 > 0 && classSob.Amp0 < step)
-                {
-                    k3d1.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp0 >= step && classSob.Amp0 < 2 * step)
-                {
-                    k3d1.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp0 >= 2 * step && classSob.Amp0 < 3 * step)
-                {
-                    k3d1.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp0 >= 3 * step && classSob.Amp0 < 4 * step)
-                {
-                    k3d1.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp0 >= 4 * step)
-                {
-                    k3d1.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp1 == 0)
-                {
-                    k3d2.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp1 > 0 && classSob.Amp1 < step)
-                {
-                    k3d2.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp1 >= step && classSob.Amp1 < 2 * step)
-                {
-                    k3d2.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp1 >= 2 * step && classSob.Amp1 < 3 * step)
-                {
-                    k3d2.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp1 >= 3 * step && classSob.Amp1 < 4 * step)
-                {
-                    k3d2.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp1 >= 4 * step)
-                {
-                    k3d2.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp2 == 0)
-                {
-                    k3d3.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp2 > 0 && classSob.Amp2 < step)
-                {
-                    k3d3.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp2 >= step && classSob.Amp2 < 2 * step)
-                {
-                    k3d3.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp2 >= 2 * step && classSob.Amp2 < 3 * step)
-                {
-                    k3d3.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp2 >= 3 * step && classSob.Amp2 < 4 * step)
-                {
-                    k3d3.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp2 >= 4 * step)
-                {
-                    k3d3.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp3 == 0)
-                {
-                    k3d4.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp3 > 0 && classSob.Amp3 < step)
-                {
-                    k3d4.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp3 >= step && classSob.Amp3 < 2 * step)
-                {
-                    k3d4.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp3 >= 2 * step && classSob.Amp3 < 3 * step)
-                {
-                    k3d4.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp3 >= 3 * step && classSob.Amp3 < 4 * step)
-                {
-                    k3d4.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp3 >= 4 * step)
-                {
-                    k3d4.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp4 == 0)
-                {
-                    k3d5.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp4 > 0 && classSob.Amp4 < step)
-                {
-                    k3d5.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp4 >= step && classSob.Amp4 < 2 * step)
-                {
-                    k3d5.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp4 >= 2 * step && classSob.Amp4 < 3 * step)
-                {
-                    k3d5.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp4 >= 3 * step && classSob.Amp4 < 4 * step)
-                {
-                    k3d5.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp4 >= 4 * step)
-                {
-                    k3d5.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp5 == 0)
-                {
-                    k3d6.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp5 > 0 && classSob.Amp5 < step)
-                {
-                    k3d6.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp5 >= step && classSob.Amp5 < 2 * step)
-                {
-                    k3d6.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp5 >= 2 * step && classSob.Amp5 < 3 * step)
-                {
-                    k3d6.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp5 >= 3 * step && classSob.Amp5 < 4 * step)
-                {
-                    k3d6.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp5 >= 4 * step)
-                {
-                    k3d6.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp6 == 0)
-                {
-                    k3d7.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp6 > 0 && classSob.Amp6 < step)
-                {
-                    k3d7.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp6 >= step && classSob.Amp6 < 2 * step)
-                {
-                    k3d7.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp6 >= 2 * step && classSob.Amp6 < 3 * step)
-                {
-                    k3d7.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp6 >= 3 * step && classSob.Amp6 < 4 * step)
-                {
-                    k3d7.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp6 >= 4 * step)
-                {
-                    k3d7.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp7 == 0)
-                {
-                    k3d8.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp7 > 0 && classSob.Amp7 < step)
-                {
-                    k3d8.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp7 >= step && classSob.Amp7 < 2 * step)
-                {
-                    k3d8.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp7 >= 2 * step && classSob.Amp7 < 3 * step)
-                {
-                    k3d8.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp7 >= 3 * step && classSob.Amp7 < 4 * step)
-                {
-                    k3d8.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp7 >= 4 * step)
-                {
-                    k3d8.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp8 == 0)
-                {
-                    k3d9.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp8 > 0 && classSob.Amp8 < step)
-                {
-                    k3d9.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp8 >= step && classSob.Amp8 < 2 * step)
-                {
-                    k3d9.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp8 >= 2 * step && classSob.Amp8 < 3 * step)
-                {
-                    k3d9.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp8 >= 3 * step && classSob.Amp8 < 4 * step)
-                {
-                    k3d9.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp8 >= 4 * step)
-                {
-                    k3d9.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp9 == 0)
-                {
-                    k3d10.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp9 > 0 && classSob.Amp9 < step)
-                {
-                    k3d10.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp9 >= step && classSob.Amp9 < 2 * step)
-                {
-                    k3d10.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp9 >= 2 * step && classSob.Amp9 < 3 * step)
-                {
-                    k3d10.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp9 >= 3 * step && classSob.Amp9 < 4 * step)
-                {
-                    k3d10.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp9 >= 4 * step)
-                {
-                    k3d10.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp10 == 0)
-                {
-                    k3d11.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp10 > 0 && classSob.Amp10 < step)
-                {
-                    k3d11.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp10 >= step && classSob.Amp10 < 2 * step)
-                {
-                    k3d11.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp10 >= 2 * step && classSob.Amp10 < 3 * step)
-                {
-                    k3d11.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp10 >= 3 * step && classSob.Amp10 < 4 * step)
-                {
-                    k3d11.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp10 >= 4 * step)
-                {
-                    k3d11.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp11 == 0)
-                {
-                    k3d12.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp11 > 0 && classSob.Amp11 < step)
-                {
-                    k3d12.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp11 >= step && classSob.Amp11 < 2 * step)
-                {
-                    k3d12.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp11 >= 2 * step && classSob.Amp11 < 3 * step)
-                {
-                    k3d12.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp11 >= 3 * step && classSob.Amp11 < 4 * step)
-                {
-                    k3d12.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp11 >= 4 * step)
-                {
-                    k3d12.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-            }
-
-            if (classSob.nameklaster == "4")
-            {
-                k4d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k4d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                SolidColorBrush myBrush = new SolidColorBrush(Color.FromArgb(255, 202, 24, 37));
-
-                short max = classSob.AmpSum().Max();
-                short min = classSob.AmpSum().Min();
-                int step = (max - min) / 4;
-
-                Text1.Text = step.ToString();
-                Text2.Text = (2 * step).ToString();
-                Text3.Text = (3 * step).ToString();
-                Text4.Text = (4 * step).ToString();
-
-                if (classSob.Amp0 == 0)
-                {
-                    k4d1.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp0 > 0 && classSob.Amp0 < step)
-                {
-                    k4d1.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp0 >= step && classSob.Amp0 < 2 * step)
-                {
-                    k4d1.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp0 >= 2 * step && classSob.Amp0 < 3 * step)
-                {
-                    k4d1.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp0 >= 3 * step && classSob.Amp0 < 4 * step)
-                {
-                    k4d1.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp0 >= 4 * step)
-                {
-                    k4d1.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp1 == 0)
-                {
-                    k4d2.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp1 > 0 && classSob.Amp1 < step)
-                {
-                    k4d2.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp1 >= step && classSob.Amp1 < 2 * step)
-                {
-                    k4d2.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp1 >= 2 * step && classSob.Amp1 < 3 * step)
-                {
-                    k4d2.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp1 >= 3 * step && classSob.Amp1 < 4 * step)
-                {
-                    k4d2.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp1 >= 4 * step)
-                {
-                    k4d2.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp2 == 0)
-                {
-                    k4d3.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp2 > 0 && classSob.Amp2 < step)
-                {
-                    k4d3.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp2 >= step && classSob.Amp2 < 2 * step)
-                {
-                    k4d3.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp2 >= 2 * step && classSob.Amp2 < 3 * step)
-                {
-                    k4d3.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp2 >= 3 * step && classSob.Amp2 < 4 * step)
-                {
-                    k4d3.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp2 >= 4 * step)
-                {
-                    k4d3.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp3 == 0)
-                {
-                    k4d4.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp3 > 0 && classSob.Amp3 < step)
-                {
-                    k4d4.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp3 >= step && classSob.Amp3 < 2 * step)
-                {
-                    k4d4.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp3 >= 2 * step && classSob.Amp3 < 3 * step)
-                {
-                    k4d4.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp3 >= 3 * step && classSob.Amp3 < 4 * step)
-                {
-                    k4d4.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp3 >= 4 * step)
-                {
-                    k4d4.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp4 == 0)
-                {
-                    k4d5.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp4 > 0 && classSob.Amp4 < step)
-                {
-                    k4d5.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp4 >= step && classSob.Amp4 < 2 * step)
-                {
-                    k4d5.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp4 >= 2 * step && classSob.Amp4 < 3 * step)
-                {
-                    k4d5.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp4 >= 3 * step && classSob.Amp4 < 4 * step)
-                {
-                    k4d5.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp4 >= 4 * step)
-                {
-                    k4d5.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp5 == 0)
-                {
-                    k4d6.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp5 > 0 && classSob.Amp5 < step)
-                {
-                    k4d6.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp5 >= step && classSob.Amp5 < 2 * step)
-                {
-                    k4d6.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp5 >= 2 * step && classSob.Amp5 < 3 * step)
-                {
-                    k4d6.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp5 >= 3 * step && classSob.Amp5 < 4 * step)
-                {
-                    k4d6.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp5 >= 4 * step)
-                {
-                    k4d6.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp6 == 0)
-                {
-                    k4d7.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp6 > 0 && classSob.Amp6 < step)
-                {
-                    k4d7.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp6 >= step && classSob.Amp6 < 2 * step)
-                {
-                    k4d7.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp6 >= 2 * step && classSob.Amp6 < 3 * step)
-                {
-                    k4d7.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp6 >= 3 * step && classSob.Amp6 < 4 * step)
-                {
-                    k4d7.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp6 >= 4 * step)
-                {
-                    k4d7.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp7 == 0)
-                {
-                    k4d8.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp7 > 0 && classSob.Amp7 < step)
-                {
-                    k4d8.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp7 >= step && classSob.Amp7 < 2 * step)
-                {
-                    k4d8.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp7 >= 2 * step && classSob.Amp7 < 3 * step)
-                {
-                    k4d8.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp7 >= 3 * step && classSob.Amp7 < 4 * step)
-                {
-                    k4d8.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp7 >= 4 * step)
-                {
-                    k4d8.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp8 == 0)
-                {
-                    k4d9.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp8 > 0 && classSob.Amp8 < step)
-                {
-                    k4d9.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp8 >= step && classSob.Amp8 < 2 * step)
-                {
-                    k4d9.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp8 >= 2 * step && classSob.Amp8 < 3 * step)
-                {
-                    k4d9.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp8 >= 3 * step && classSob.Amp8 < 4 * step)
-                {
-                    k4d9.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp8 >= 4 * step)
-                {
-                    k4d9.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp9 == 0)
-                {
-                    k4d10.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp9 > 0 && classSob.Amp9 < step)
-                {
-                    k4d10.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp9 >= step && classSob.Amp9 < 2 * step)
-                {
-                    k4d10.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp9 >= 2 * step && classSob.Amp9 < 3 * step)
-                {
-                    k4d10.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp9 >= 3 * step && classSob.Amp9 < 4 * step)
-                {
-                    k4d10.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp9 >= 4 * step)
-                {
-                    k4d10.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp10 == 0)
-                {
-                    k4d11.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp10 > 0 && classSob.Amp10 < step)
-                {
-                    k4d11.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp10 >= step && classSob.Amp10 < 2 * step)
-                {
-                    k4d11.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp10 >= 2 * step && classSob.Amp10 < 3 * step)
-                {
-                    k4d11.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp10 >= 3 * step && classSob.Amp10 < 4 * step)
-                {
-                    k4d11.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp10 >= 4 * step)
-                {
-                    k4d11.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp11 == 0)
-                {
-                    k4d12.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp11 > 0 && classSob.Amp11 < step)
-                {
-                    k4d12.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp11 >= step && classSob.Amp11 < 2 * step)
-                {
-                    k4d12.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp11 >= 2 * step && classSob.Amp11 < 3 * step)
-                {
-                    k4d12.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp11 >= 3 * step && classSob.Amp11 < 4 * step)
-                {
-                    k4d12.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp11 >= 4 * step)
-                {
-                    k4d12.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-            }
-            if (classSob.nameklaster == "5")
-            {
-                k5d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k5d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                SolidColorBrush myBrush = new SolidColorBrush(Color.FromArgb(255, 202, 24, 37));
-
-                short max = classSob.AmpSum().Max();
-                short min = classSob.AmpSum().Min();
-                int step = (max - min) / 4;
-
-                Text1.Text = step.ToString();
-                Text2.Text = (2 * step).ToString();
-                Text3.Text = (3 * step).ToString();
-                Text4.Text = (4 * step).ToString();
-
-                if (classSob.Amp0 == 0)
-                {
-                    k5d1.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp0 > 0 && classSob.Amp0 < step)
-                {
-                    k5d1.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp0 >= step && classSob.Amp0 < 2 * step)
-                {
-                    k5d1.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp0 >= 2 * step && classSob.Amp0 < 3 * step)
-                {
-                    k5d1.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp0 >= 3 * step && classSob.Amp0 < 4 * step)
-                {
-                    k5d1.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp0 >= 4 * step)
-                {
-                    k5d1.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp1 == 0)
-                {
-                    k5d2.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp1 > 0 && classSob.Amp1 < step)
-                {
-                    k5d2.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp1 >= step && classSob.Amp1 < 2 * step)
-                {
-                    k5d2.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp1 >= 2 * step && classSob.Amp1 < 3 * step)
-                {
-                    k5d2.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp1 >= 3 * step && classSob.Amp1 < 4 * step)
-                {
-                    k5d2.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp1 >= 4 * step)
-                {
-                    k5d2.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp2 == 0)
-                {
-                    k5d3.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp2 > 0 && classSob.Amp2 < step)
-                {
-                    k5d3.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp2 >= step && classSob.Amp2 < 2 * step)
-                {
-                    k5d3.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp2 >= 2 * step && classSob.Amp2 < 3 * step)
-                {
-                    k5d3.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp2 >= 3 * step && classSob.Amp2 < 4 * step)
-                {
-                    k5d3.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp2 >= 4 * step)
-                {
-                    k5d3.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp3 == 0)
-                {
-                    k5d4.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp3 > 0 && classSob.Amp3 < step)
-                {
-                    k5d4.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp3 >= step && classSob.Amp3 < 2 * step)
-                {
-                    k5d4.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp3 >= 2 * step && classSob.Amp3 < 3 * step)
-                {
-                    k5d4.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp3 >= 3 * step && classSob.Amp3 < 4 * step)
-                {
-                    k5d4.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp3 >= 4 * step)
-                {
-                    k5d4.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp4 == 0)
-                {
-                    k5d5.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp4 > 0 && classSob.Amp4 < step)
-                {
-                    k5d5.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp4 >= step && classSob.Amp4 < 2 * step)
-                {
-                    k5d5.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp4 >= 2 * step && classSob.Amp4 < 3 * step)
-                {
-                    k5d5.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp4 >= 3 * step && classSob.Amp4 < 4 * step)
-                {
-                    k5d5.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp4 >= 4 * step)
-                {
-                    k5d5.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp5 == 0)
-                {
-                    k5d6.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp5 > 0 && classSob.Amp5 < step)
-                {
-                    k5d6.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp5 >= step && classSob.Amp5 < 2 * step)
-                {
-                    k5d6.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp5 >= 2 * step && classSob.Amp5 < 3 * step)
-                {
-                    k5d6.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp5 >= 3 * step && classSob.Amp5 < 4 * step)
-                {
-                    k5d6.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp5 >= 4 * step)
-                {
-                    k5d6.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp6 == 0)
-                {
-                    k5d7.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp6 > 0 && classSob.Amp6 < step)
-                {
-                    k5d7.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp6 >= step && classSob.Amp6 < 2 * step)
-                {
-                    k5d7.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp6 >= 2 * step && classSob.Amp6 < 3 * step)
-                {
-                    k5d7.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp6 >= 3 * step && classSob.Amp6 < 4 * step)
-                {
-                    k5d7.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp6 >= 4 * step)
-                {
-                    k5d7.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp7 == 0)
-                {
-                    k5d8.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp7 > 0 && classSob.Amp7 < step)
-                {
-                    k5d8.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp7 >= step && classSob.Amp7 < 2 * step)
-                {
-                    k5d8.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp7 >= 2 * step && classSob.Amp7 < 3 * step)
-                {
-                    k5d8.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp7 >= 3 * step && classSob.Amp7 < 4 * step)
-                {
-                    k5d8.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp7 >= 4 * step)
-                {
-                    k5d8.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp8 == 0)
-                {
-                    k5d9.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp8 > 0 && classSob.Amp8 < step)
-                {
-                    k5d9.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp8 >= step && classSob.Amp8 < 2 * step)
-                {
-                    k5d9.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp8 >= 2 * step && classSob.Amp8 < 3 * step)
-                {
-                    k5d9.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp8 >= 3 * step && classSob.Amp8 < 4 * step)
-                {
-                    k5d9.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp8 >= 4 * step)
-                {
-                    k5d9.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp9 == 0)
-                {
-                    k5d10.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp9 > 0 && classSob.Amp9 < step)
-                {
-                    k5d10.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp9 >= step && classSob.Amp9 < 2 * step)
-                {
-                    k5d10.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp9 >= 2 * step && classSob.Amp9 < 3 * step)
-                {
-                    k5d10.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp9 >= 3 * step && classSob.Amp9 < 4 * step)
-                {
-                    k5d10.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp9 >= 4 * step)
-                {
-                    k5d10.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp10 == 0)
-                {
-                    k5d11.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp10 > 0 && classSob.Amp10 < step)
-                {
-                    k5d11.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp10 >= step && classSob.Amp10 < 2 * step)
-                {
-                    k5d11.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp10 >= 2 * step && classSob.Amp10 < 3 * step)
-                {
-                    k5d11.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp10 >= 3 * step && classSob.Amp10 < 4 * step)
-                {
-                    k5d11.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp10 >= 4 * step)
-                {
-                    k5d11.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp11 == 0)
-                {
-                    k5d12.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp11 > 0 && classSob.Amp11 < step)
-                {
-                    k5d12.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp11 >= step && classSob.Amp11 < 2 * step)
-                {
-                    k5d12.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp11 >= 2 * step && classSob.Amp11 < 3 * step)
-                {
-                    k5d12.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp11 >= 3 * step && classSob.Amp11 < 4 * step)
-                {
-                    k5d12.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp11 >= 4 * step)
-                {
-                    k5d12.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-            }
-            if (classSob.nameklaster == "6")
-            {
-                k6d1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d2.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d3.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d4.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d5.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d6.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d7.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d8.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d9.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d10.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d11.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                k6d12.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-                SolidColorBrush myBrush = new SolidColorBrush(Color.FromArgb(255, 202, 24, 37));
-
-                short max = classSob.AmpSum().Max();
-                short min = classSob.AmpSum().Min();
-                int step = (max - min) / 4;
-
-                Text1.Text = step.ToString();
-                Text2.Text = (2 * step).ToString();
-                Text3.Text = (3 * step).ToString();
-                Text4.Text = (4 * step).ToString();
-
-                if (classSob.Amp0 == 0)
-                {
-                    k6d1.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp0 > 0 && classSob.Amp0 < step)
-                {
-                    k6d1.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp0 >= step && classSob.Amp0 < 2 * step)
-                {
-                    k6d1.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp0 >= 2 * step && classSob.Amp0 < 3 * step)
-                {
-                    k6d1.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp0 >= 3 * step && classSob.Amp0 < 4 * step)
-                {
-                    k6d1.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp0 >= 4 * step)
-                {
-                    k6d1.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp1 == 0)
-                {
-                    k6d2.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp1 > 0 && classSob.Amp1 < step)
-                {
-                    k6d2.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp1 >= step && classSob.Amp1 < 2 * step)
-                {
-                    k6d2.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp1 >= 2 * step && classSob.Amp1 < 3 * step)
-                {
-                    k6d2.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp1 >= 3 * step && classSob.Amp1 < 4 * step)
-                {
-                    k6d2.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp1 >= 4 * step)
-                {
-                    k6d2.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-
-                if (classSob.Amp2 == 0)
-                {
-                    k6d3.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp2 > 0 && classSob.Amp2 < step)
-                {
-                    k6d3.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp2 >= step && classSob.Amp2 < 2 * step)
-                {
-                    k6d3.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp2 >= 2 * step && classSob.Amp2 < 3 * step)
-                {
-                    k6d3.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp2 >= 3 * step && classSob.Amp2 < 4 * step)
-                {
-                    k6d3.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp2 >= 4 * step)
-                {
-                    k6d3.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp3 == 0)
-                {
-                    k6d4.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp3 > 0 && classSob.Amp3 < step)
-                {
-                    k6d4.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp3 >= step && classSob.Amp3 < 2 * step)
-                {
-                    k6d4.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp3 >= 2 * step && classSob.Amp3 < 3 * step)
-                {
-                    k6d4.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp3 >= 3 * step && classSob.Amp3 < 4 * step)
-                {
-                    k6d4.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp3 >= 4 * step)
-                {
-                    k6d4.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp4 == 0)
-                {
-                    k6d5.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp4 > 0 && classSob.Amp4 < step)
-                {
-                    k6d5.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp4 >= step && classSob.Amp4 < 2 * step)
-                {
-                    k6d5.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp4 >= 2 * step && classSob.Amp4 < 3 * step)
-                {
-                    k6d5.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp4 >= 3 * step && classSob.Amp4 < 4 * step)
-                {
-                    k6d5.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp4 >= 4 * step)
-                {
-                    k6d5.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp5 == 0)
-                {
-                    k6d6.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp5 > 0 && classSob.Amp5 < step)
-                {
-                    k6d6.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp5 >= step && classSob.Amp5 < 2 * step)
-                {
-                    k6d6.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp5 >= 2 * step && classSob.Amp5 < 3 * step)
-                {
-                    k6d6.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp5 >= 3 * step && classSob.Amp5 < 4 * step)
-                {
-                    k6d6.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp5 >= 4 * step)
-                {
-                    k6d6.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp6 == 0)
-                {
-                    k6d7.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp6 > 0 && classSob.Amp6 < step)
-                {
-                    k6d7.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp6 >= step && classSob.Amp6 < 2 * step)
-                {
-                    k6d7.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp6 >= 2 * step && classSob.Amp6 < 3 * step)
-                {
-                    k6d7.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp6 >= 3 * step && classSob.Amp6 < 4 * step)
-                {
-                    k6d7.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp6 >= 4 * step)
-                {
-                    k6d7.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp7 == 0)
-                {
-                    k6d8.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp7 > 0 && classSob.Amp7 < step)
-                {
-                    k6d8.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp7 >= step && classSob.Amp7 < 2 * step)
-                {
-                    k6d8.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp7 >= 2 * step && classSob.Amp7 < 3 * step)
-                {
-                    k6d8.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp7 >= 3 * step && classSob.Amp7 < 4 * step)
-                {
-                    k6d8.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp7 >= 4 * step)
-                {
-                    k6d8.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp8 == 0)
-                {
-                    k6d9.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp8 > 0 && classSob.Amp8 < step)
-                {
-                    k6d9.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp8 >= step && classSob.Amp8 < 2 * step)
-                {
-                    k6d9.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp8 >= 2 * step && classSob.Amp8 < 3 * step)
-                {
-                    k6d9.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp8 >= 3 * step && classSob.Amp8 < 4 * step)
-                {
-                    k6d9.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp8 >= 4 * step)
-                {
-                    k6d9.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp9 == 0)
-                {
-                    k6d10.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp9 > 0 && classSob.Amp9 < step)
-                {
-                    k6d10.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp9 >= step && classSob.Amp9 < 2 * step)
-                {
-                    k6d10.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp9 >= 2 * step && classSob.Amp9 < 3 * step)
-                {
-                    k6d10.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp9 >= 3 * step && classSob.Amp9 < 4 * step)
-                {
-                    k6d10.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp9 >= 4 * step)
-                {
-                    k6d10.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp10 == 0)
-                {
-                    k6d11.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp10 > 0 && classSob.Amp10 < step)
-                {
-                    k6d11.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp10 >= step && classSob.Amp10 < 2 * step)
-                {
-                    k6d11.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp10 >= 2 * step && classSob.Amp10 < 3 * step)
-                {
-                    k6d11.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp10 >= 3 * step && classSob.Amp10 < 4 * step)
-                {
-                    k6d11.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp10 >= 4 * step)
-                {
-                    k6d11.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-                if (classSob.Amp11 == 0)
-                {
-                    k6d12.Fill = new SolidColorBrush(Windows.UI.Colors.Wheat);
-                }
-                if (classSob.Amp11 > 0 && classSob.Amp11 < step)
-                {
-                    k6d12.Fill = new SolidColorBrush(Windows.UI.Colors.LimeGreen);
-                }
-                if (classSob.Amp11 >= step && classSob.Amp11 < 2 * step)
-                {
-                    k6d12.Fill = new SolidColorBrush(Windows.UI.Colors.Blue);
-                }
-                if (classSob.Amp11 >= 2 * step && classSob.Amp11 < 3 * step)
-                {
-                    k6d12.Fill = new SolidColorBrush(Windows.UI.Colors.Yellow);
-                }
-                if (classSob.Amp11 >= 3 * step && classSob.Amp11 < 4 * step)
-                {
-                    k6d12.Fill = new SolidColorBrush(Windows.UI.Colors.IndianRed);
-                }
-                if (classSob.Amp11 >= 4 * step)
-                {
-                    k6d12.Fill = new SolidColorBrush(Windows.UI.Colors.Red);
-                }
-
-            }
-        }
-        private void DataGrid_SelectionChanged(object sender, Telerik.UI.Xaml.Controls.Grid.DataGridSelectionChangedEventArgs e)
+      
+  
+        private async void DataGrid_SelectionChanged(object sender, Telerik.UI.Xaml.Controls.Grid.DataGridSelectionChangedEventArgs e)
         {
             if (DataGrid.SelectedItem != null)
             {if (ind == DataGrid.SelectedItem)
@@ -3118,11 +1154,32 @@ namespace DataYRAN
                 else
                 {
                     ind = DataGrid.SelectedItem;
-                    ClassSob classSob = (ClassSob)DataGrid.SelectedItem;
+                    
+                    if(ind.ToString()=="DataYRAN.ClassSob")
+                    {
+                        try
+                        {
+
+
+                            ClassSob classSob = (ClassSob)DataGrid.SelectedItem;
+                            List<ClassSob> classSobsL = new List<ClassSob>();
+                            classSobsL.Add(classSob);
+                            await MyUser.ShowDetecAsync(classSobsL);
+                            await MyUsern.ShowDetecТAsync(classSobsL);
+                        }
+                        catch(Exception ex)
+                        {
+                            MessageDialog messageDialog = new MessageDialog(ex.ToString());
+                          await  messageDialog.ShowAsync();
+                        }
+
+                    }
+             
                  
                     Split1.IsPaneOpen = true;
-                    ShowDetec(classSob);
-              
+                  
+                    //classSobColl
+
                 }
 
             }
@@ -3274,51 +1331,51 @@ namespace DataYRAN
         {
             c = 0;
 
-            if (Convert.ToInt32(sob.Amp0) >= porog)
+            if (Convert.ToInt32(sob.mAmp[0]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp1) >= porog)
+            if (Convert.ToInt32(sob.mAmp[1]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp2) >= porog)
+            if (Convert.ToInt32(sob.mAmp[2]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp3) >= porog)
+            if (Convert.ToInt32(sob.mAmp[3]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp4) >= porog)
+            if (Convert.ToInt32(sob.mAmp[4]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp5) >= porog)
+            if (Convert.ToInt32(sob.mAmp[5]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp6) >= porog)
+            if (Convert.ToInt32(sob.mAmp[6]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp7) >= porog)
+            if (Convert.ToInt32(sob.mAmp[7]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp8) >= porog)
+            if (Convert.ToInt32(sob.mAmp[8]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp9) >= porog)
+            if (Convert.ToInt32(sob.mAmp[9]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp10) >= porog)
+            if (Convert.ToInt32(sob.mAmp[10]) >= porog)
             {
                 c++;
             }
-            if (Convert.ToInt32(sob.Amp11) >= porog)
+            if (Convert.ToInt32(sob.mAmp[11]) >= porog)
             {
                 c++;
             }
@@ -3510,131 +1567,13 @@ namespace DataYRAN
             }
         }
 
-        private void AppBarToggleButton_Click_6(object sender, RoutedEventArgs e)
-        {
-            if(DataGrid.Visibility==Visibility.Visible && ViewModel.ClassSobsT.Count!=0 || GridGistogram.Visibility == Visibility.Visible)
-            {
-                DataGrid.Visibility = Visibility.Collapsed;
-                GridGistogram.Visibility = Visibility.Collapsed;
-                GridStatictik.Visibility = Visibility.Visible;
-                List<ClassSob> classSobs = ViewModel.ClassSobsT.ToList<ClassSob>();
-                string stat = "Статистика общая"+"\n";
-
-                stat += "Средняя нулевая линия" + "\n";
-                double SrNull1 = 0;
-                double SrNull2 = 0;
-                double SrNull3 = 0;
-                double SrNull4 = 0;
-                double SrNull5 = 0;
-                double SrNull6 = 0;
-                double SrNull7 = 0;
-                double SrNull8 = 0;
-                double SrNull9 = 0;
-                double SrNull10 = 0;
-                double SrNull11 = 0;
-                double SrNull12 = 0;
-
-                double Srsig1 = 0;
-                double Srsig2 = 0;
-                double Srsig3 = 0;
-                double Srsig4 = 0;
-                double Srsig5 = 0;
-                double Srsig6 = 0;
-                double Srsig7 = 0;
-                double Srsig8 = 0;
-                double Srsig9 = 0;
-                double Srsig10 = 0;
-                double Srsig11 = 0;
-                double Srsig12 = 0;
-                foreach (var c in classSobs)
-                {
-                    SrNull1 += c.Nnull0;
-                    SrNull2 += c.Nnull1;
-                    SrNull3 += c.Nnull2;
-                    SrNull4 += c.Nnull3;
-                    SrNull5 += c.Nnull4;
-                    SrNull6 += c.Nnull5;
-                    SrNull7 += c.Nnull6;
-                    SrNull8 += c.Nnull7;
-                    SrNull9 += c.Nnull8;
-                    SrNull10 += c.Nnull9;
-                    SrNull11 += c.Nnull10;
-                    SrNull12 += c.Nnull11;
-                    Srsig1 += c.sig0;
-                    Srsig2 += c.sig1;
-                    Srsig3 += c.sig2;
-                    Srsig4 += c.sig3;
-                    Srsig5 += c.sig4;
-                    Srsig6 += c.sig5;
-                    Srsig7 += c.sig6;
-                    Srsig8 += c.sig7;
-                    Srsig9 += c.sig8;
-                    Srsig10 += c.sig9;
-                    Srsig11 += c.sig10;
-                    Srsig12 += c.sig11;
-                }
-                stat += "Кн1" + "\t"+ "Кн2" + "\t" + "Кн3" + "\t" + "Кн4" + "\t" + "Кн5" + "\t" + "Кн6" + "\t" + "Кн7" + "\t" + "Кн8" + "\t" + "Кн9" + "\t" + "Кн10" + "\t" + "Кн11" + "\t" + "Кн12"+"\n";
-                stat += (SrNull1/ classSobs.Count).ToString("0.0") + "\t" + (SrNull2 / classSobs.Count).ToString("0.0") + "\t" + (SrNull3 / classSobs.Count).ToString("0.0") + "\t" +
-                    (SrNull4 / classSobs.Count).ToString("0.0") + "\t" + (SrNull5 / classSobs.Count).ToString("0.0") + "\t" + (SrNull6 / classSobs.Count).ToString("0.0") + "\t" 
-                    + (SrNull7 / classSobs.Count).ToString("0.0") + "\t" + (SrNull8 / classSobs.Count).ToString("0.0") + "\t" + (SrNull9 / classSobs.Count).ToString("0.0") + "\t" + (SrNull10 / classSobs.Count).ToString("0.0") + "\t" + (SrNull11 / classSobs.Count).ToString("0.0") + "\t" + (SrNull12 / classSobs.Count).ToString("0.0") + "\n";
-                stat += "Средняя сигма" + "\n";
-                stat += "Кн1" + "\t" + "Кн2" + "\t" + "Кн3" + "\t" + "Кн4" + "\t" + "Кн5" + "\t" + "Кн6" + "\t" + "Кн7" + "\t" + "Кн8" + "\t" + "Кн9" + "\t" + "Кн10" + "\t" + "Кн11" + "\t" + "Кн12" + "\n";
-                stat += (Srsig1 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig2 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig3 / classSobs.Count).ToString("0.0000") + "\t" +
-                    (Srsig4 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig5 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig6 / classSobs.Count).ToString("0.0000") + "\t"
-                    + (Srsig7 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig8 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig9 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig10 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig11 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig12 / classSobs.Count).ToString("0.0000") + "\n";
-                Editor.Document.SetText(Windows.UI.Text.TextSetOptions.ApplyRtfDocumentDefaults, stat);
-            }
-            else
-            {
-                DataGrid.Visibility = Visibility.Visible;
-                GridStatictik.Visibility = Visibility.Collapsed;
-            }
-
-        }
-        private async void AppBarButtonSaveStat_Click(object sender, RoutedEventArgs e)
-        {
-          
-            Windows.Storage.Pickers.FileSavePicker savePicker = new Windows.Storage.Pickers.FileSavePicker();
-            savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
-
-            // Dropdown of file types the user can save the file as
-            savePicker.FileTypeChoices.Add("Rich Text", new List<string>() { ".rtf" });
-
-            // Default file name if the user does not type one in or select a file to replace
-            savePicker.SuggestedFileName = "New Document";
-
-            Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
-            if (file != null)
-            {
-                // Prevent updates to the remote version of the file until we
-                // finish making changes and call CompleteUpdatesAsync.
-                Windows.Storage.CachedFileManager.DeferUpdates(file);
-                // write to file
-                Windows.Storage.Streams.IRandomAccessStream randAccStream =
-                    await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
-
-                Editor.Document.SaveToStream(Windows.UI.Text.TextGetOptions.FormatRtf, randAccStream);
-
-                // Let Windows know that we're finished changing the file so the
-                // other app can update the remote version of the file.
-                Windows.Storage.Provider.FileUpdateStatus status = await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(file);
-                if (status != Windows.Storage.Provider.FileUpdateStatus.Complete)
-                {
-                    Windows.UI.Popups.MessageDialog errorBox =
-                        new Windows.UI.Popups.MessageDialog("File " + file.Name + " couldn't be saved.");
-                    await errorBox.ShowAsync();
-                }
-            }
-         
-            var mess = new MessageDialog("Сохранение завершено");
-            await mess.ShowAsync();
-
-        }
+       
+      
         public async Task obrRazv(string nameFile, string time)
         {
-           foreach(var v in _DataColec)
+           foreach(var v in ViewModel.DataColec)
             {
-                if(nameFile==v.NameFile)
+                if(nameFile==v.file1.DisplayName)
                 {
                     int[] masNul = new int[12];
                     for (int i = 0; i < 12; i++)
@@ -3709,14 +1648,15 @@ namespace DataYRAN
                                                         int[,] dataTail1 = new int[12, 20000];
                                                         int[] coutN1 = new int[12];
                                                         string time1 = null;
+                                                     
                                                         if (ClassUserSetUp.TipTail)
                                                         {
-                                                            ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200H(dataOnePac, out data1, out time1, out dataTail1);
+                                                          ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200H(dataOnePac, out data1, out time1, out dataTail1);
                                                         }
                                                         else
                                                         {
 
-                                                            ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200(dataOnePac, 1, out data1, out time1);
+                                                             ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200(dataOnePac, 1, out data1, out time1);
                                                         }
                                                         if(time== time1)
                                                         {
@@ -3759,7 +1699,7 @@ namespace DataYRAN
                         {
                             // string nBaaK1;
                             //string Ran;
-                            string b2 = v.NameFile;
+                            string b2 = v.file1.DisplayName;
 
                             String[] substrings = b2.Split('.');
                             string result = null;
@@ -3890,11 +1830,20 @@ namespace DataYRAN
 
 
                                 string[] str = storageFile.DisplayName.Split('_');
-                                if (str[2] == "N")
+                                if (str.Length > 2)
                                 {
-                                    NoTailCh.IsChecked = true;
+
+
+                                    if (str[2] == "N")
+                                    {
+                                        NoTailCh.IsChecked = true;
+                                    }
+                                    if (str[2] == "T")
+                                    {
+                                        TailCh.IsChecked = true;
+                                    }
                                 }
-                                if (str[2] == "T")
+                                else
                                 {
                                     TailCh.IsChecked = true;
                                 }
@@ -3905,11 +1854,10 @@ namespace DataYRAN
                             }
                             string FileName = storageFile.DisplayName;
                             string FilePath = storageFile.Path;
-                            BasicProperties basicProperties =
-           await storageFile.GetBasicPropertiesAsync();
+                          
 
                             // Application now has read/write access to the picked file
-                            _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = storageFile, size = basicProperties.Size, StatusSize = 0 });
+                            ViewModel.AddFile(new ClassСписокList {Status = false, file1 = storageFile, StatusSize = 0, basicProperties = await storageFile.GetBasicPropertiesAsync() });
 
                         }
                         else
@@ -3951,17 +1899,19 @@ namespace DataYRAN
             int d = listView.SelectedIndex;
             if(d==0)
             {
+                dataFirstTimeV.IsVisible = false;
+                dataMaxTime.IsVisible = false;
+                datanV.IsVisible = false;
+                dataAmpNV.IsVisible = false;
                 DataGrid.Visibility= Visibility.Visible;
                 DataGrid1.Visibility = Visibility.Collapsed;
                 TextBloxPorogN.IsEnabled = true;
                 TextBloxDlitN.IsEnabled = true;
-                dataNV.IsVisible = false;
+              
               //  ClassUserSetUp.TipTail = true;
                 dataN.IsVisible = true;
                 dataAmp.IsVisible = true;
-                ampNV.IsVisible = false;
-                mtNV.IsVisible = false;
-                ftNV.IsVisible = false;
+              
                 List55.Visibility = Visibility.Collapsed;
                 List54.Visibility = Visibility.Visible;
                 DataGrid.ItemsSource = ViewModel.ClassSobsT;
@@ -3971,15 +1921,15 @@ namespace DataYRAN
             }
             if (d == 1)
             {
+                dataFirstTimeV.IsVisible = false;
+                dataMaxTime.IsVisible = false;
+                dataAmpNV.IsVisible = false;
                 DataGrid.Visibility = Visibility.Visible;
                 DataGrid1.Visibility = Visibility.Collapsed;
                 // ClassUserSetUp.TipTail = false;
                 dataN.IsVisible = false;
                 dataAmp.IsVisible = true;
-                dataNV.IsVisible = false;
-                ampNV.IsVisible = false;
-                ftNV.IsVisible = false;
-                mtNV.IsVisible = false;
+                datanV.IsVisible = false;
                 List55.Visibility = Visibility.Visible;
                 List54.Visibility = Visibility.Collapsed;
                 DataGrid.ItemsSource = ViewModel.ClassSobsN;
@@ -3988,17 +1938,20 @@ namespace DataYRAN
             }
             if (d == 2)
             {
+                dataFirstTimeV.IsVisible = true;
+                dataMaxTime.IsVisible = true;
+                dataAmpNV.IsVisible = true;
                 DataGrid.Visibility = Visibility.Visible;
+                datanV.IsVisible =true;
                 DataGrid1.Visibility = Visibility.Collapsed;
                 TextBloxPorogN.IsEnabled = false;
                 TextBloxDlitN.IsEnabled = false;
               //  ClassUserSetUp.TipTail = false;
                 dataN.IsVisible = false;
-                dataNV.IsVisible = true;
+           
                 dataAmp.IsVisible = false;
-                ampNV.IsVisible = true;
-                mtNV.IsVisible = true;
-                ftNV.IsVisible = true;
+           
+           
                 List55.Visibility = Visibility.Visible;
                 List54.Visibility = Visibility.Collapsed;
                 DataGrid.ItemsSource = ViewModel.ClassSobsV;
@@ -4007,45 +1960,24 @@ namespace DataYRAN
             }
             if (d == 3)
             {
-                DataGrid.Visibility = Visibility.Visible;
-                DataGrid1.Visibility = Visibility.Collapsed;
-                dataN.IsVisible = false;
-                dataAmp.IsVisible = true;
-                ampNV.IsVisible = false;
-                mtNV.IsVisible = false;
-                ftNV.IsVisible = false;
-                dataN.IsVisible = false;
-                dataNV.IsVisible = false;
-                dataAmp.IsVisible = false;
-                List55.Visibility = Visibility.Visible;
-                List54.Visibility = Visibility.Collapsed;
-                List<ClassSob> sobs = new List<ClassSob>();
-                foreach(ClassSob classSob in ViewModel.ClassSobsN)
-                {
-                    sobs.Add(classSob);
-                }
-                foreach (ClassSob classSob in ViewModel.ClassSobsT)
-                {
-                    sobs.Add(classSob);
-                }
-                DataGrid.ItemsSource = sobs;
-                colstroc.Text = (ViewModel.ClassSobsN.Count+ViewModel.ClassSobsT.Count).ToString();
-                textHeader.Text = "Таблица данных БААК12-200Т+200";
+               
             }
             if(d==4)
             {
                 try
                 {
+                    dataFirstTimeV.IsVisible = false;
+                    dataMaxTime.IsVisible = false;
                     DataGrid.Visibility = Visibility.Collapsed;
                     DataGrid1.Visibility = Visibility.Visible;
-                  
-
-               
+                    datanV.IsVisible = false;
 
 
-                  
 
-ftNV.IsVisible = true;
+
+
+
+
 
 
 
@@ -4085,9 +2017,10 @@ ftNV.IsVisible = true;
                 {
                     ViewModel._DataColecSobCopy.Add(classSob);
                 }
-                
-            
-               while(ViewModel._DataColecSobCopy.Count!=0)
+              
+
+
+               while (ViewModel._DataColecSobCopy.Count!=0)
                 {
                     ClassSobColl classSobColl = new ClassSobColl();
                     ClassSob clF = ViewModel._DataColecSobCopy.ElementAt(0);
@@ -4226,147 +2159,40 @@ ftNV.IsVisible = true;
 
         }
 
-        private async void Button_Click_6(object sender, RoutedEventArgs e)
-        {
-            if (storage != null)
-            {
-                String sConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;";
-                // Application now has read/write access to all contents in the picked folder
-                // (including other sub-folder contents)
-
-
-
-
-
-
-
-
-                IReadOnlyList<StorageFile> fileList = await storage.GetFilesAsync();
-
-                      // Print the month and number of files in this group.
-                      //  //outputText.AppendLine(folder.Name + " (" + fileList.Count + ")");
-                      //  var messageDialog = new MessageDialog(folder1.Name + " (" + fileList.Count + ")");
-                      //  await messageDialog.ShowAsync();
-
-                      foreach (StorageFile file in fileList)
-                      {
-                          if (file.FileType == ".bin")
-                          {
-                              string FileName = file.DisplayName;
-                              string FilePath = file.Path;
-                        if(!Convert.ToBoolean(ChTime.IsChecked))
-                        {
-                            if (Convert.ToBoolean(ChklAll.IsChecked))
-                            {
-                                _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                            }
-                            else
-                            {
-                                string[] s = FileName.Split('_');
-                                if (s[0] == "1" && Chkl1.IsChecked == true)
-                                {
-                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                }
-                                if (s[0] == "2" && Chkl2.IsChecked == true)
-                                {
-                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                }
-                                if (s[0] == "3" && Chkl3.IsChecked == true)
-                                {
-                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                }
-                                if (s[0] == "4" && Chkl4.IsChecked == true)
-                                {
-                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                }
-                                if (s[0] == "5" && Chkl5.IsChecked == true)
-                                {
-                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                }
-                                if (s[0] == "6" && Chkl6.IsChecked == true)
-                                {
-                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                }
-
-
-
-
-                            }
-                        }
-                        else
-                        {
-                            string[] s = FileName.Split('_');
-                            string[] ss = s[1].Split(' ');
-                            DateTime dateTime = new DateTime(2018, 12, 12);
-                            dateTime = MyDate1.Date.Value.DateTime;
-                            string t = dateTime.Day.ToString() + "." + dateTime.Month.ToString() + "." + dateTime.Year.ToString();
-                            string[] dd = ss[0].Split('.');
-                            DateTime dateTime1 = new DateTime(Convert.ToInt32(dd[2]), Convert.ToInt32(dd[1]), Convert.ToInt32(dd[0]));
-                           
-                            if (dateTime1.Date == dateTime.Date)
-                            {
-                               
-                                if (Convert.ToBoolean(ChklAll.IsChecked))
-                                {
-                                    _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                }
-                                else
-                                {
-
-                                    if (s[0] == "1" && Chkl1.IsChecked == true)
-                                    {
-                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                    }
-                                    if (s[0] == "2" && Chkl2.IsChecked == true)
-                                    {
-                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                    }
-                                    if (s[0] == "3" && Chkl3.IsChecked == true)
-                                    {
-                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                    }
-                                    if (s[0] == "4" && Chkl4.IsChecked == true)
-                                    {
-                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                    }
-                                    if (s[0] == "5" && Chkl5.IsChecked == true)
-                                    {
-                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                    }
-                                    if (s[0] == "6" && Chkl6.IsChecked == true)
-                                    {
-                                        _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                                    }
-
-
-
-
-                                }
-                            }
-                        }
-                      
-                  
-                       
-
-                        // Print the name of the file.
-                        // outputText.AppendLine("   " + file.Name);
-                    }
-                      }
-
-                gridMenedgerAddFile.Visibility = Visibility.Collapsed;
-
-                // var messageDialog = new MessageDialog(folder.Name);
-                //await messageDialog.ShowAsync();
-
-            }
-        }
+        
 
         private async void Button_Click_7(object sender, RoutedEventArgs e)
         {
             DataPackage dataPackage = new DataPackage();
             await OutputClipboardText();
+            colstroc.Text = ViewModel.ClassSobsT.Count().ToString();
             MessageDialog messageDialog = new MessageDialog("Данные вставлены!!!");
            await messageDialog.ShowAsync();
+        }
+
+        private async void DataGrid1_SelectionChanged(object sender, DataGridSelectionChangedEventArgs e)
+        {
+            if (DataGrid1.SelectedItem != null)
+            {
+              
+
+                    Split1.IsPaneOpen = !Split1.IsPaneOpen;
+                
+                
+                  object ind = DataGrid1.SelectedItem;
+                 
+                   
+                        ClassSobColl classSob = (ClassSobColl)DataGrid1.SelectedItem;
+
+                        await MyUser.ShowDetecAsync(classSob.col);
+                await MyUsern.ShowDetecТAsync(classSob.col);
+
+            }
+            else
+            {
+                Split1.IsPaneOpen = false;
+            }
+
         }
     }
 }

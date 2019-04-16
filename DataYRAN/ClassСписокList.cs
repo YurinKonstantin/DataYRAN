@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.FileProperties;
 
 namespace DataYRAN
 {
@@ -14,7 +15,7 @@ namespace DataYRAN
     {
        
         public event PropertyChangedEventHandler PropertyChanged;
-
+     public   BasicProperties basicProperties { get; set; }
         public string NameFile { get; set; }
         public string NemePapka { get; set; }
         public ulong size { get; set; }
@@ -23,6 +24,19 @@ namespace DataYRAN
         {
             get { return status; }
             set { Set(ref status, value); }
+        }
+        public ulong sizeF
+        {
+            get
+            {
+                return basicProperties.Size / 1048576;
+            }
+        }
+        public bool statusP;
+        public bool StatusP
+        {
+            get { return statusP; }
+            set { Set(ref statusP, value); }
         }
         public ulong statusSize;
         public ulong StatusSize

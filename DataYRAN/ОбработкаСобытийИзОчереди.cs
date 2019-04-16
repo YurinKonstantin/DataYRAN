@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;using System.Linq;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,7 +48,10 @@ namespace DataYRAN
                 int countnutron = 0;
                 int Nu = Convert.ToInt32(masnul[i]);
                 int? AmpOtbora1 = AmpOtbora + Nu;
+                
+
                 for (int j = 100; j < 20000; j++)
+           
                 {
                   
                     int Amp = n[i, j];
@@ -124,11 +129,23 @@ namespace DataYRAN
                                     countnutron++;
                                     if (!bad)
                                     {
-                                  
+                                    string[] array = nemeF.Split('_');
+                                    string nameFileNew = String.Empty;
+                                    string nameKlNew = String.Empty;
+                                    if (array.Length > 2)
+                                    {
+                                        nameFileNew = nemeF;
+                                        nameKlNew = array[0];
+                                    }
+                                    if (array.Length == 2)
+                                    {
+                                        nameFileNew = array[0].Split("№")[1] + "_" + array[1] + "_" + "T";
+                                        nameKlNew = array[0].Split("№")[1];
+                                    }
                                     await  Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                         {
                                             ViewModel.ClassSobNeutrons.Add(new ClassSobNeutron()
-                                            { nameFile = nemeF, D = dd, Amp = Amp, time = timeSob, TimeAmp = countmaxtime, TimeEnd = countendtime, TimeEnd3 = countendtime3, TimeFirst = countfirsttime, TimeFirst3 = countfirsttime3 });
+                                            { nameFile = nameFileNew, D = dd, Amp = Amp, time = timeSob, TimeAmp = countmaxtime, TimeEnd = countendtime, TimeEnd3 = countendtime3, TimeFirst = countfirsttime, TimeFirst3 = countfirsttime3 });
                                         });
                                     }
                                 }
@@ -137,9 +154,10 @@ namespace DataYRAN
                                    
                                 }
                         }
-                        if (countendtime + 1 < 19999)
-                            j = countendtime + 1;
+                        if (countendtime + 2 < 19999)
+                            j = countendtime + 2;
                     }
+                   
                 }
 
                coutN[i] = countnutron;
@@ -152,6 +170,7 @@ namespace DataYRAN
       
         public async Task Obr()
         {
+           
             if (OcherediNaObrab.Count != 0)
             {
                 try
@@ -166,8 +185,9 @@ namespace DataYRAN
                         int[,] dataTail1 = new int[12, 20000];
                         int[] coutN1 = new int[12];
                         string time1 = null;
-                      //  MessageDialog messageDialog = new MessageDialog(ObrD.tipName);
-                     //  await messageDialog.ShowAsync();
+                    
+                      
+                       
                         switch (ObrD.tipName)
                         {
                            
@@ -178,14 +198,14 @@ namespace DataYRAN
                                 ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200(ObrD.Buf00, 1, out data1, out time1);
                                 break;
                             case "V":
-                                ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200(ObrD.Buf00, 1, out data1, out time1);
+                                ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200(ObrD.Buf00, 2, out data1, out time1);
                                 break;
                             default:
                                 
                                 break;
                         }
                       
-                    
+
                         try
                         {
                            await SaveFileDelegate(data1, dataTail1, time1, ObrD.NameFile);
@@ -194,7 +214,7 @@ namespace DataYRAN
                         {
 
                         }
-                      
+                  
                         try
                         {
                             int t =0;
@@ -221,6 +241,7 @@ mess.ShowAsync();// КолПакетовОчер++;
                         ObrD = null;
                         //_СписокФайловОбработки = null;
 
+
                     }
                 }
                 catch (Exception ex)
@@ -238,7 +259,9 @@ mess.ShowAsync();// КолПакетовОчер++;
 
         public async Task ObrSigData(int[] nul, string nameFile, string nemeBAAK,   int[,] data1, int[,] dataTail1, string time1, string tipN)
         {
-            double[] Amp = new double[12];
+
+    
+            int[] Amp = new int[12];
             double[] Nul = new double[12];
             int[] coutN1 = new int[12];
             Double[] sig = new Double[12];
@@ -247,19 +270,24 @@ mess.ShowAsync();// КолПакетовОчер++;
             double[] sumDetQ = new double[12];
             double[,] data1S = new double[12, 1024];
             int[] maxTime = new int[12];
+            int[] PolovmaxTime = new int[12];
             int[] maxAmp=new int[12];
-            int d = 0;
-            int firstTimeN = 0;
+            int d = 1;
+            int[] firstTimeN=new int[12];
 
 
             try
             {
+               
                 ClassUserSetUp classUserSetUp = new ClassUserSetUp();
+               
                 switch (tipN)
                 {
                     case "T":
                         ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
+                       
                         coutN1 = await neutron(dataTail1, time1, Nul, nameFile, bad);
+                     
                         break;
                     case "N":
                         ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
@@ -279,17 +307,15 @@ mess.ShowAsync();// КолПакетовОчер++;
                         ParserBAAK12.ParseBinFileBAAK12.SumSig(data1S, out sumDetQ);
                         break;
                     case "V":
-                  ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
-
-
-                        ObrabotcaURAN.Obrabotca.AmpAndTime(data1, Nul, out maxTime, out maxAmp);
-
-
-                        bool dN =  ObrabotcaURAN.Obrabotca.Dneutron(maxAmp, classUserSetUp.PorogSN, out d);
-                 
-                            firstTimeN= ObrabotcaURAN.Obrabotca.FirstTme(maxTime[d], maxAmp[d], classUserSetUp.PorogS, data1, Nul, d-1);
-                        
-                    
+                       
+                       
+                     
+                        ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);                     
+                        ObrabotcaURAN.Obrabotca.AmpAndTime(data1, Nul, out maxTime, out maxAmp);                      
+                        bool dN =  ObrabotcaURAN.Obrabotca.Dneutron(maxAmp, classUserSetUp.PorogSN, out d);              
+                        firstTimeN = ObrabotcaURAN.Obrabotca.FirstTme(maxTime, maxAmp, classUserSetUp.PorogS, data1, Nul, ref PolovmaxTime);
+                        var mess = new MessageDialog("dss" + "\n" + PolovmaxTime[0]);
+                      await  mess.ShowAsync();// КолПакетовОчер++;
                         break;
                     default:
 
@@ -301,97 +327,121 @@ mess.ShowAsync();// КолПакетовОчер++;
                 timeS = ParserBAAK12.ParseBinFileBAAK12.TimeS(data1, classUserSetUp.PorogS, Amp, Nul);
             }
 
-            catch 
+            catch (Exception ex)
             {
 
             }
-        
+           
             string[] array = nameFile.Split('_');
+            string nameFileNew = String.Empty;
+            string nameKlNew = String.Empty;
+            if(array.Length>2)
+            {
+                nameFileNew = nameFile;
+                nameKlNew = array[0];
+            }
+            if(array.Length==2)
+            {
+                nameFileNew = array[0].Split("№")[1]+"_"+array[1]+"_"+"T";
+                nameKlNew= array[0].Split("№")[1];
+            }
+
             if (!bad)
             {
                 switch (tipN)
                 {
                     case "T":
-                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
- () => {
-     ViewModel.ClassSobsT.Add(new ClassSob()
-     {
-         nameFile = nameFile,
-         nameklaster = array[0],
-         nameBAAK = nemeBAAK,
-         time = time1,
-         Amp0 = Convert.ToInt16(Amp[0]),
-         Amp1 = Convert.ToInt16(Amp[1]),
-         Amp2 = Convert.ToInt16(Amp[2]),
-         Amp3 = Convert.ToInt16(Amp[3]),
-         Amp4 = Convert.ToInt16(Amp[4]),
-         Amp5 = Convert.ToInt16(Amp[5]),
-         Amp6 = Convert.ToInt16(Amp[6]),
-         Amp7 = Convert.ToInt16(Amp[7]),
-         Amp8 = Convert.ToInt16(Amp[8]),
-         Amp9 = Convert.ToInt16(Amp[9]),
-         Amp10 = Convert.ToInt16(Amp[10]),
-         Amp11 = Convert.ToInt16(Amp[11]),
-         Nnut0 = Convert.ToInt16(coutN1[0]),
-         Nnut1 = Convert.ToInt16(coutN1[1]),
-         Nnut2 = Convert.ToInt16(coutN1[2]),
-         Nnut3 = Convert.ToInt16(coutN1[3]),
-         Nnut4 = Convert.ToInt16(coutN1[4]),
-         Nnut5 = Convert.ToInt16(coutN1[5]),
-         Nnut6 = Convert.ToInt16(coutN1[6]),
-         Nnut7 = Convert.ToInt16(coutN1[7]),
-         Nnut8 = Convert.ToInt16(coutN1[8]),
-         Nnut9 = Convert.ToInt16(coutN1[9]),
-         Nnut10 = Convert.ToInt16(coutN1[10]),
-         Nnut11 = Convert.ToInt16(coutN1[11]),
-         TimeS0 = timeS[0],
-         TimeS1 = timeS[1],
-         TimeS2 = timeS[2],
-         TimeS3 = timeS[3],
-         TimeS4 = timeS[4],
-         TimeS5 = timeS[5],
-         TimeS6 = timeS[6],
-         TimeS7 = timeS[7],
-         TimeS8 = timeS[8],
-         TimeS9 = timeS[9],
-         TimeS10 = timeS[10],
-         TimeS11 = timeS[11],
-         sig0 = sig[0],
-         sig1 = sig[1],
-         sig2 = sig[2],
-         sig3 = sig[3],
-         sig4 = sig[4],
-         sig5 = sig[5],
-         sig6 = sig[6],
-         sig7 = sig[7],
-         sig8 = sig[8],
-         sig9 = sig[9],
-         sig10 = sig[10],
-         sig11 = sig[11],
-         SumAmp = Convert.ToInt32(Amp.Sum()),
-         SumNeu = coutN1.Sum(),
-         Nnull0 = Convert.ToInt16(Nul[0]),
-         Nnull1 = Convert.ToInt16(Nul[1]),
-         Nnull2 = Convert.ToInt16(Nul[2]),
-         Nnull3 = Convert.ToInt16(Nul[3]),
-         Nnull4 = Convert.ToInt16(Nul[4]),
-         Nnull5 = Convert.ToInt16(Nul[5]),
-         Nnull6 = Convert.ToInt16(Nul[6]),
-         Nnull7 = Convert.ToInt16(Nul[7]),
-         Nnull8 = Convert.ToInt16(Nul[8]),
-         Nnull9 = Convert.ToInt16(Nul[9]),
-         Nnull10 = Convert.ToInt16(Nul[10]),
-         Nnull11 = Convert.ToInt16(Nul[11])
+                     
 
+
+                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+     () =>
+     {
+         ViewModel.ClassSobsT.Add(new ClassSob()
+         {
+             nameFile = nameFileNew,
+             nameklaster = nameKlNew,
+             nameBAAK = nemeBAAK,
+             time = time1,
+             mAmp=Amp,
+             /*Amp0 = Convert.ToInt16(Amp[0]),
+             Amp1 = Convert.ToInt16(Amp[1]),
+             Amp2 = Convert.ToInt16(Amp[2]),
+             Amp3 = Convert.ToInt16(Amp[3]),
+             Amp4 = Convert.ToInt16(Amp[4]),
+             Amp5 = Convert.ToInt16(Amp[5]),
+             Amp6 = Convert.ToInt16(Amp[6]),
+             Amp7 = Convert.ToInt16(Amp[7]),
+             Amp8 = Convert.ToInt16(Amp[8]),
+             Amp9 = Convert.ToInt16(Amp[9]),
+             Amp10 = Convert.ToInt16(Amp[10]),
+             Amp11 = Convert.ToInt16(Amp[11]),
+             */
+             Nnut0 = Convert.ToInt16(coutN1[0]),
+             Nnut1 = Convert.ToInt16(coutN1[1]),
+             Nnut2 = Convert.ToInt16(coutN1[2]),
+             Nnut3 = Convert.ToInt16(coutN1[3]),
+             Nnut4 = Convert.ToInt16(coutN1[4]),
+             Nnut5 = Convert.ToInt16(coutN1[5]),
+             Nnut6 = Convert.ToInt16(coutN1[6]),
+             Nnut7 = Convert.ToInt16(coutN1[7]),
+             Nnut8 = Convert.ToInt16(coutN1[8]),
+             Nnut9 = Convert.ToInt16(coutN1[9]),
+             Nnut10 = Convert.ToInt16(coutN1[10]),
+             Nnut11 = Convert.ToInt16(coutN1[11]),
+             TimeS0 = timeS[0],
+             TimeS1 = timeS[1],
+             TimeS2 = timeS[2],
+             TimeS3 = timeS[3],
+             TimeS4 = timeS[4],
+             TimeS5 = timeS[5],
+             TimeS6 = timeS[6],
+             TimeS7 = timeS[7],
+             TimeS8 = timeS[8],
+             TimeS9 = timeS[9],
+             TimeS10 = timeS[10],
+             TimeS11 = timeS[11],
+             sig0 = sig[0],
+             sig1 = sig[1],
+             sig2 = sig[2],
+             sig3 = sig[3],
+             sig4 = sig[4],
+             sig5 = sig[5],
+             sig6 = sig[6],
+             sig7 = sig[7],
+             sig8 = sig[8],
+             sig9 = sig[9],
+             sig10 = sig[10],
+             sig11 = sig[11],
+             SumAmp = Convert.ToInt32(Amp.Sum()),
+             SumNeu = coutN1.Sum(),
+             Nnull0 = Convert.ToInt16(Nul[0]),
+             Nnull1 = Convert.ToInt16(Nul[1]),
+             Nnull2 = Convert.ToInt16(Nul[2]),
+             Nnull3 = Convert.ToInt16(Nul[3]),
+             Nnull4 = Convert.ToInt16(Nul[4]),
+             Nnull5 = Convert.ToInt16(Nul[5]),
+             Nnull6 = Convert.ToInt16(Nul[6]),
+             Nnull7 = Convert.ToInt16(Nul[7]),
+             Nnull8 = Convert.ToInt16(Nul[8]),
+             Nnull9 = Convert.ToInt16(Nul[9]),
+             Nnull10 = Convert.ToInt16(Nul[10]),
+             Nnull11 = Convert.ToInt16(Nul[11]),
+             mCountN=coutN1
+
+
+         });
+         ViewModel.CountObrabSob++;
 
      });
-
- });
+                        
+                      
+                        
                         break;
                     case "N":
                         await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
      () => {
-         ViewModel.ClassSobsN.Add(new ClassSob()
+         ViewModel.ClassSobsN.Add(new ClassSobN()
          {
              nameFile = nameFile,
              nameklaster = array[0],
@@ -436,18 +486,7 @@ mess.ShowAsync();// КолПакетовОчер++;
              sig11 = sig[11],
              SumAmp = Convert.ToInt32(Amp.Sum()),
             
-             Nnull0 = Convert.ToInt16(Nul[0]),
-             Nnull1 = Convert.ToInt16(Nul[1]),
-             Nnull2 = Convert.ToInt16(Nul[2]),
-             Nnull3 = Convert.ToInt16(Nul[3]),
-             Nnull4 = Convert.ToInt16(Nul[4]),
-             Nnull5 = Convert.ToInt16(Nul[5]),
-             Nnull6 = Convert.ToInt16(Nul[6]),
-             Nnull7 = Convert.ToInt16(Nul[7]),
-             Nnull8 = Convert.ToInt16(Nul[8]),
-             Nnull9 = Convert.ToInt16(Nul[9]),
-             Nnull10 = Convert.ToInt16(Nul[10]),
-             Nnull11 = Convert.ToInt16(Nul[11]),
+
              QS0 = sumDetQ[0],
              QS1 = sumDetQ[1],
              QS2 = sumDetQ[2],
@@ -462,78 +501,82 @@ mess.ShowAsync();// КолПакетовОчер++;
              QS11 = sumDetQ[11]
 
          });
+         ViewModel.CountObrabSob++;
 
      });
                         break;
                     case "V":
-                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-    () => {
-        ViewModel.ClassSobsV.Add(new ClassSob()
+                        try
+                        {
+
+
+                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+        () =>
         {
-            nameFile = nameFile,
-            nameklaster = array[0],
-            nameBAAK = nemeBAAK,
-            time = time1,
-            Amp0 = Convert.ToInt16(maxAmp[0]),
-            Amp1 = Convert.ToInt16(maxAmp[1]),
-            Amp2 = Convert.ToInt16(maxAmp[2]),
-            Amp3 = Convert.ToInt16(maxAmp[3]),
-            Amp4 = Convert.ToInt16(maxAmp[4]),
-            Amp5 = Convert.ToInt16(maxAmp[5]),
-            Amp6 = Convert.ToInt16(maxAmp[6]),
-            Amp7 = Convert.ToInt16(maxAmp[7]),
-            Amp8 = Convert.ToInt16(maxAmp[8]),
-            Amp9 = Convert.ToInt16(maxAmp[9]),
-            Amp10 = Convert.ToInt16(maxAmp[10]),
-            Amp11 = Convert.ToInt16(maxAmp[11]),
-           
-            TimeS0 = maxTime[0].ToString(),
-            TimeS1 = maxTime[1].ToString(),
-            TimeS2 = maxTime[2].ToString(),
-            TimeS3 = maxTime[3].ToString(),
-            TimeS4 = maxTime[4].ToString(),
-            TimeS5 = maxTime[5].ToString(),
-            TimeS6 = maxTime[6].ToString(),
-            TimeS7 = maxTime[7].ToString(),
-            TimeS8 = maxTime[8].ToString(),
-            TimeS9 = maxTime[9].ToString(),
-            TimeS10 = maxTime[10].ToString(),
-            TimeS11 = maxTime[11].ToString(),
-            sig0 = sig[0],
-            sig1 = sig[1],
-            sig2 = sig[2],
-            sig3 = sig[3],
-            sig4 = sig[4],
-            sig5 = sig[5],
-            sig6 = sig[6],
-            sig7 = sig[7],
-            sig8 = sig[8],
-            sig9 = sig[9],
-            sig10 = sig[10],
-            sig11 = sig[11],
 
-            Nnull0 = Convert.ToInt16(Nul[0]),
-            Nnull1 = Convert.ToInt16(Nul[1]),
-            Nnull2 = Convert.ToInt16(Nul[2]),
-            Nnull3 = Convert.ToInt16(Nul[3]),
-            Nnull4 = Convert.ToInt16(Nul[4]),
-            Nnull5 = Convert.ToInt16(Nul[5]),
-            Nnull6 = Convert.ToInt16(Nul[6]),
-            Nnull7 = Convert.ToInt16(Nul[7]),
-            Nnull8 = Convert.ToInt16(Nul[8]),
-            Nnull9 = Convert.ToInt16(Nul[9]),
-            Nnull10 = Convert.ToInt16(Nul[10]),
-            Nnull11 = Convert.ToInt16(Nul[11]),
-            AmpNV = maxAmp[d-1],
-            nV=d,
-            FirstTimeV= firstTimeN,
-            MaxTime= maxTime[d-1]
+            ViewModel.ClassSobsV.Add(new ClassSobV()
+            {
+                nameFile = nameFile,
+                nameklaster = array[0],
+                nameBAAK = nemeBAAK,
+                time = time1,
+                Amp0 = Convert.ToInt16(maxAmp[0]),
+                Amp1 = Convert.ToInt16(maxAmp[1]),
+                Amp2 = Convert.ToInt16(maxAmp[2]),
+                Amp3 = Convert.ToInt16(maxAmp[3]),
+                Amp4 = Convert.ToInt16(maxAmp[4]),
+                Amp5 = Convert.ToInt16(maxAmp[5]),
+                Amp6 = Convert.ToInt16(maxAmp[6]),
+                Amp7 = Convert.ToInt16(maxAmp[7]),
+                Amp8 = Convert.ToInt16(maxAmp[8]),
+                Amp9 = Convert.ToInt16(maxAmp[9]),
+                Amp10 = Convert.ToInt16(maxAmp[10]),
+                Amp11 = Convert.ToInt16(maxAmp[11]),
+                maxTimeV = maxTime,
+                PolmaxTimeV = PolovmaxTime,
 
-           
+                sig0 = sig[0],
+                sig1 = sig[1],
+                sig2 = sig[2],
+                sig3 = sig[3],
+                sig4 = sig[4],
+                sig5 = sig[5],
+                sig6 = sig[6],
+                sig7 = sig[7],
+                sig8 = sig[8],
+                sig9 = sig[9],
+                sig10 = sig[10],
+                sig11 = sig[11],
+
+                Nnull0 = Convert.ToInt16(Nul[0]),
+                Nnull1 = Convert.ToInt16(Nul[1]),
+                Nnull2 = Convert.ToInt16(Nul[2]),
+                Nnull3 = Convert.ToInt16(Nul[3]),
+                Nnull4 = Convert.ToInt16(Nul[4]),
+                Nnull5 = Convert.ToInt16(Nul[5]),
+                Nnull6 = Convert.ToInt16(Nul[6]),
+                Nnull7 = Convert.ToInt16(Nul[7]),
+                Nnull8 = Convert.ToInt16(Nul[8]),
+                Nnull9 = Convert.ToInt16(Nul[9]),
+                Nnull10 = Convert.ToInt16(Nul[10]),
+                Nnull11 = Convert.ToInt16(Nul[11]),
+                AmpNV = maxAmp[d - 1],
+                nV = d,
+                FirstTimeV = firstTimeN,
+                MaxTime = maxTime[d - 1]
+
+
+
+            });
+            ViewModel.CountObrabSob++;
 
         });
-
-    });
+                        }
+                        catch(Exception ex)
+                        {
+                            MessageDialog messageDialog = new MessageDialog(ex.ToString());
+                           await messageDialog.ShowAsync();
+                        }
                         break;
                     default:
 
@@ -558,7 +601,7 @@ mess.ShowAsync();// КолПакетовОчер++;
          nameklaster = array[0],
          nameBAAK = nemeBAAK,
          time = time1,
-         Amp0 = Convert.ToInt16(Amp[0]),
+        /* Amp0 = Convert.ToInt16(Amp[0]),
          Amp1 = Convert.ToInt16(Amp[1]),
          Amp2 = Convert.ToInt16(Amp[2]),
          Amp3 = Convert.ToInt16(Amp[3]),
@@ -570,6 +613,7 @@ mess.ShowAsync();// КолПакетовОчер++;
          Amp9 = Convert.ToInt16(Amp[9]),
          Amp10 = Convert.ToInt16(Amp[10]),
          Amp11 = Convert.ToInt16(Amp[11]),
+         */
          Nnut0 = Convert.ToInt16(coutN1[0]),
          Nnut1 = Convert.ToInt16(coutN1[1]),
          Nnut2 = Convert.ToInt16(coutN1[2]),
@@ -619,7 +663,8 @@ mess.ShowAsync();// КолПакетовОчер++;
          Nnull8 = Convert.ToInt16(Nul[8]),
          Nnull9 = Convert.ToInt16(Nul[9]),
          Nnull10 = Convert.ToInt16(Nul[10]),
-         Nnull11 = Convert.ToInt16(Nul[11])
+         Nnull11 = Convert.ToInt16(Nul[11]),
+
 
 
      });
@@ -629,7 +674,7 @@ mess.ShowAsync();// КолПакетовОчер++;
                     case "N":
                         await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
      () => {
-         ViewModel._DataColecSobPloxN.Add(new ClassSob()
+         ViewModel._DataColecSobPloxN.Add(new ClassSobN()
          {
              nameFile = nameFile,
              nameklaster = array[0],
@@ -674,18 +719,6 @@ mess.ShowAsync();// КолПакетовОчер++;
              sig11 = sig[11],
              SumAmp = Convert.ToInt32(Amp.Sum()),
 
-             Nnull0 = Convert.ToInt16(Nul[0]),
-             Nnull1 = Convert.ToInt16(Nul[1]),
-             Nnull2 = Convert.ToInt16(Nul[2]),
-             Nnull3 = Convert.ToInt16(Nul[3]),
-             Nnull4 = Convert.ToInt16(Nul[4]),
-             Nnull5 = Convert.ToInt16(Nul[5]),
-             Nnull6 = Convert.ToInt16(Nul[6]),
-             Nnull7 = Convert.ToInt16(Nul[7]),
-             Nnull8 = Convert.ToInt16(Nul[8]),
-             Nnull9 = Convert.ToInt16(Nul[9]),
-             Nnull10 = Convert.ToInt16(Nul[10]),
-             Nnull11 = Convert.ToInt16(Nul[11]),
              QS0 = sumDetQ[0],
              QS1 = sumDetQ[1],
              QS2 = sumDetQ[2],
@@ -704,7 +737,7 @@ mess.ShowAsync();// КолПакетовОчер++;
      });
                         break;
                     case "V":
-                        ViewModel._DataColecSobPloxV.Add(new ClassSob()
+                        ViewModel._DataColecSobPloxV.Add(new ClassSobV()
                         {
                             nameFile = nameFile,
                             nameklaster = array[0],
@@ -722,19 +755,8 @@ mess.ShowAsync();// КолПакетовОчер++;
                             Amp9 = Convert.ToInt16(maxAmp[9]),
                             Amp10 = Convert.ToInt16(maxAmp[10]),
                             Amp11 = Convert.ToInt16(maxAmp[11]),
+                            PolmaxTimeV = PolovmaxTime,
 
-                            TimeS0 = maxTime[0].ToString(),
-                            TimeS1 = maxTime[1].ToString(),
-                            TimeS2 = maxTime[2].ToString(),
-                            TimeS3 = maxTime[3].ToString(),
-                            TimeS4 = maxTime[4].ToString(),
-                            TimeS5 = maxTime[5].ToString(),
-                            TimeS6 = maxTime[6].ToString(),
-                            TimeS7 = maxTime[7].ToString(),
-                            TimeS8 = maxTime[8].ToString(),
-                            TimeS9 = maxTime[9].ToString(),
-                            TimeS10 = maxTime[10].ToString(),
-                            TimeS11 = maxTime[11].ToString(),
                             sig0 = sig[0],
                             sig1 = sig[1],
                             sig2 = sig[2],
@@ -774,6 +796,9 @@ mess.ShowAsync();// КолПакетовОчер++;
                         break;
                 }
             }
+          
+
+
         }
     }
 }

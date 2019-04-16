@@ -10,6 +10,7 @@ namespace DataYRAN
 {
     public class ClassSob
     {
+        public int count { get; set; }
         public string nameTip;
         public string nameFile { get; set; }
         public string nameklaster { get; set; }
@@ -17,18 +18,20 @@ namespace DataYRAN
         public int SumAmp { get; set; }
         public int SumNeu { get; set; }
         public string time { get; set; }
-        public short Amp0 { get; set; }
-        public short Amp1 { get; set; }
-        public short Amp2 { get; set; }
-        public short Amp3 { get; set; }
-        public short Amp4 { get; set; }
-        public short Amp5 { get; set; }
-        public short Amp6 { get; set; }
-        public short Amp7 { get; set; }
-        public short Amp8 { get; set; }
-        public short Amp9 { get; set; }
-        public short Amp10 { get; set; }
-        public short Amp11 { get; set; }
+        public int[] mAmp { get; set; }
+        public int[] mCountN { get; set; } 
+       // public short Amp0 { get; set; }
+      //  public short Amp1 { get; set; }
+      //  public short Amp2 { get; set; }
+       // public short Amp3 { get; set; }
+      //  public short Amp4 { get; set; }
+      //  public short Amp5 { get; set; }
+      //  public short Amp6 { get; set; }
+     //   public short Amp7 { get; set; }
+     //   public short Amp8 { get; set; }
+     //   public short Amp9 { get; set; }
+     //   public short Amp10 { get; set; }
+      //  public short Amp11 { get; set; }
         public short Nnut0 { get; set; }
         public short Nnut1 { get; set; }
         public short Nnut2 { get; set; }
@@ -78,105 +81,47 @@ namespace DataYRAN
         public string TimeS9 { get; set; }
         public string TimeS10 { get; set; }
         public string TimeS11 { get; set; }
-        public double QS0 { get; set; }
-        public double QS1 { get; set; }
-        public double QS2 { get; set; }
-        public double QS3 { get; set; }
-        public double QS4 { get; set; }
-        public double QS5 { get; set; }
-        public double QS6 { get; set; }
-        public double QS7 { get; set; }
-        public double QS8 { get; set; }
-        public double QS9 { get; set; }
-        public double QS10 { get; set; }
-        public double QS11 { get; set; }
-        public int nV { get; set; }
-        public int AmpNV { get; set; }
-        public int FirstTimeV { get; set; }
-        public int MaxTime { get; set; }
-        public async void openCom()
+
+        public int[] masTime()
         {
-            MessageDialog messageDialog = new MessageDialog("gffhf");
-            await messageDialog.ShowAsync();
+            int[] mas = new int[12];
+            mas[0] = Convert.ToInt32(TimeS0);
+            mas[1] = Convert.ToInt32(TimeS1);
+            mas[2] = Convert.ToInt32(TimeS2);
+            mas[3] = Convert.ToInt32(TimeS3);
+            mas[4] = Convert.ToInt32(TimeS4);
+            mas[5] = Convert.ToInt32(TimeS5);
+            mas[6] = Convert.ToInt32(TimeS6);
+            mas[7] = Convert.ToInt32(TimeS7);
+            mas[8] = Convert.ToInt32(TimeS8);
+            mas[9] = Convert.ToInt32(TimeS9);
+            mas[10] = Convert.ToInt32(TimeS10);
+            mas[11] = Convert.ToInt32(TimeS11);
+
+            return mas;
         }
-        public short[] AmpSum()
-        {
-            return new short[12] {Amp0, Amp1, Amp2, Amp3, Amp4, Amp5, Amp6, Amp7, Amp8, Amp9, Amp10, Amp11 };
-        }
-        public List<string> ShovSelect()
+     //  public short[] AmpSum()
+       // {
+       //  return new short[12] { Amp0, Amp1, Amp2, Amp3, Amp4, Amp5, Amp6, Amp7, Amp8, Amp9, Amp10, Amp11 };
+     //  }
+       public List<string> ShovSelect()
         {
             List<string> vs = new List<string>();
-            vs.Add(vs.Count.ToString()+" "+Amp0.ToString()+" "+sig0.ToString());
-            
-            return vs;
-        }
-        public double[] Qsum
-        {
-            get
-            {
-                double[] vs = new double[12];
-                vs[0] = QS0;
-                vs[1] = QS1;
-                vs[2] = QS2;
-                vs[3] = QS3;
-                vs[4] = QS4;
-                vs[5] = QS5;
-                vs[6] = QS6;
-                vs[7] = QS7;
-                vs[8] = QS8;
-                vs[9] = QS9;
-                vs[10] = QS10;
-                vs[11] = QS11;
+            vs.Add(vs.Count.ToString() + " " + mAmp[0].ToString() + " " + sig0.ToString());
 
-                return vs;
-            }
-            
-          
+           return vs;
         }
 
+    
 
 
 
-        string startTime;
-        public string StartTime
-        { get { return startTime; } set { startTime = value; } }
-        string endTime;
-        public string EndTime
-        { get { return endTime; } set { endTime = value; } }
-        int summAmpl;
-        public int SummAmpl
-        { get { return summAmpl; } set { summAmpl = value; } }
-        int summNeu;
-        public int SummNeu
-        { get { return summNeu; } set { summNeu = value; } }
-        int sumClast;
-        public int SumClast
-        { get { return sumClast; } set { sumClast = value; } }
 
 
-        int sumClastUp;
-        public int SumClastUp
-        { get { return sumClastUp; } set { sumClastUp = value; } }
-        public void SumAmpAndNeutronAndClaster()
-        {
-            foreach (ClassSob classSob in col)
-            {
-                SummAmpl = SummAmpl + classSob.SumAmp;
-                SummNeu = SummNeu + classSob.SumNeu;
 
-            }
-            SumClast = col.Count;
-        }
-        public void FirstTimeS()
-        {
-            foreach (ClassSob classSob in col)
-            {
-                SummAmpl = SummAmpl + classSob.SumAmp;
-                SummNeu = SummNeu + classSob.SumNeu;
 
-            }
-        }
-        public List<ClassSob> col = new List<ClassSob>();
+
+
     }
  
 }

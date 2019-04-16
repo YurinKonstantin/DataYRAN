@@ -74,18 +74,20 @@ namespace DataYRAN
                                     nameklaster = stroc[2],
                                     nameBAAK = stroc[3],
                                     time = stroc[4],
-                                    Amp0 = Convert.ToInt16(stroc[7]),
-                                    Amp1 = Convert.ToInt16(stroc[8]),
-                                    Amp2 = Convert.ToInt16(stroc[9]),
-                                    Amp3 = Convert.ToInt16(stroc[10]),
-                                    Amp4 = Convert.ToInt16(stroc[11]),
-                                    Amp5 = Convert.ToInt16(stroc[12]),
-                                    Amp6 = Convert.ToInt16(stroc[13]),
-                                    Amp7 = Convert.ToInt16(stroc[14]),
-                                    Amp8 = Convert.ToInt16(stroc[15]),
-                                    Amp9 = Convert.ToInt16(stroc[16]),
-                                    Amp10 = Convert.ToInt16(stroc[17]),
-                                    Amp11 = Convert.ToInt16(stroc[18]),
+                                  
+                                  /*  mAmp[0] = Convert.ToInt16(stroc[7]),
+                                    mAmp[1] = Convert.ToInt16(stroc[8]),
+                                    mAmp[2] = Convert.ToInt16(stroc[9]),
+                                    mAmp[3] = Convert.ToInt16(stroc[10]),
+                                    mAmp[4] = Convert.ToInt16(stroc[11]),
+                                    mAmp[5] = Convert.ToInt16(stroc[12]),
+                                    mAmp[6] = Convert.ToInt16(stroc[13]),
+                                    mAmp[7] = Convert.ToInt16(stroc[14]),
+                                    mAmp[8] = Convert.ToInt16(stroc[15]),
+                                    mAmp[9] = Convert.ToInt16(stroc[16]),
+                                    mAmp[10] = Convert.ToInt16(stroc[17]),
+                                    mAmp[11] = Convert.ToInt16(stroc[18]),
+                                    */
                                     Nnut0 = Convert.ToInt16(stroc[19]),
                                     Nnut1 = Convert.ToInt16(stroc[20]),
                                     Nnut2 = Convert.ToInt16(stroc[21]),
@@ -99,7 +101,8 @@ namespace DataYRAN
                                     Nnut10 = Convert.ToInt16(stroc[29]),
                                     Nnut11 = Convert.ToInt16(stroc[30]),
                                     SumAmp = Convert.ToInt32(stroc[5]),
-                                    SumNeu = Convert.ToInt32(stroc[6])
+                                    SumNeu = Convert.ToInt32(stroc[6]),
+                                  
 
 
                                 });
@@ -156,51 +159,51 @@ namespace DataYRAN
 
                     if(sob.SumAmp==i&&sob.SumNeu<50)
                     {
-                        if(Convert.ToInt32(sob.Amp0)>=porog)
+                        if(Convert.ToInt32(sob.mAmp[0])>=porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp1) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[1]) >= porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp2) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[2]) >= porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp3) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[3]) >= porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp4) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[4]) >= porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp5) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[5]) >= porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp6) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[6]) >= porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp7) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[7]) >= porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp8) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[8]) >= porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp9) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[9]) >= porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp10) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[10]) >= porog)
                         {
                             c++;
                         }
-                        if (Convert.ToInt32(sob.Amp11) >= porog)
+                        if (Convert.ToInt32(sob.mAmp[11]) >= porog)
                         {
                             c++;
                         }

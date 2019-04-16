@@ -6,12 +6,73 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Telerik.Core.Data;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Media;
 
 namespace DataYRAN
 {
     public class RecordingViewModel : INotifyPropertyChanged
     {
+        int countNaObrab = 0;
+        public int CountNaObrab
+        {
+            get
+            {
+                return countNaObrab;
+            }
+            set
+            {
+                countNaObrab = value;
+                this.OnPropertyChanged(nameof(CountNaObrab));
+            }
+        }
+        int countObrabSob = 0;
+        public int CountObrabSob
+        {
+            get
+            {
+                return countObrabSob;
+            }
+            set
+            {
+                countObrabSob = value;
+                this.OnPropertyChanged(nameof(CountObrabSob));
+            }
+        }
+        int countNaObrabSob = 0;
+        public int CountNaObrabSob
+        {
+            get
+            {
+                return countNaObrabSob;
+            }
+            set
+            {
+                countNaObrabSob = value;
+                this.OnPropertyChanged(nameof(CountNaObrabSob));
+            }
+        }
+       
+        
+        ObservableCollection<ClassСписокList> _DataColec = new ObservableCollection<ClassСписокList>();
+        public ObservableCollection<ClassСписокList> DataColec
+            {
+            get
+            {
+                return _DataColec;
+            }
+            set
+            {
+                _DataColec = value;
+                CountNaObrab = DataColec.Count;
+            }
+            }
+        public void AddFile(ClassСписокList classСписокList)
+        {
+            DataColec.Add(classСписокList);
+            CountNaObrab = DataColec.Count;
+        }
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -55,18 +116,27 @@ namespace DataYRAN
         /// Коллекция сигналов БААК12-200Т
         /// </summary>
         public ObservableCollection<ClassSob> ClassSobsT { get { return this.classSobs; } }
+
+        public int CountSob
+        {
+            get
+            {
+                return ClassSobsT.Count;
+            }
+        }
+     
         /// <summary>
         /// Коллекция событий платы БААК12-200
         /// </summary>
-        public ObservableCollection<ClassSob> ClassSobsN = new ObservableCollection<ClassSob>();
+        public ObservableCollection<ClassSobN> ClassSobsN = new ObservableCollection<ClassSobN>();
         /// <summary>
         /// Коллекция событий платы БААК12-100
         /// </summary>
-        public ObservableCollection<ClassSob> ClassSobsV = new ObservableCollection<ClassSob>();
+        public ObservableCollection<ClassSobV> ClassSobsV = new ObservableCollection<ClassSobV>();
         ObservableCollection<ClassSobNeutron> classSobNeutrons = new ObservableCollection<ClassSobNeutron>();
         public ObservableCollection<ClassSobNeutron> ClassSobNeutrons { get { return this.classSobNeutrons; } }
         public ObservableCollection<ClassSaveSetUp> _DataColecViewSaveMenedger = new ObservableCollection<ClassSaveSetUp>();
-
+      
        /// <summary>
        /// Коллекция шумовых сигналов платы БААК12-200Т
        /// </summary>
@@ -75,12 +145,12 @@ namespace DataYRAN
         /// <summary>
         /// Коллекция шумовых сигналов платы БААК12-200
         /// </summary>
-        public ObservableCollection<ClassSob> _DataColecSobPloxN = new ObservableCollection<ClassSob>();
+        public ObservableCollection<ClassSobN> _DataColecSobPloxN = new ObservableCollection<ClassSobN>();
 
         /// <summary>
         /// Коллекция шумовых сигналов платы БААК12-100
         /// </summary>
-        public ObservableCollection<ClassSob> _DataColecSobPloxV = new ObservableCollection<ClassSob>();
+        public ObservableCollection<ClassSobV> _DataColecSobPloxV = new ObservableCollection<ClassSobV>();
 
         /// <summary>
         /// Коллекция общих событий кластеров УРАН
@@ -126,5 +196,22 @@ namespace DataYRAN
             _DataColecSobPloxV.Clear();
 
         }
+        Brush masDetectors = new SolidColorBrush(Windows.UI.Colors.Black);
+        public Brush MasDetectors
+        {
+            get
+            {
+                return masDetectors;
+            }
+            set
+            {
+               
+                masDetectors = value;
+        
+                this.OnPropertyChanged(nameof(MasDetectors));
+            }
+        }
+     
+     
     }
 }
