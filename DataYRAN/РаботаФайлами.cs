@@ -440,66 +440,59 @@ namespace DataYRAN
 
 
         }
-        public async Task SaveSobTimeСмешения_детектораNew(StorageFolder folder, String name, string tip, string cul)
+        public async Task SaveSobTimeСмешения_детектораNew(StorageFolder folder, string name, string tip, string cul)
         {
 
 
-
-            int i = 0;
-            if (ViewModel.ClassSobsT.Count != 0)
+            try
             {
-                using (StreamWriter writer =
-               new StreamWriter(await folder.OpenStreamForWriteAsync(
-               name + "." + tip, CreationCollisionOption.GenerateUniqueName)))
+
+
+                int i = 0;
+                if (ViewModel.ClassSobsT.Count != 0)
                 {
-                    string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "Time" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t"
-                        + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "AD10" + "\t" + "AD11" + "\t" + "AD12"
-                        + "\t" + "TD1" + "\t" + "TD2" + "\t" + "TD3" + "\t" + "TD4" + "\t"  + "TD5" + "\t" + "TD6" + "\t" + "TD7" + "\t" + "TD8" + "\t"
-                        + "TD9" + "\t" + "TD10" + "\t" + "TD11" + "\t" + "TD12";
-
-
-                    await writer.WriteLineAsync(sSob);
-                    foreach (ClassSob sob in ViewModel.ClassSobsT)
+                    using (StreamWriter writer =
+                   new StreamWriter(await folder.OpenStreamForWriteAsync(
+                   name + "." + tip, CreationCollisionOption.GenerateUniqueName)))
                     {
-                        i++;
-                        int[] Poradoc = new int[12];
-                        int perPoz = 0;
-                        int perZ = 1025;
-                        bool sobPor = false;
-                        Poradoc = sob.masTime();
-                        for (int f = 0; f < 12; f++)
-                        {
-                            if (Poradoc[f] > 0 && perZ > Poradoc[f] && Poradoc[f] != null)
-                            {
-                                perZ = Poradoc[f];
-                                perPoz = f;
-                                sobPor = true;
-                            }
-                        }
-                        // MessageDialog messageDialog = new MessageDialog(perPoz+"\t"+perZ);
-                        //await messageDialog.ShowAsync();
-                        for (int f = 0; f < 12; f++)
-                        {
-                            if (Poradoc[f] > -1)
-                            {
-                                Poradoc[f] = (Poradoc[f] - perZ) * 5;
-                                //  MessageDialog messageDialog1 = new MessageDialog( "gg"+"\n"+Poradoc[f] + "\t" + perZ);
-                                // await messageDialog1.ShowAsync();
+                        string sSob = "n" + "\t" + "file" + "\t" + "kl" + "\t" + "Time" + "\t" + "AD1" + "\t" + "AD2" + "\t" + "AD3" + "\t" + "AD4" + "\t"
+                            + "AD5" + "\t" + "AD6" + "\t" + "AD7" + "\t" + "AD8" + "\t" + "AD9" + "\t" + "AD10" + "\t" + "AD11" + "\t" + "AD12"
+                            + "\t" + "TD1" + "\t" + "TD2" + "\t" + "TD3" + "\t" + "TD4" + "\t" + "TD5" + "\t" + "TD6" + "\t" + "TD7" + "\t" + "TD8" + "\t"
+                            + "TD9" + "\t" + "TD10" + "\t" + "TD11" + "\t" + "TD12";
 
+
+                        await writer.WriteLineAsync(sSob);
+                        string Sob = String.Empty;
+                        foreach (ClassSob sob in ViewModel.ClassSobsT)
+                        {
+                            try
+                            {
+
+                                i++;
+
+                                 Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.time + "\t" + sob.mAmp[0].ToString() + "\t" + sob.mAmp[1].ToString() + "\t"
+                                    + sob.mAmp[2].ToString() + "\t" + sob.mAmp[3].ToString() + "\t" + sob.mAmp[4].ToString() + "\t" + sob.mAmp[5].ToString() + "\t" + sob.mAmp[6].ToString() +
+                                    "\t" + sob.mAmp[7].ToString() + "\t" + sob.mAmp[8].ToString() + "\t" + sob.mAmp[9].ToString() + "\t" + sob.mAmp[10].ToString() + "\t" + sob.mAmp[11].ToString()
+                                    + "\t" + sob.mTimeD[0].ToString() + "\t" + sob.mTimeD[1].ToString() + "\t"
+                                    + sob.mTimeD[2].ToString() + "\t" + sob.mTimeD[3].ToString() + "\t" + sob.mTimeD[4].ToString() + "\t" + sob.mTimeD[5].ToString() + "\t" + sob.mTimeD[6].ToString() +
+                                    "\t" + sob.mTimeD[7].ToString() + "\t" + sob.mTimeD[8].ToString() + "\t" + sob.mTimeD[9].ToString() + "\t" + sob.mTimeD[10].ToString() + "\t" + sob.mTimeD[11].ToString();
+                                await writer.WriteLineAsync(Sob);
+                            }
+                            catch(Exception ex)
+                            {
+                                MessageDialog messageDialog = new MessageDialog(ex.ToString()+"\n"+Sob);
+                                await messageDialog.ShowAsync();
                             }
                         }
-                        string Sob = i.ToString() + "\t" + sob.nameFile + "\t" + sob.nameklaster + "\t" + sob.time + "\t" + sob.mAmp[0].ToString() + "\t" + sob.mAmp[1].ToString() + "\t"
-                            + sob.mAmp[2].ToString() + "\t" + sob.mAmp[3].ToString() + "\t" + sob.mAmp[4].ToString() + "\t" + sob.mAmp[5].ToString() + "\t" + sob.mAmp[6].ToString() +
-                            "\t" + sob.mAmp[7].ToString() + "\t" + sob.mAmp[8].ToString() + "\t" + sob.mAmp[9].ToString() + "\t" + sob.mAmp[10].ToString() + "\t" + sob.mAmp[11].ToString() 
-                            + "\t" + Poradoc[0].ToString() + "\t" + Poradoc[1].ToString() + "\t"
-                            + Poradoc[2].ToString() + "\t" + Poradoc[3].ToString() + "\t" + Poradoc[4].ToString() + "\t" + Poradoc[5].ToString() + "\t" + Poradoc[6].ToString() +
-                            "\t" + Poradoc[7].ToString() + "\t" + Poradoc[8].ToString() + "\t" + Poradoc[9].ToString() + "\t" + Poradoc[10].ToString() + "\t" + Poradoc[11].ToString();
-                        await writer.WriteLineAsync(Sob);
                     }
                 }
+
             }
-
-
+            catch(Exception ex)
+            {
+                MessageDialog messageDialog = new MessageDialog(ex.ToString());
+                await messageDialog.ShowAsync();
+            }
 
 
         }

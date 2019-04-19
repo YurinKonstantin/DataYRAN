@@ -297,6 +297,28 @@ namespace DataYRAN
                 
                 //listDataAll = new List<byte>();
                 bool flagUserSetup = true;
+                BasicProperties basicProperties;
+             
+                           try
+                           {
+
+
+                               basicProperties = await d.file1.GetBasicPropertiesAsync();
+                               if (basicProperties.Size > 136000000)
+                               {
+                                   flagUserSetup = true;
+                               }
+                               else
+                               {
+                                   flagUserSetup = false;
+                               }
+                           }
+                           catch(Exception ex)
+                           {
+                               flagUserSetup = true;
+                      
+                           }
+                      
                 string tipN = "T";
                // tipN = d.file1.DisplayName.Split('_')[2];
                 string[] tipParser = d.file1.DisplayName.Split('_');
@@ -309,10 +331,7 @@ namespace DataYRAN
 
                 }
 
-                // foreach(ClassСписокList d1 in _DataColec)
-                //   {
-                //     if(d1==d)
-                //    {
+           
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
 {
@@ -346,6 +365,7 @@ namespace DataYRAN
                                         numBytesLoaded = await dataReader.LoadAsync(numBytesLoaded1);
                                         if (numBytesLoaded < numBytesLoaded1)
                                         {
+                                     
                                             end = true;
                                         }
                                        
@@ -358,7 +378,7 @@ namespace DataYRAN
                                             for (int i = 0; i < numBytesLoaded; i++)
                                             {
 
-                                            if (ccc == 1800)
+                                            if (ccc > 1800)
                                             {
                                                 while (Count() > 1800)
                                                 {
@@ -439,31 +459,99 @@ namespace DataYRAN
                 }
                 else
                 {
-                   // string nBaaK1;
-                    //string Ran;
-                    string b2 = d.file1.DisplayName;
-
-                    String[] substrings = b2.Split('.');
-                    string result = null;
-                    for (int i = 0; i < substrings.Length - 2; i++)
+                    try
                     {
-                        result = result + substrings[i] + ".";
-                    }
-                    result = result + substrings[substrings.Length - 2];
-
-                }
-                foreach (ClassСписокList d1 in ViewModel.DataColec)
-                {
-                    if (d1 == d)
-                    {
-                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                        if (ccc > 1800)
+                        {
+                            while (Count() > 1800)
+                            {
+                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
 {
-    d1.Status = false;
+d.StatusP = true;
 });
-                        break;
+                                long totalMemory = GC.GetTotalMemory(false);
+                                GC.Collect();
+                                GC.WaitForPendingFinalizers();
+                                // for(int f=0; f<10000; f++)
+                                //  {
+                                //      int xx = 0;
+                                //  }
+                                //Thread.Sleep(20000);
+                                while (Count() > 500)
+                                {
+                                    int xx = 0;
+                                    xx++;
+                                }
+                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+d.StatusP = true;
+});
+                            }
+                            ccc = Count();
+                        }
+                        ccc++;
+                        var buffer = await Windows.Storage.FileIO.ReadBufferAsync(d.file1);
+                        byte[] bb = buffer.ToArray();
+                        //  ulong size = stream.Size;
+                        uint numBytesLoaded = 1024;
+                        uint numBytesLoaded1 = 504648;
+                        bool end = false;
+                        uint kol = 0;
+                        byte[] dataOnePac = new byte[504648];
+
+                        int tecpos = 0;
+                        int countFlagEnt = 0;
+                        int pac = 0;
+                        for(int i=0; i< bb.Length; i++)
+                        {
+                            byte b = bb[i];
+                      
+                            dataOnePac[tecpos] = b;
+                            tecpos++;
+                            if (b == 0xFF)
+                            {
+                                countFlagEnt++;
+                                if (countFlagEnt == 4)
+                                {
+
+                                    OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dataOnePac, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName = tipN });
+                                    pac++;
+
+                                    dataOnePac = new Byte[504648];
+                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+d.StatusSize += 504648;
+ViewModel.CountNaObrabZ++;
+});
+                                    //Thread.Sleep(1000);
+                                    countFlagEnt = 0;
+                                    tecpos = 0;
+                                }
+                            }
+                            else
+                            {
+                                countFlagEnt = 0;
+                            }
+
+                        }
+                      
+                      
                     }
+                    catch
+                    {
+                        // var  messageDialog = new MessageDialog("ошибка открытия файла" + d.file1.Path +"   ");
+                        // await messageDialog.ShowAsync();
+                    }
+
                 }
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+d.Status = false;
+});
             }
            
             if (cancellationTokenSource != null)
@@ -529,6 +617,7 @@ namespace DataYRAN
                     foreach(ClassСписокList g in listView1.SelectedItems)
                     {
                         l.Add(g);
+                              
                     }
                    
                     FirstDiagnosticFile(l);
@@ -585,6 +674,7 @@ namespace DataYRAN
         /// </summary>
         public SaveFile SaveFileDelegate;
         public delegate Task SaveFileSob(string nameFile, string nameBAAK, string time, string nameRan, int[] Amp, string nameklaster, int[] Nnut, int[] Nl, Double[] sig);//
+
 
         /// <summary>
         /// охраняем данные о событии
@@ -776,37 +866,7 @@ namespace DataYRAN
                
             
           
-            /* var picker = new Windows.Storage.Pickers.FileOpenPicker();
-             picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
-             picker.SuggestedStartLocation =
-                 Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
-             picker.FileTypeFilter.Add(".doc");
-             picker.FileTypeFilter.Add(".data");
-             picker.FileTypeFilter.Add(".txt");
-             picker.FileTypeFilter.Add(".xml");
-
-
-             try
-             {
-                 Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
-                 if (file != null)
-                 {
-
-                     DataSet ds = new DataSet();
-                     // XDocument d= System.Xml.Linq.XDocument.Load(sampleFile.Path);
-                     ds.ReadXml(file.Path);
-                     // выбираем первую таблицу
-                     DataTable dt = ds.Tables[0];
-
-                     await ParserTabSobData(dt);
-                 }
-             }
-             catch (Exception ex)
-             {
-                 MessageDialog messageDialog = new MessageDialog(ex.ToString());
-               await  messageDialog.ShowAsync();
-             }
- */
+       
 
         }
         async Task OutputClipboardText()
@@ -1575,6 +1635,7 @@ namespace DataYRAN
         {
            foreach(var v in ViewModel.DataColec)
             {
+               
                 if(nameFile==v.file1.DisplayName)
                 {
                     int[] masNul = new int[12];
@@ -1660,9 +1721,11 @@ namespace DataYRAN
 
                                                              ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200(dataOnePac, 1, out data1, out time1);
                                                         }
-                                                        if(time== time1)
+                                                        
+                                                        if (time== time1)
                                                         {
                                                             ClassRazvertka classRazvertka = new ClassRazvertka() { nameFile1=nameFile, data=data1, dataTail=dataTail1, Time=time1 };
+                                                          
                                                             this.Frame.Navigate(typeof(BlankPageRazverta), classRazvertka);
                                                             break;
                                                         }

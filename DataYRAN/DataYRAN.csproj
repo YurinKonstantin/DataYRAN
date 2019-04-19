@@ -24,7 +24,7 @@
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
-    <AppInstallerUri>\\Z\SetAppURAN\DataURAN\DataYRAN\AppPackages\</AppInstallerUri>
+    <AppInstallerUri>Z:\SetAppURAN\DataURAN</AppInstallerUri>
     <AppxPackageDir>Z:\SetAppURAN\DataURAN\</AppxPackageDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">

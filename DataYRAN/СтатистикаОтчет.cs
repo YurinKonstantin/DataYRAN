@@ -24,49 +24,54 @@ namespace DataYRAN
                 foreach (string s in await colPSB(ViewModel.ClassSobsT))
                 {
                     stat += "Кластер "+s + "\n";
-                    double SrNull1 = 0;
-                    double SrNull2 = 0;
-                    double SrNull3 = 0;
-                    double SrNull4 = 0;
-                    double SrNull5 = 0;
-                    double SrNull6 = 0;
-                    double SrNull7 = 0;
-                    double SrNull8 = 0;
-                    double SrNull9 = 0;
-                    double SrNull10 = 0;
-                    double SrNull11 = 0;
-                    double SrNull12 = 0;
-                    int count = 0;
-                    foreach (var c in classSobs)
+                    stat += "Time" + "\t" + "Кн1" + "\t" + "Кн2" + "\t" + "Кн3" + "\t" + "Кн4" + "\t" + "Кн5" + "\t" + "Кн6" + "\t" + "Кн7" + "\t" + "Кн8" + "\t" + "Кн9" + "\t" + "Кн10" + "\t" + "Кн11" + "\t" + "Кн12" + "\n";
+
+                    foreach (string t in await colTime(ViewModel.ClassSobsT))
                     {
-                        if (c.nameklaster == s)
+
+
+                        double SrNull1 = 0;
+                        double SrNull2 = 0;
+                        double SrNull3 = 0;
+                        double SrNull4 = 0;
+                        double SrNull5 = 0;
+                        double SrNull6 = 0;
+                        double SrNull7 = 0;
+                        double SrNull8 = 0;
+                        double SrNull9 = 0;
+                        double SrNull10 = 0;
+                        double SrNull11 = 0;
+                        double SrNull12 = 0;
+                        int count = 0;
+                        foreach (var c in classSobs)
                         {
+                            if (c.nameklaster == s && t== (c.nameFile.Split(".")[0].Split("_")[1] + "." + c.nameFile.Split(".")[1] + "." + c.nameFile.Split(".")[2]))
+                            {
 
 
-                            SrNull1 += c.Nnull0;
-                            SrNull2 += c.Nnull1;
-                            SrNull3 += c.Nnull2;
-                            SrNull4 += c.Nnull3;
-                            SrNull5 += c.Nnull4;
-                            SrNull6 += c.Nnull5;
-                            SrNull7 += c.Nnull6;
-                            SrNull8 += c.Nnull7;
-                            SrNull9 += c.Nnull8;
-                            SrNull10 += c.Nnull9;
-                            SrNull11 += c.Nnull10;
-                            SrNull12 += c.Nnull11;
-                            count++;
+                                SrNull1 += c.Nnull0;
+                                SrNull2 += c.Nnull1;
+                                SrNull3 += c.Nnull2;
+                                SrNull4 += c.Nnull3;
+                                SrNull5 += c.Nnull4;
+                                SrNull6 += c.Nnull5;
+                                SrNull7 += c.Nnull6;
+                                SrNull8 += c.Nnull7;
+                                SrNull9 += c.Nnull8;
+                                SrNull10 += c.Nnull9;
+                                SrNull11 += c.Nnull10;
+                                SrNull12 += c.Nnull11;
+                                count++;
 
 
 
+                            }
                         }
+                       stat += t+"\t"+(SrNull1 / count).ToString("0.0") + "\t" + (SrNull2 / count).ToString("0.0") + "\t" + (SrNull3 / count).ToString("0.0") + "\t" +
+                            (SrNull4 / count).ToString("0.0") + "\t" + (SrNull5 / count).ToString("0.0") + "\t" + (SrNull6 / count).ToString("0.0") + "\t"
+                            + (SrNull7 / count).ToString("0.0") + "\t" + (SrNull8 / count).ToString("0.0") + "\t" + (SrNull9 / count).ToString("0.0") + "\t" + (SrNull10 / count).ToString("0.0") + "\t" + (SrNull11 / count).ToString("0.0") + "\t" + (SrNull12 / count).ToString("0.0") + "\n";
+
                     }
-                    stat += "Кн1" + "\t" + "Кн2" + "\t" + "Кн3" + "\t" + "Кн4" + "\t" + "Кн5" + "\t" + "Кн6" + "\t" + "Кн7" + "\t" + "Кн8" + "\t" + "Кн9" + "\t" + "Кн10" + "\t" + "Кн11" + "\t" + "Кн12" + "\n";
-                    stat += (SrNull1 / count).ToString("0.0") + "\t" + (SrNull2 / count).ToString("0.0") + "\t" + (SrNull3 / count).ToString("0.0") + "\t" +
-                        (SrNull4 / count).ToString("0.0") + "\t" + (SrNull5 / count).ToString("0.0") + "\t" + (SrNull6 / count).ToString("0.0") + "\t"
-                        + (SrNull7 / count).ToString("0.0") + "\t" + (SrNull8 / count).ToString("0.0") + "\t" + (SrNull9 / count).ToString("0.0") + "\t" + (SrNull10 / count).ToString("0.0") + "\t" + (SrNull11 / count).ToString("0.0") + "\t" + (SrNull12 / count).ToString("0.0") + "\n";
-
-
 
 
                 }
@@ -83,6 +88,8 @@ namespace DataYRAN
                  foreach (string s in await colPSB(ViewModel.ClassSobsT))
                 {
                     stat += "Кластер " + s + "\n";
+                    stat += "Time" + "\t" + "Кн1" + "\t" + "Кн2" + "\t" + "Кн3" + "\t" + "Кн4" + "\t" + "Кн5" + "\t" + "Кн6" + "\t" + "Кн7" + "\t" + "Кн8" + "\t" + "Кн9" + "\t" + "Кн10" + "\t" + "Кн11" + "\t" + "Кн12" + "\n";
+
                     double Srsig1 = 0;
                     double Srsig2 = 0;
                     double Srsig3 = 0;
@@ -96,35 +103,38 @@ namespace DataYRAN
                     double Srsig11 = 0;
                     double Srsig12 = 0;
                     int count = 0;
-                    foreach (var c in classSobs)
+                    foreach (string t in await colTime(ViewModel.ClassSobsT))
                     {
-                        if (c.nameklaster == s)
+                        foreach (var c in classSobs)
                         {
+                            if (c.nameklaster == s && t == (c.nameFile.Split(".")[0].Split("_")[1] + "." + c.nameFile.Split(".")[1] + "." + c.nameFile.Split(".")[2]))
+                            {
 
 
-                            Srsig1 += c.sig0;
-                            Srsig2 += c.sig1;
-                            Srsig3 += c.sig2;
-                            Srsig4 += c.sig3;
-                            Srsig5 += c.sig4;
-                            Srsig6 += c.sig5;
-                            Srsig7 += c.sig6;
-                            Srsig8 += c.sig7;
-                            Srsig9 += c.sig8;
-                            Srsig10 += c.sig9;
-                            Srsig11 += c.sig10;
-                            Srsig12 += c.sig11;
-                            count++;
+                                Srsig1 += c.sig0;
+                                Srsig2 += c.sig1;
+                                Srsig3 += c.sig2;
+                                Srsig4 += c.sig3;
+                                Srsig5 += c.sig4;
+                                Srsig6 += c.sig5;
+                                Srsig7 += c.sig6;
+                                Srsig8 += c.sig7;
+                                Srsig9 += c.sig8;
+                                Srsig10 += c.sig9;
+                                Srsig11 += c.sig10;
+                                Srsig12 += c.sig11;
+                                count++;
 
 
 
+                            }
                         }
-                    }
-                    stat += "Кн1" + "\t" + "Кн2" + "\t" + "Кн3" + "\t" + "Кн4" + "\t" + "Кн5" + "\t" + "Кн6" + "\t" + "Кн7" + "\t" + "Кн8" + "\t" + "Кн9" + "\t" + "Кн10" + "\t" + "Кн11" + "\t" + "Кн12" + "\n";
-                    stat += (Srsig1 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig2 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig3 / classSobs.Count).ToString("0.0000") + "\t" +
-                        (Srsig4 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig5 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig6 / classSobs.Count).ToString("0.0000") + "\t"
-                        + (Srsig7 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig8 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig9 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig10 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig11 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig12 / classSobs.Count).ToString("0.0000") + "\n";
+                        stat += t + "\n" + (Srsig1 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig2 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig3 / classSobs.Count).ToString("0.0000") + "\t" +
+                    (Srsig4 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig5 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig6 / classSobs.Count).ToString("0.0000") + "\t"
+                    + (Srsig7 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig8 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig9 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig10 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig11 / classSobs.Count).ToString("0.0000") + "\t" + (Srsig12 / classSobs.Count).ToString("0.0000") + "\n";
 
+
+                    }
 
 
                 }
@@ -157,6 +167,22 @@ namespace DataYRAN
             return vs;
 
         }
+        public async Task<List<string>> colTime(ObservableCollection<ClassSob> ClassSobs)
+        {
+            List<string> vs = new List<string>();
+            foreach (ClassSob classSob in ClassSobs)
+            {
+                int i = vs.IndexOf(classSob.nameFile.Split(".")[0].Split("_")[1]+"."+ classSob.nameFile.Split(".")[1] + "." + classSob.nameFile.Split(".")[2]);
+
+                if (i == (-1))
+                {
+                    vs.Add(classSob.nameFile.Split(".")[0].Split("_")[1] + "." + classSob.nameFile.Split(".")[1] + "." + classSob.nameFile.Split(".")[2]);
+                }
+            }
+
+            return vs;
+
+        }
         private async void AppBarButtonSaveStat_Click(object sender, RoutedEventArgs e)
         {
 
@@ -165,6 +191,7 @@ namespace DataYRAN
 
             // Dropdown of file types the user can save the file as
             savePicker.FileTypeChoices.Add("Rich Text", new List<string>() { ".rtf" });
+            savePicker.FileTypeChoices.Add("Text", new List<string>() { ".txt" });
 
             // Default file name if the user does not type one in or select a file to replace
             savePicker.SuggestedFileName = "New Document";

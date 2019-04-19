@@ -15,23 +15,37 @@ namespace DataYRAN
         public string nameFile { get; set; }
         public string nameklaster { get; set; }
         public string nameBAAK { get; set; }
-        public int SumAmp { get; set; }
-        public int SumNeu { get; set; }
+
+        int sumAmp = 0;
+        public int SumAmp
+        {
+            get
+            {
+                return mAmp.Sum();
+            }
+                
+                set
+            {
+                sumAmp = value;
+            }
+        }
+
+        int sumNeu = 0;
+        public int SumNeu {
+
+            get
+            {
+                return mCountN.Sum();
+            }
+            set
+            {
+                sumNeu = value;
+            }
+        }
         public string time { get; set; }
         public int[] mAmp { get; set; }
         public int[] mCountN { get; set; } 
-       // public short Amp0 { get; set; }
-      //  public short Amp1 { get; set; }
-      //  public short Amp2 { get; set; }
-       // public short Amp3 { get; set; }
-      //  public short Amp4 { get; set; }
-      //  public short Amp5 { get; set; }
-      //  public short Amp6 { get; set; }
-     //   public short Amp7 { get; set; }
-     //   public short Amp8 { get; set; }
-     //   public short Amp9 { get; set; }
-     //   public short Amp10 { get; set; }
-      //  public short Amp11 { get; set; }
+        public int[] mTimeD { get; set; }
         public short Nnut0 { get; set; }
         public short Nnut1 { get; set; }
         public short Nnut2 { get; set; }

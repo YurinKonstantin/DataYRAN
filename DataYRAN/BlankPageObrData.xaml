@@ -11,6 +11,7 @@
       xmlns:telerikChart="using:Telerik.UI.Xaml.Controls.Chart"
       xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
       xmlns:telerik="using:Telerik.UI.Xaml.Controls.DataVisualization"
+      xmlns:telerik1="using:Telerik.UI.Xaml.Controls.Primitives"
       mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
@@ -383,6 +384,25 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                    <telerik1:RadExpanderControl Grid.Row="2" Content="Список доступных данных плат">
+                        <telerik1:RadExpanderControl.ExpandableContent>
+                            <ListView SelectionChanged="ListViewVid_SelectionChanged" VerticalAlignment="Top" HorizontalAlignment="Left" x:Name="listViewVid1" Width="280">
+                                <StackPanel>
+                                    <TextBlock Text="БААК12-200Т"/>
+                                </StackPanel>
+
+                                <x:String>БААК12-200</x:String>
+                                <x:String>БААК12-100</x:String>
+                                <x:String>БААК12-200Т+БААК12-200</x:String>
+                                <x:String>БААК12-200Т общие</x:String>
+                                <x:String>Невод-ШАЛ</x:String>
+                                <x:String>УРАН+Невод-ШАЛ</x:String>
+
+                            </ListView>
+
+                        </telerik1:RadExpanderControl.ExpandableContent>
+                        
+                    </telerik1:RadExpanderControl>
                 </Grid>
             </SplitView.Pane>
             <Grid x:Name="gridpan" UseLayoutRounding="True">
@@ -415,7 +435,16 @@
                         </Button>
                     </controls:TabView.TabStartHeader>
                     <controls:TabView.TabEndHeader>
-                        <CommandBar VerticalAlignment="Stretch" Background="Transparent" ClosedDisplayMode="Compact"  HorizontalAlignment="Right" UseLayoutRounding="True">
+                        <CommandBar VerticalAlignment="Stretch" Background="Transparent" ClosedDisplayMode="Compact"  HorizontalAlignment="Right" UseLayoutRounding="True" IsDynamicOverflowEnabled="True">
+                           
+                                <AppBarButton Icon="Pictures" Label="визуализация" Click="AppBarButtonMap_Click"/>
+                                <AppBarToggleButton Icon="OutlineStar" Label="Статистика" Click="AppBarToggleButton_Click_6"/>
+                                <AppBarToggleButton Label="Гистограмма" Click="AppBarToggleButton_Click_7">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE9F9;" />
+                                </AppBarToggleButton>
+
+                            <AppBarSeparator Margin="0,0,16,0"/>
+                           
                             <AppBarButton Icon="Delete" Click="AppBarButton_Click_7" Label="Удалить" ToolTipService.ToolTip="Очистет все таблицы" Foreground="Red"/>
                             <AppBarSeparator/>
                             <AppBarButton Icon="Save" Click="AppBarButton_Click_6" Label="Сохранить"/>
@@ -919,14 +948,7 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                        <CommandBar Grid.ColumnSpan="2" Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" UseLayoutRounding="True">
-                                            <AppBarButton Icon="Pictures" Label="визуализация" Click="AppBarButtonMap_Click"/>
-                                            <AppBarToggleButton Icon="OutlineStar" Label="Статистика" Click="AppBarToggleButton_Click_6"/>
-                                            <AppBarToggleButton Label="Гистограмма" Click="AppBarToggleButton_Click_7">
-                                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE9F9;" />
-                                            </AppBarToggleButton>
-                                            
-                                        </CommandBar>
+                                   
                                         <telerikGrid:RadDataGrid x:Name="DataGrid" ItemsSource="{x:Bind ViewModel.ClassSobsT}" IncrementalLoadingMode="Explicit" UseLayoutRounding="True"  AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
                                             <telerikGrid:RadDataGrid.Columns>
 
@@ -1476,8 +1498,10 @@
                     </controls:TabViewItem>
                 </controls:TabView >
                <controls:Expander Grid.Row="1" Header="Список доступных данных плат" Grid.Column="1" Foreground="White" Background="WhiteSmoke" IsExpanded="False" VerticalContentAlignment="Top"  Grid.RowSpan="3" ExpandDirection="Left" >
-                    
-                    <ListView Header="Список доступных данных плат" SelectionChanged="ListViewVid_SelectionChanged" VerticalAlignment="Top" HorizontalAlignment="Left" x:Name="listViewVid" Width="280">
+                    <StackPanel>
+                        
+                   
+                   <ListView Header="Список доступных данных плат" SelectionChanged="ListViewVid_SelectionChanged" VerticalAlignment="Top" HorizontalAlignment="Left" x:Name="listViewVid" Width="280">
                         <StackPanel>
                             <TextBlock Text="БААК12-200Т"/>
                         </StackPanel>
@@ -1490,6 +1514,7 @@
                         <x:String>УРАН+Невод-ШАЛ</x:String>
                         
                     </ListView>
+                    </StackPanel>
                 </controls:Expander>
             </Grid>
 
@@ -1503,16 +1528,13 @@
 
             <TextBlock VerticalAlignment="Center"  Text="событий в сек:" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="16,0,0,0" />
             <TextBlock VerticalAlignment="Center"  x:Name="sobInSec" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0" />
-
-            <telerik:RadBulletGraph LabelOffset="20" FeaturedMeasureThickness="4"  FeaturedMeasureBrush="Yellow" ProjectedMeasureBrush="Red"  Width="600" Height="26"  FeaturedMeasure="{x:Bind ViewModel.CountObrabSob, Mode=OneWay}" VerticalAlignment="Stretch" StartValue="0" EndValue="{x:Bind ViewModel.CountNaObrabSob, Mode=OneWay}" FeaturedMeasureStartValue="0" ComparativeMeasure="{x:Bind ViewModel.CountNaObrabZ, Mode=OneWay}"/>
-
-           
             <TextBlock VerticalAlignment="Center"  Text=" Событий на обработку:" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0"/>
             <TextBlock VerticalAlignment="Center"  Text="{x:Bind ViewModel.CountNaObrabSob, Mode=OneWay}" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0"/>
+            <TextBlock VerticalAlignment="Center"  Text=" Загружено:" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0"/>
+            <TextBlock VerticalAlignment="Center"  Text="{x:Bind ViewModel.CountNaObrabZ, Mode=OneWay}" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0"/>
             <TextBlock VerticalAlignment="Center"  Text="Обработано:" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0"/>
             <TextBlock VerticalAlignment="Center"  Text="{x:Bind ViewModel.CountObrabSob, Mode=OneWay}" Foreground="White" FontFamily="Georgia" FontStyle="Italic" Margin="8,0,0,0"/>
             <ProgressRing x:Name="ObRing" VerticalAlignment="Center"  HorizontalAlignment="Center" Height="18" Width="18" Foreground="White" Margin="4,0,0,0"/>
-
         </StackPanel>
         <controls:InAppNotification Grid.Row="1" Grid.Column="1" x:Name="ExampleInAppNotification">
             <!-- InAppNotification content -->

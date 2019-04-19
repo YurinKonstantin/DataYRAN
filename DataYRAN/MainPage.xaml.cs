@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -31,7 +32,9 @@ namespace DataYRAN
         public MainPage()
         {
             this.InitializeComponent();
+       
             var t = ApplicationView.GetForCurrentView().TitleBar;
+      
             t.BackgroundColor = Colors.DodgerBlue;
             t.ForegroundColor = Colors.White;
             t.ButtonBackgroundColor = Colors.DodgerBlue;
