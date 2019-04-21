@@ -41,17 +41,19 @@ namespace DataYRAN
             int? dlitOtb = ClassUserSetUp.DlitN3;
             int? AmpOtbora = ClassUserSetUp.PorogN;
             int[] coutN = new int[12];
-     
+            int countnutron;
+            int Nu;
+            int? AmpOtbora1;
+
             for (int i = 0; i < 12; i++)
             {
 
-                int countnutron = 0;
-                int Nu = Convert.ToInt32(masnul[i]);
-                int? AmpOtbora1 = AmpOtbora + Nu;
+                countnutron = 0;
+                Nu = Convert.ToInt32(masnul[i]);
+                AmpOtbora1 = AmpOtbora + Nu;
                 
 
-                for (int j = 100; j < 20000; j++)
-           
+                for (int j = 100; j < 20000; j++) 
                 {
                   
                     int Amp = n[i, j];
@@ -65,9 +67,11 @@ namespace DataYRAN
                        
                         
                         int v = Amp;
-                        while (v > Nu+3)//Ищем конец сигнала претендента нейтрона на уровне 3
+                        int v1 = Amp;
+                        while (v > Nu+3 && v1> Nu + 3)//Ищем конец сигнала претендента нейтрона на уровне 3
                         {
                             countendtime3++;
+                            countfirsttime3--;
                             if (countendtime3 < 20000)
                             {
                                 v = n[i, countendtime3];
@@ -75,48 +79,49 @@ namespace DataYRAN
                             else
                             {
                                 countendtime3--;
-                                break;
+                               
+                            }
+                            if (countfirsttime3 > 100)
+                            {
+                                v1 = n[i, countfirsttime3];
+
+                            }
+                            else
+                            {
+                                countfirsttime3++;
                             }
                         }
-                        v = Amp;
-                        
-                        while (v > Nu+3)//Ищем конец сигнала претендента нейтрона
-                        {
-                            countfirsttime3--;
-                            v = n[i, countfirsttime3];
-                        }
+                       
 
                         if (countendtime3 - countfirsttime3 >= dlitOtb)
                         {
                             countendtime = countendtime3;
+                            countfirsttime = countfirsttime3;
                             v = Amp;
-                            while (v > Nu)
+                            v1 = Amp;
+                            while (v > Nu && v1>Nu)
                             {
                                 countendtime++;
-                                if(countendtime >19999)
+                                countfirsttime--;
+                                if (countendtime >19999 || countfirsttime < 90)
                                 {
                                     break;
                                 }
                                 v = n[i, countendtime];
+                                v1 = n[i, countfirsttime];
                             }
 
-                            v = Amp;
-                            countfirsttime = countfirsttime3;
-                            while (v > Nu)
-                            {
-                                countfirsttime--;
-                                if (countfirsttime < 0)
-                                    break;
-                                v = n[i, countfirsttime];
-                            }
+                         
+                           
+                       
 
-                            for (int v1 = countfirsttime3; v1 <= countendtime3; v1++)//точка максимум и значение максимум
+                            for (int v11 = countfirsttime3; v11 <= countendtime3; v11++)//точка максимум и значение максимум
                             {
 
-                                if (Amp < n[i, v1])
+                                if (Amp <= n[i, v11])
                                 {
-                                    Amp = n[i, v1];
-                                    countmaxtime = v1;
+                                    Amp = n[i, v11];
+                                    countmaxtime = v11;
 
                                 }
 
@@ -175,16 +180,13 @@ namespace DataYRAN
             {
                 try
                 {
-                  
+                    string time1 = String.Empty;
                     OcherediNaObrab.TryDequeue(out MyclasDataizFile ObrD);
                     if (ObrD != null)
                     {
                        
-                      //  int[,] data1 = new int[12, 1024];
                       
-                       // int[,] dataTail1 = new int[12, 20000];
-                      //  int[] coutN1 = new int[12];
-                        string time1 = null;
+                        
                     
                       
                        
@@ -368,7 +370,7 @@ namespace DataYRAN
             int[] maxTime = new int[12];
             int[] PolovmaxTime = new int[12];
             int[] maxAmp=new int[12];
-            int d = 1;
+        
             int[] firstTimeN=new int[12];
 
 
@@ -376,23 +378,11 @@ namespace DataYRAN
             {
                
                 ClassUserSetUp classUserSetUp = new ClassUserSetUp();
-               
-                switch (tipN)
-                {
-                    case "T":
+                      
                         ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
                        
                         coutN1 = await neutron(dataTail1, time1, Nul, nameFile, bad);
                      
-                        break;
-          
-          
-                    default:
-
-                        break;
-                }
-            
-              
                 classUserSetUp.SetPush1();
                 timeS = ParserBAAK12.ParseBinFileBAAK12.TimeS(data1, classUserSetUp.PorogS, Amp, Nul);
             }
@@ -418,7 +408,8 @@ namespace DataYRAN
 
             if (!bad)
             {
-
+             
+                
                             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
      () =>
      {
@@ -429,6 +420,7 @@ namespace DataYRAN
              nameBAAK = nemeBAAK,
              time = time1,
              mAmp=Amp,
+           
              /*Amp0 = Convert.ToInt16(Amp[0]),
              Amp1 = Convert.ToInt16(Amp[1]),
              Amp2 = Convert.ToInt16(Amp[2]),
@@ -516,19 +508,20 @@ namespace DataYRAN
          nameklaster = array[0],
          nameBAAK = nemeBAAK,
          time = time1,
-        /* Amp0 = Convert.ToInt16(Amp[0]),
-         Amp1 = Convert.ToInt16(Amp[1]),
-         Amp2 = Convert.ToInt16(Amp[2]),
-         Amp3 = Convert.ToInt16(Amp[3]),
-         Amp4 = Convert.ToInt16(Amp[4]),
-         Amp5 = Convert.ToInt16(Amp[5]),
-         Amp6 = Convert.ToInt16(Amp[6]),
-         Amp7 = Convert.ToInt16(Amp[7]),
-         Amp8 = Convert.ToInt16(Amp[8]),
-         Amp9 = Convert.ToInt16(Amp[9]),
-         Amp10 = Convert.ToInt16(Amp[10]),
-         Amp11 = Convert.ToInt16(Amp[11]),
-         */
+         mAmp = Amp,
+         /* Amp0 = Convert.ToInt16(Amp[0]),
+          Amp1 = Convert.ToInt16(Amp[1]),
+          Amp2 = Convert.ToInt16(Amp[2]),
+          Amp3 = Convert.ToInt16(Amp[3]),
+          Amp4 = Convert.ToInt16(Amp[4]),
+          Amp5 = Convert.ToInt16(Amp[5]),
+          Amp6 = Convert.ToInt16(Amp[6]),
+          Amp7 = Convert.ToInt16(Amp[7]),
+          Amp8 = Convert.ToInt16(Amp[8]),
+          Amp9 = Convert.ToInt16(Amp[9]),
+          Amp10 = Convert.ToInt16(Amp[10]),
+          Amp11 = Convert.ToInt16(Amp[11]),
+          */
          Nnut0 = Convert.ToInt16(coutN1[0]),
          Nnut1 = Convert.ToInt16(coutN1[1]),
          Nnut2 = Convert.ToInt16(coutN1[2]),

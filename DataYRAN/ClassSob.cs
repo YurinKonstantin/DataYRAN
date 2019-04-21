@@ -10,6 +10,8 @@ namespace DataYRAN
 {
     public class ClassSob
     {
+      
+
         public int count { get; set; }
         public string nameTip;
         public string nameFile { get; set; }
@@ -43,8 +45,21 @@ namespace DataYRAN
             }
         }
         public string time { get; set; }
-        public int[] mAmp { get; set; }
-        public int[] mCountN { get; set; } 
+        int[] _mAmp = new int[12];
+        public int[] mAmp
+        {
+            get
+            {
+                return _mAmp;
+            }
+            set
+            {
+                _mAmp = value;
+            }
+        }
+        int[] _mCountN = new int[12];
+        public int[] mCountN { get; set; }
+        int[] _mTimeD = new int[12];
         public int[] mTimeD { get; set; }
         public short Nnut0 { get; set; }
         public short Nnut1 { get; set; }

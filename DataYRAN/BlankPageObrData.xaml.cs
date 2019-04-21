@@ -291,7 +291,8 @@ namespace DataYRAN
             {
                 masNul[i] = 2058;
             }
-
+            uint numBytesLoaded = 1024;
+            uint numBytesLoaded1 = 504648;
             foreach (ClassСписокList d in listt)
             {
                 
@@ -346,8 +347,7 @@ namespace DataYRAN
                     {
                             var stream = await d.file1.OpenAsync(Windows.Storage.FileAccessMode.Read);
                           //  ulong size = stream.Size;
-                            uint numBytesLoaded = 1024;
-                            uint numBytesLoaded1 = 504648;
+                          
                             bool end = false;
                             uint kol = 0;
                         byte[] dataOnePac = new byte[504648];
@@ -363,18 +363,14 @@ namespace DataYRAN
                                     using (var dataReader = new Windows.Storage.Streams.DataReader(inputStream))
                                     {
                                         numBytesLoaded = await dataReader.LoadAsync(numBytesLoaded1);
-                                        if (numBytesLoaded < numBytesLoaded1)
+                                        if (numBytesLoaded < numBytesLoaded1 || numBytesLoaded == 0)
                                         {
                                      
                                             end = true;
                                         }
-                                       
-                                        if (numBytesLoaded == 0)
-                                        {
-
-                                        }
                                         else
                                         {
+ 
                                             for (int i = 0; i < numBytesLoaded; i++)
                                             {
 
@@ -492,13 +488,11 @@ d.StatusP = true;
                             ccc = Count();
                         }
                         ccc++;
-                        var buffer = await Windows.Storage.FileIO.ReadBufferAsync(d.file1);
-                        byte[] bb = buffer.ToArray();
-                        //  ulong size = stream.Size;
-                        uint numBytesLoaded = 1024;
-                        uint numBytesLoaded1 = 504648;
-                        bool end = false;
-                        uint kol = 0;
+                        byte[] bb = (await Windows.Storage.FileIO.ReadBufferAsync(d.file1)).ToArray();
+                 
+                        
+                     
+                     
                         byte[] dataOnePac = new byte[504648];
 
                         int tecpos = 0;
@@ -630,18 +624,24 @@ d.Status = false;
 
                     // await WriteInFileIzOcherediAsync(cancellationToken);
                     watch.Stop();
-                    colstroc.Text = ViewModel.ClassSobsT.Count.ToString();
-                    duration.Text = $"Duration (ms): {watch.ElapsedMilliseconds}";
-                    if(watch.Elapsed.Seconds!=0)
-                    sobInSec.Text = (ViewModel.ClassSobsT.Count / watch.Elapsed.Seconds).ToString();
-                    else
-                    {
-                        sobInSec.Text = "Очень бычстро";
-                    }
+                            ObRing.IsActive = false;
+                            colstroc.Text = ViewModel.ClassSobsT.Count.ToString();
+                    duration.Text = (watch.ElapsedMilliseconds / 1000).ToString();
+                            if ((watch.ElapsedMilliseconds / 1000) != 0)
+                            {
+
+
+                                sobInSec.Text = (ViewModel.ClassSobsT.Count / (watch.ElapsedMilliseconds / 1000)).ToString();
+                            }
+
+                            else
+                            {
+                                sobInSec.Text = "Очень бычстро";
+                            }
                    // watch.Reset();
                     var messq = new MessageDialog("Конец");
                     await messq.ShowAsync();
-                    ObRing.IsActive = false;
+                    
                     
 
                 }
@@ -887,9 +887,21 @@ d.Status = false;
                     {
                         string[] rows = rowsInClipboard[i].Split('\t');
                         count = Convert.ToInt32(rows[0]);
-                        if(rows[1].Contains("T")|| rows[1].Contains("N") || rows[1].Contains("V"))
+                        if (rows[1].Contains("T") || rows[1].Contains("N") || rows[1].Contains("V"))
                         {
-                            
+                            int[] ii = new int[12];
+                            ii[0] = Convert.ToInt16(rows[7]);
+                            ii[1] = Convert.ToInt16(rows[8]);
+                            ii[2] = Convert.ToInt16(rows[9]);
+                            ii[3] = Convert.ToInt16(rows[10]);
+                            ii[4] = Convert.ToInt16(rows[11]);
+                            ii[5] = Convert.ToInt16(rows[12]);
+                            ii[6] = Convert.ToInt16(rows[13]);
+                            ii[7] = Convert.ToInt16(rows[14]);
+                            ii[8] = Convert.ToInt16(rows[15]);
+                            ii[9] = Convert.ToInt16(rows[16]);
+                            ii[10] = Convert.ToInt16(rows[17]);
+                            ii[11] = Convert.ToInt16(rows[18]);
                             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
       () =>
       {
@@ -899,19 +911,8 @@ d.Status = false;
               nameklaster = rows[2],
               nameBAAK = rows[3],
               time = rows[4],
-          /*  Amp0 = Convert.ToInt16(rows[7]),
-                Amp1 = Convert.ToInt16(rows[8]),
-                Amp2 = Convert.ToInt16(rows[9]),
-                Amp3 = Convert.ToInt16(rows[10]),
-                Amp4 = Convert.ToInt16(rows[11]),
-                Amp5 = Convert.ToInt16(rows[12]),
-                Amp6 = Convert.ToInt16(rows[13]),
-                Amp7 = Convert.ToInt16(rows[14]),
-                Amp8 = Convert.ToInt16(rows[15]),
-                Amp9 = Convert.ToInt16(rows[16]),
-                Amp10 = Convert.ToInt16(rows[17]),
-                Amp11 = Convert.ToInt16(rows[18]),
-                */
+             mAmp = ii,
+        
                 Nnut0 = Convert.ToInt16(rows[19]),
                 Nnut1 = Convert.ToInt16(rows[20]),
                 Nnut2 = Convert.ToInt16(rows[21]),

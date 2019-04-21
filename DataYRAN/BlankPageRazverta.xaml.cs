@@ -312,7 +312,7 @@ namespace DataYRAN
             if (_ClassTable.booksTable != null) // table is a DataTable
             {
                 List<string> vs = new List<string>();
-                int i = 0;
+          
                 foreach (DataColumn col in _ClassTable.booksTable.Columns)
                 {
                     // booksTable.Columns.Add(
