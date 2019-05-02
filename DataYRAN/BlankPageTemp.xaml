@@ -1,0 +1,48 @@
+﻿<Page
+    x:Class="DataYRAN.BlankPageTemp"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DataYRAN"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:telerikGrid="using:Telerik.UI.Xaml.Controls.Grid"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions >
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <CommandBar Margin="56,8,0,0">
+            <AppBarButton Icon="Save" Label="Сохранить" />
+            <AppBarButton Icon="Refresh" Label="Обновить" />
+            <CommandBar.Content>
+                <Button VerticalAlignment="Top" HorizontalAlignment="Left"  Style="{StaticResource NavigationBackButtonNormalStyle}" Click="Button_Click"/>
+            </CommandBar.Content>
+        </CommandBar>
+        <telerikGrid:RadDataGrid Grid.Row="2" x:Name="DataGrid"  RowDetailsDisplayMode="Single" ItemsSource="{x:Bind ViewModel.ClassSobsT}" IncrementalLoadingMode="Explicit" UseLayoutRounding="True"  AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
+            <telerikGrid:RadDataGrid.Columns>
+               
+                <telerikGrid:DataGridTextColumn PropertyName="time" Header="Время"  Width="400"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp" Header="Общий темп"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp1" Header="Темп Д1" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp2" Header="Темп Д2" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp3" Header="Темп Д3" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp4" Header="Темп Д4" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp5" Header="Темп Д5" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp6" Header="Темп Д6" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp7" Header="Темп Д7" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp8" Header="Темп Д8" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp9" Header="Темп Д9" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp10" Header="Темп Д10" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp11" Header="Темп Д11" SizeMode="Fixed" Width="100"/>
+                <telerikGrid:DataGridTextColumn PropertyName="Temp12" Header="Темп Д12" SizeMode="Fixed" Width="100"/>
+
+            </telerikGrid:RadDataGrid.Columns>
+
+        </telerikGrid:RadDataGrid>
+
+    </Grid>
+</Page>

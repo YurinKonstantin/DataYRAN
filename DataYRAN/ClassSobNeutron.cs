@@ -8,10 +8,10 @@ namespace DataYRAN
 {
     public struct ClassSobNeutron
     {
-        public string nameFile { get; set; }
+      
         public int Amp { get; set; }
         public int D { get; set; }
-        public string time { get; set; }
+    
         public int TimeFirst { get; set; }
         public int TimeFirst3 { get; set; }
         public int TimeAmp { get; set; }

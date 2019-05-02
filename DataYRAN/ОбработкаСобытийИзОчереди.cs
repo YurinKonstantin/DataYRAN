@@ -15,40 +15,50 @@ namespace DataYRAN
     {
 
      
-        public async Task WriteInFileIzOcherediAsync(CancellationToken cancellationToken)//работа с данными из очереди
+        public async Task WriteInFileIzOcherediAsync(CancellationToken cancellationToken, ClassUserSetUp classUserSetUp)//работа с данными из очереди
         {
 
-            
+
+            try
+            {
+
 
                 while (true)
                 {
+                   
                     if (cancellationToken.IsCancellationRequested)
                     {
                         //Thread.Sleep(50);
                         while (OcherediNaObrab.Count != 0)
                         {
-                          await  Obr();
+                            await Obr(classUserSetUp);
                         }
-                    break;
+                        break;
                     }
-                 await Obr();
+                    await Obr(classUserSetUp);
                 }
-        }
+            }
+            catch(Exception ex)
+            {
 
-        private async Task<int[]> neutron(int[,] n, string timeSob, double[] masnul, string nemeF, bool bad)//out int[] coutN,
+            }
+        }
+        object locker = new object();
+        private async Task<List<ClassSobNeutron>> neutron(int[,] n, double[] masnul, bool bad)//out int[] coutN,
         {
+           
             //List<ClassSobNeutron> listNet= new List<ClassSobNeutron>();
             int? dlitOtb = ClassUserSetUp.DlitN3;
             int? AmpOtbora = ClassUserSetUp.PorogN;
             int[] coutN = new int[12];
-            int countnutron;
+           
             int Nu;
             int? AmpOtbora1;
-
+            List<ClassSobNeutron> clasNeu = new List<ClassSobNeutron>(); 
             for (int i = 0; i < 12; i++)
             {
 
-                countnutron = 0;
+              
                 Nu = Convert.ToInt32(masnul[i]);
                 AmpOtbora1 = AmpOtbora + Nu;
                 
@@ -131,27 +141,16 @@ namespace DataYRAN
                                 {
                                     int dd = i + 1;
                                     Amp = Amp - Nu;
-                                    countnutron++;
+                                 
                                     if (!bad)
                                     {
-                                    string[] array = nemeF.Split('_');
-                                    string nameFileNew = String.Empty;
-                                    string nameKlNew = String.Empty;
-                                    if (array.Length > 2)
-                                    {
-                                        nameFileNew = nemeF;
-                                        nameKlNew = array[0];
-                                    }
-                                    if (array.Length == 2)
-                                    {
-                                        nameFileNew = array[0].Split("№")[1] + "_" + array[1] + "_" + "T";
-                                        nameKlNew = array[0].Split("№")[1];
-                                    }
-                                    await  Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                                        {
-                                            ViewModel.ClassSobNeutrons.Add(new ClassSobNeutron()
-                                            { nameFile = nameFileNew, D = dd, Amp = Amp, time = timeSob, TimeAmp = countmaxtime, TimeEnd = countendtime, TimeEnd3 = countendtime3, TimeFirst = countfirsttime, TimeFirst3 = countfirsttime3 });
-                                        });
+                                   
+                               
+                                
+                                    
+                                            clasNeu.Add(new ClassSobNeutron()
+                                            { D = dd, Amp = Amp, TimeAmp = countmaxtime, TimeEnd = countendtime, TimeEnd3 = countendtime3, TimeFirst = countfirsttime, TimeFirst3 = countfirsttime3 });
+                                       
                                     }
                                 }
                                 catch 
@@ -165,31 +164,27 @@ namespace DataYRAN
                    
                 }
 
-               coutN[i] = countnutron;
+              
   
             }
-            
-            return coutN;
+
+            return clasNeu;
 
         }
       
-        public async Task Obr()
+        public async Task Obr(ClassUserSetUp classUserSetUp)
         {
-           
-            if (OcherediNaObrab.Count != 0)
+            
+            if (OcherediNaObrab.Count > 0)
             {
-                try
-                {
+               
+                   
                     string time1 = String.Empty;
                     OcherediNaObrab.TryDequeue(out MyclasDataizFile ObrD);
                     if (ObrD != null)
                     {
-                       
-                      
                         
-                    
-                      
-                       
+                        
                         switch (ObrD.tipName)
                         {
                            
@@ -198,37 +193,36 @@ namespace DataYRAN
                                 {
 
 
-                                    ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200H(ObrD.Buf00, out int[,] data1, out time1, out int[,] dataTail1);
-                                    try
-                                    {
-                                        await SaveFileDelegate(data1, dataTail1, time1, ObrD.NameFile);
-                                    }
-                                    catch
-                                    {
+                                    string ss = ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200H(ObrD.Buf00, out int[,] data1, out time1, out int[,] dataTail1);
+                                 
+                                   
+                                        if(SaveFileDelegate !=null)
+                                        {
+                                            await SaveFileDelegate?.Invoke(data1, dataTail1, time1, ObrD.NameFile);
+                                        }
+                                     
+                                 
+                                    
+                                    
+                                        if (ss == "1")
+                                        {
+                                            int t = 0;
+                                            string[] strTime = time1.Split('.');
+                                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    t = Convert.ToInt32(TimeCorect.Text);
+                });
+                                    DataTimeUR dataTimeUR = new DataTimeUR(0,0, Convert.ToInt16(strTime[0]), Convert.ToInt16(strTime[1]), Convert.ToInt16(strTime[2])+t, Convert.ToInt16(strTime[3]),
+                                         Convert.ToInt16(strTime[4]), Convert.ToInt16(strTime[5]), Convert.ToInt16(strTime[6]));
+                                    dataTimeUR.corectTime(ObrD.NameFile);
+                                            time1 = strTime[0] + "." + strTime[1] + "." + (Convert.ToInt32(strTime[2]) + t).ToString("00") + "." + strTime[3] + "." + strTime[4] + "." + strTime[5] + "." + strTime[6];
 
-                                    }
-                                    try
-                                    {
-                                        int t = 0;
-                                        string[] strTime = time1.Split('.');
-                                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-            () =>
-            {
-                t = Convert.ToInt32(TimeCorect.Text);
-            });
-                                        time1 = strTime[0] + "." + strTime[1] + "." + (Convert.ToInt32(strTime[2]) + t).ToString() + "." + strTime[3] + "." + strTime[4] + "." + strTime[5] + "." + strTime[6];
-
-                                        await ObrSigData(ObrD.НулеваяЛиния, ObrD.NameFile, ObrD.NameBaaR12.ToString(), data1, dataTail1, time1, ObrD.tipName);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-            () =>
-            {
-                var mess = new MessageDialog("dss" + "\n" + ex.Message.ToString() + "\n" + ex.ToString());
-                mess.ShowAsync();// КолПакетовОчер++;
-        });
-                                    }
+                                            await ObrSigData(ObrD.NameFile, ObrD.NameBaaR12.ToString(), data1, dataTail1, time1, ObrD.tipName, classUserSetUp, dataTimeUR);
+                                        }
+                                    
+                                   
+                                
 
                                     ObrD = null;
                                 }
@@ -263,7 +257,7 @@ namespace DataYRAN
             });
                                         time1 = strTime[0] + "." + strTime[1] + "." + (Convert.ToInt32(strTime[2]) + t).ToString() + "." + strTime[3] + "." + strTime[4] + "." + strTime[5] + "." + strTime[6];
 
-                                        await ObrSigData(ObrD.НулеваяЛиния, ObrD.NameFile, ObrD.NameBaaR12.ToString(), data1, time1, ObrD.tipName);
+                                        await ObrSigData(ObrD.НулеваяЛиния, ObrD.NameFile, ObrD.NameBaaR12.ToString(), data1, time1, ObrD.tipName, classUserSetUp);
                                     }
                                     catch (Exception ex)
                                     {
@@ -309,7 +303,7 @@ namespace DataYRAN
             });
                                         time1 = strTime[0] + "." + strTime[1] + "." + (Convert.ToInt32(strTime[2]) + t).ToString() + "." + strTime[3] + "." + strTime[4] + "." + strTime[5] + "." + strTime[6];
 
-                                        await ObrSigData(ObrD.НулеваяЛиния, ObrD.NameFile, ObrD.NameBaaR12.ToString(), data1, time1, ObrD.tipName);
+                                        await ObrSigData(ObrD.НулеваяЛиния, ObrD.NameFile, ObrD.NameBaaR12.ToString(), data1, time1, ObrD.tipName, classUserSetUp);
                                     }
                                     catch (Exception ex)
                                     {
@@ -334,57 +328,38 @@ namespace DataYRAN
                         }
                       
 
-                     
-                  
-                
-                        //_СписокФайловОбработки = null;
-
 
                     }
-                }
-                catch (Exception ex)
-                {
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-    var mess = new MessageDialog(ex.Message.ToString()+"\n"+ ex.ToString());
-    mess.ShowAsync();// КолПакетовОчер++;
-});
-
-                }
+                
             }
         }
 
-        public async Task ObrSigData(int[] nul, string nameFile, string nemeBAAK,   int[,] data1, int[,] dataTail1, string time1, string tipN)
+        public async Task ObrSigData(string nameFile, string nemeBAAK,   int[,] data1, int[,] dataTail1, string time1, string tipN, ClassUserSetUp classUserSetUp, DataTimeUR dataTimeUR)
         {
 
     
             int[] Amp = new int[12];
             double[] Nul = new double[12];
             int[] coutN1 = new int[12];
-            Double[] sig = new Double[12];
+            double[] sig = new double[12];
             bool bad = false;
             int[] timeS = new int[12];
-            double[] sumDetQ = new double[12];
-            double[,] data1S = new double[12, 1024];
-            int[] maxTime = new int[12];
-            int[] PolovmaxTime = new int[12];
-            int[] maxAmp=new int[12];
-        
-            int[] firstTimeN=new int[12];
+            List<ClassSobNeutron> cll = new List<ClassSobNeutron>();
 
 
             try
             {
                
-                ClassUserSetUp classUserSetUp = new ClassUserSetUp();
-                      
-                        ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
-                       
-                        coutN1 = await neutron(dataTail1, time1, Nul, nameFile, bad);
-                     
-                classUserSetUp.SetPush1();
-                timeS = ParserBAAK12.ParseBinFileBAAK12.TimeS(data1, classUserSetUp.PorogS, Amp, Nul);
+                     ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, ref sig, ref Amp, ref Nul, ref bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
+            
+                if (!bad)
+                {
+
+
+                    cll = await neutron(dataTail1, Nul, bad);
+                    timeS = ParserBAAK12.ParseBinFileBAAK12.TimeS(data1, classUserSetUp.PorogS, Amp, Nul);
+                }
+             
             }
 
             catch (Exception ex)
@@ -418,9 +393,9 @@ namespace DataYRAN
              nameFile = nameFileNew,
              nameklaster = nameKlNew,
              nameBAAK = nemeBAAK,
-             time = time1,
+             time = dataTimeUR.TimeString(),
              mAmp=Amp,
-           
+         dateUR=dataTimeUR,
              /*Amp0 = Convert.ToInt16(Amp[0]),
              Amp1 = Convert.ToInt16(Amp[1]),
              Amp2 = Convert.ToInt16(Amp[2]),
@@ -434,18 +409,18 @@ namespace DataYRAN
              Amp10 = Convert.ToInt16(Amp[10]),
              Amp11 = Convert.ToInt16(Amp[11]),
              */
-             Nnut0 = Convert.ToInt16(coutN1[0]),
-             Nnut1 = Convert.ToInt16(coutN1[1]),
-             Nnut2 = Convert.ToInt16(coutN1[2]),
-             Nnut3 = Convert.ToInt16(coutN1[3]),
-             Nnut4 = Convert.ToInt16(coutN1[4]),
-             Nnut5 = Convert.ToInt16(coutN1[5]),
-             Nnut6 = Convert.ToInt16(coutN1[6]),
-             Nnut7 = Convert.ToInt16(coutN1[7]),
-             Nnut8 = Convert.ToInt16(coutN1[8]),
-             Nnut9 = Convert.ToInt16(coutN1[9]),
-             Nnut10 = Convert.ToInt16(coutN1[10]),
-             Nnut11 = Convert.ToInt16(coutN1[11]),
+             //Nnut0 = Convert.ToInt16(coutN1[0]),
+             //Nnut1 = Convert.ToInt16(coutN1[1]),
+            // Nnut2 = Convert.ToInt16(coutN1[2]),
+            // Nnut3 = Convert.ToInt16(coutN1[3]),
+             //Nnut4 = Convert.ToInt16(coutN1[4]),
+             //Nnut5 = Convert.ToInt16(coutN1[5]),
+           //  Nnut6 = Convert.ToInt16(coutN1[6]),
+            // Nnut7 = Convert.ToInt16(coutN1[7]),
+            // Nnut8 = Convert.ToInt16(coutN1[8]),
+           //  Nnut9 = Convert.ToInt16(coutN1[9]),
+            // Nnut10 = Convert.ToInt16(coutN1[10]),
+            // Nnut11 = Convert.ToInt16(coutN1[11]),
              TimeS0 = timeS[0].ToString(),
              TimeS1 = timeS[1].ToString(),
              TimeS2 = timeS[2].ToString(),
@@ -485,7 +460,7 @@ namespace DataYRAN
              Nnull9 = Convert.ToInt16(Nul[9]),
              Nnull10 = Convert.ToInt16(Nul[10]),
              Nnull11 = Convert.ToInt16(Nul[11]),
-             mCountN=coutN1
+             classSobNeutronsList=cll
 
 
          });
@@ -522,18 +497,18 @@ namespace DataYRAN
           Amp10 = Convert.ToInt16(Amp[10]),
           Amp11 = Convert.ToInt16(Amp[11]),
           */
-         Nnut0 = Convert.ToInt16(coutN1[0]),
-         Nnut1 = Convert.ToInt16(coutN1[1]),
-         Nnut2 = Convert.ToInt16(coutN1[2]),
-         Nnut3 = Convert.ToInt16(coutN1[3]),
-         Nnut4 = Convert.ToInt16(coutN1[4]),
-         Nnut5 = Convert.ToInt16(coutN1[5]),
-         Nnut6 = Convert.ToInt16(coutN1[6]),
-         Nnut7 = Convert.ToInt16(coutN1[7]),
-         Nnut8 = Convert.ToInt16(coutN1[8]),
-         Nnut9 = Convert.ToInt16(coutN1[9]),
-         Nnut10 = Convert.ToInt16(coutN1[10]),
-         Nnut11 = Convert.ToInt16(coutN1[11]),
+       //  Nnut0 = Convert.ToInt16(coutN1[0]),
+        // Nnut1 = Convert.ToInt16(coutN1[1]),
+        // Nnut2 = Convert.ToInt16(coutN1[2]),
+        // Nnut3 = Convert.ToInt16(coutN1[3]),
+       //  Nnut4 = Convert.ToInt16(coutN1[4]),
+        // Nnut5 = Convert.ToInt16(coutN1[5]),
+        //Nnut6 = Convert.ToInt16(coutN1[6]),
+       //  Nnut7 = Convert.ToInt16(coutN1[7]),
+        // Nnut8 = Convert.ToInt16(coutN1[8]),
+       //  Nnut9 = Convert.ToInt16(coutN1[9]),
+       //  Nnut10 = Convert.ToInt16(coutN1[10]),
+       //  Nnut11 = Convert.ToInt16(coutN1[11]),
          TimeS0 = timeS[0].ToString(),
          TimeS1 = timeS[1].ToString(),
          TimeS2 = timeS[2].ToString(),
@@ -588,7 +563,7 @@ namespace DataYRAN
 
 
         }
-        public async Task ObrSigData(int[] nul, string nameFile, string nemeBAAK, int[,] data1, string time1, string tipN)
+        public async Task ObrSigData(int[] nul, string nameFile, string nemeBAAK, int[,] data1, string time1, string tipN, ClassUserSetUp classUserSetUp)
         {
 
 
@@ -610,13 +585,13 @@ namespace DataYRAN
             try
             {
 
-                ClassUserSetUp classUserSetUp = new ClassUserSetUp();
+             
 
                 switch (tipN)
                 {
                     
                     case "N":
-                        ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
+                        ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, ref sig, ref Amp, ref Nul, ref bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
 
                         for (int i = 0; i < 12; i++)
                         {
@@ -636,7 +611,7 @@ namespace DataYRAN
 
 
 
-                        ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, out sig, out Amp, ref Nul, out bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
+                        ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, ref sig, ref Amp, ref Nul, ref bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
                         ObrabotcaURAN.Obrabotca.AmpAndTime(data1, Nul, out maxTime, out maxAmp);
                         bool dN = ObrabotcaURAN.Obrabotca.Dneutron(maxAmp, classUserSetUp.PorogSN, out d);
                         firstTimeN = ObrabotcaURAN.Obrabotca.FirstTme(maxTime, maxAmp, classUserSetUp.PorogS, data1, Nul, ref PolovmaxTime);
@@ -649,7 +624,7 @@ namespace DataYRAN
                 }
 
 
-                classUserSetUp.SetPush1();
+              
                 timeS = ParserBAAK12.ParseBinFileBAAK12.TimeS(data1, classUserSetUp.PorogS, Amp, Nul);
             }
 

@@ -674,21 +674,38 @@ namespace DataYRAN
         public async Task SaveSobNeutron(StorageFolder folder, String name, string tip, string cul)
         {
             int ii = 0;
-            if (ViewModel.ClassSobNeutrons.Count != 0)
+            if (ViewModel.ClassSobsT.Count != 0)
             {
+
+
+
                 using (StreamWriter writer =
                new StreamWriter(await folder.OpenStreamForWriteAsync(
-               name+"."+tip, CreationCollisionOption.GenerateUniqueName)))
+               name + "." + tip, CreationCollisionOption.GenerateUniqueName)))
                 {
                     string sNeu = "n" + "\t" + "file" + "\t" + "D" + "\t" + "A" + "\t" + "Time" + "\t" + "tf" + "\t" + "tf3" + "\t" + "tmax" + "\t" + "tend3" + "\t" + "tend";
                     await writer.WriteLineAsync(sNeu);
-                    foreach (ClassSobNeutron sob in ViewModel.ClassSobNeutrons)
+                    foreach (ClassSob classSob in ViewModel.ClassSobsT)
                     {
-                        ii++;
-                        string Sob = ii.ToString() + "\t" + sob.nameFile + "\t" + sob.D.ToString("00") + "\t" + sob.Amp.ToString() + "\t" + sob.time + "\t" + sob.TimeFirst.ToString() + "\t" + sob.TimeFirst3.ToString() + "\t" + sob.TimeAmp.ToString() + "\t" + sob.TimeEnd3.ToString() + "\t" + sob.TimeEnd3.ToString();
-                        await writer.WriteLineAsync(Sob);
+
+                        if (classSob.classSobNeutronsList.Count != 0)
+                        {
+
+                            foreach (ClassSobNeutron sobNeutron in classSob.classSobNeutronsList)
+                            {
+                                ii++;
+                                string Sob = ii.ToString() + "\t" + classSob.nameFile + "\t" + sobNeutron.D.ToString("00") + "\t" + sobNeutron.Amp.ToString() + "\t" + classSob.time + "\t" + sobNeutron.TimeFirst.ToString() + "\t" + sobNeutron.TimeFirst3.ToString() +
+                                    "\t" + sobNeutron.TimeAmp.ToString() + "\t" + sobNeutron.TimeEnd3.ToString() + "\t" + sobNeutron.TimeEnd3.ToString();
+                                await writer.WriteLineAsync(Sob);
+
+                            }
+                        }
                     }
                 }
+                        
+
+                    
+                
             }
 
         }
@@ -967,22 +984,7 @@ namespace DataYRAN
                     }
                 }
                 int ii = 0;
-                if (ViewModel.ClassSobNeutrons.Count != 0)
-                {
-                    using (StreamWriter writer =
-                   new StreamWriter(await folder.OpenStreamForWriteAsync(
-                   "НейтроныФайла.txt", CreationCollisionOption.GenerateUniqueName)))
-                    {
-                        string sNeu = "n" + "\t" + "file" + "\t" + "D" + "\t" + "A" + "\t" + "Time" + "\t" + "tf" + "\t" + "tf3" + "\t" + "tmax" + "\t" + "tend3" + "\t" + "tend";
-                        await writer.WriteLineAsync(sNeu);
-                        foreach (ClassSobNeutron sob in ViewModel.ClassSobNeutrons)
-                        {
-                            ii++;
-                            string Sob = ii.ToString() + "\t" + sob.nameFile + "\t" + sob.D.ToString("00") + "\t" + sob.Amp.ToString() + "\t" + sob.time + "\t" + sob.TimeFirst.ToString() + "\t" + sob.TimeFirst3.ToString() + "\t" + sob.TimeAmp.ToString() + "\t" + sob.TimeEnd3.ToString() + "\t" + sob.TimeEnd3.ToString();
-                            await writer.WriteLineAsync(Sob);
-                        }
-                    }
-                }
+                await SaveSobNeutron(folder, "НейтроныФайлаT", "txt", cul);
             }
             else
             {

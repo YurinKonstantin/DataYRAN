@@ -29,6 +29,41 @@ namespace DataYRAN
             ML = ml;
             NN = nn;
         }
-       
+        public void corectTime(string time)
+        {
+            string[] t = time.Split('_')[1].Split(' ')[0].Split('.');
+
+            DateTime g = new DateTime(Convert.ToInt32(t[2]), Convert.ToInt32(t[1]), Convert.ToInt32(t[0]));
+         
+            DateTime f = new DateTime(Convert.ToInt32(t[2]), Convert.ToInt32(t[1]), Convert.ToInt32(t[0]));
+           
+            if(DD!=f.Day || DD!=g.AddDays(-1).Day)
+            {
+                DD = f.Day;
+                MM = f.Month;
+                GG = f.Year;
+
+            }
+            else
+            {
+                if(DD == f.Day)
+                {
+                    MM = f.Month;
+                    GG = f.Year;
+                }
+                else
+                {
+                    MM = g.Month;
+                    GG = g.Year;
+                }
+                
+                
+            }
+
+        }
+       public string TimeString()
+        {
+            return DD.ToString("00") + "." + HH.ToString("00") + "." + Min.ToString("00") + "." + CC.ToString("00") + "." + Mil.ToString("00") + "." + ML.ToString("00") + "." + NN.ToString("00");
+        }
     }
 }

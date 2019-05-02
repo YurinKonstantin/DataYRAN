@@ -31,17 +31,19 @@ namespace DataYRAN
                 sumAmp = value;
             }
         }
-
+      public  DataTimeUR dateUR { get; set; }
         int sumNeu = 0;
         public int SumNeu {
 
             get
             {
-                return mCountN.Sum();
+                return classSobNeutronsList.Count;
             }
             set
             {
-                sumNeu = value;
+                classSobNeutronsList = new List<ClassSobNeutron>(value);
+
+
             }
         }
         public string time { get; set; }
@@ -57,22 +59,210 @@ namespace DataYRAN
                 _mAmp = value;
             }
         }
-        int[] _mCountN = new int[12];
-        public int[] mCountN { get; set; }
+       
         int[] _mTimeD = new int[12];
         public int[] mTimeD { get; set; }
-        public short Nnut0 { get; set; }
-        public short Nnut1 { get; set; }
-        public short Nnut2 { get; set; }
-        public short Nnut3 { get; set; }
-        public short Nnut4 { get; set; }
-        public short Nnut5 { get; set; }
-        public short Nnut6 { get; set; }
-        public short Nnut7 { get; set; }
-        public short Nnut8 { get; set; }
-        public short Nnut9 { get; set; }
-        public short Nnut10 { get; set; }
-        public short Nnut11 { get; set; }
+      public int[] mCountN
+        {
+            get
+            {
+                int[] bb = new int[12];
+                for(int i=0; i<12; i++)
+                {
+                    foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                    {
+                        if (classSobNeutron.D == i+1)
+                        {
+                            bb[i] = bb[i] + 1; count++;
+                        }
+                    }
+                }
+                return bb;
+                
+            }
+        }
+        public short Nnut0
+        {
+            get
+            {
+                short count = 0;
+                foreach(ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if(classSobNeutron.D==1)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+
+        public short Nnut1
+        {
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 2)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        public short Nnut2
+        {
+
+
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 3)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        public short Nnut3 {
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 4)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        public short Nnut4
+        {
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 5)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        public short Nnut5
+        {
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 6)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        public short Nnut6
+        {
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 7)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        public short Nnut7
+        {
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 8)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        public short Nnut8
+        {
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 9)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        public short Nnut9
+        {
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 10)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        public short Nnut10
+        {
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 11)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        public short Nnut11
+        {
+            get
+            {
+                short count = 0;
+                foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                {
+                    if (classSobNeutron.D == 12)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
         public double sig0 { get; set; }
         public double sig1 { get; set; }
         public double sig2 { get; set; }
@@ -143,7 +333,7 @@ namespace DataYRAN
 
     
 
-
+       public List<ClassSobNeutron> classSobNeutronsList { get; set; }
 
 
 

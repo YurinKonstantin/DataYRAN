@@ -93,7 +93,7 @@ namespace DataYRAN
             // Raise the PropertyChanged event, passing the name of the property whose value has changed.
             this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-        ClassUserSetUp cclassUserSetUp { get; set; }
+      public  ClassUserSetUp cclassUserSetUp { get; set; }
         public RecordingViewModel()
             {
             cclassUserSetUp = new ClassUserSetUp();
@@ -148,7 +148,7 @@ namespace DataYRAN
         /// </summary>
         public ObservableCollection<ClassSobV> ClassSobsV = new ObservableCollection<ClassSobV>();
         ObservableCollection<ClassSobNeutron> classSobNeutrons = new ObservableCollection<ClassSobNeutron>();
-        public ObservableCollection<ClassSobNeutron> ClassSobNeutrons { get { return this.classSobNeutrons; } }
+     
         public ObservableCollection<ClassSaveSetUp> _DataColecViewSaveMenedger = new ObservableCollection<ClassSaveSetUp>();
       
        /// <summary>
@@ -179,7 +179,7 @@ namespace DataYRAN
             ClassSobsT.Clear();
             ClassSobsN.Clear();
             ClassSobsV.Clear();
-            ClassSobNeutrons.Clear();
+           
             _DataColecSobPloxT.Clear();
             _DataColecSobPloxN.Clear();
             _DataSobColli.Clear();
@@ -188,7 +188,7 @@ namespace DataYRAN
         {
             ClassSobsT.Clear();
             ClassSobsN.Clear();
-            ClassSobNeutrons.Clear();
+        
             _DataColecSobPloxT.Clear();
          
         }

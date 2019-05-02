@@ -116,49 +116,8 @@ namespace DataYRAN
 
         ObservableCollection<ClassSobObrZav> _DataColecSob2 = new ObservableCollection<ClassSobObrZav>();
 
-        public class Book
-        {
-            public String title;
-            public List<string> gg { get; set; }
-        }
-        public async void saveSer()
-        {
-            try
-            {
-                if (ViewModel.DataColec.Count>0)
-                {
-                  
-
-                }
-                else
-                {
-                    MessageDialog messageDialog = new MessageDialog("Данных нет");
-                    await messageDialog.ShowAsync();
-                }
-            }
-           
-            catch (Exception ex)
-            {
-                MessageDialog messageDialog = new MessageDialog(ex.ToString());
-                await messageDialog.ShowAsync();
-            }
-        }
-        public async void openDeser()
-        {
-            MessageDialog messageDialog = new MessageDialog("Открытие");
-            await messageDialog.ShowAsync();
-            XmlSerializer formatter = new XmlSerializer(typeof(ClassProject));
-         //   using (FileStream fs = new FileStream("persons.xml", FileMode.OpenOrCreate))
-          //  {
-          //      ClassProject classProject = (ClassProject)formatter.Deserialize(fs);
-
-            //    foreach(var g in classProject.КолекцияФайловРазверткиP)
-            //    {
-             //       MessageDialog messageDialog1 = new MessageDialog(g.ToString());
-             //       await messageDialog1.ShowAsync();
-              //  }
-           // }
-        }
+  
+       
 
 
 
@@ -203,7 +162,7 @@ namespace DataYRAN
                 ToggleSwitchObrNoise.IsOn = ClassUserSetUp.ObrNoise;
                 TextBloxKoefNoise.Text = ClassUserSetUp.KoefNoise.ToString();
                TextBloxAmpNoise.Text = ClassUserSetUp.AmpNoise.ToString();
-                ComboFile.ItemsSource = КолекцияФайловРазвертки;
+                
                 first = false;
                 Avto_Toggled(null, null);
                 flagFileSetup = true;
@@ -261,16 +220,7 @@ namespace DataYRAN
 
 
         }
-        object myLockObject = new object();
-        public int Count()
-        {
-            int v = 100;
-            lock (myLockObject)
-            {
-                v = OcherediNaObrab.Count;
-            }
-            return v;
-        }
+    
 
 
         List<Byte> listDataAll;
@@ -282,6 +232,16 @@ namespace DataYRAN
         /// <param name="nameRan"></param>
         /// 
         bool flagFileSetup = false;
+        object myLockObject = new object();
+        public int Count()
+        {
+            int v = 100;
+            lock (myLockObject)
+            {
+                v = OcherediNaObrab.Count;
+            }
+            return v;
+        }
         private async void ZapicOcheredNaObrabotkyAsync(string nBaaK, int leng, string nameRan, List<ClassСписокList> listt)
         {
 
@@ -298,9 +258,9 @@ namespace DataYRAN
                 
                 //listDataAll = new List<byte>();
                 bool flagUserSetup = true;
-                BasicProperties basicProperties;
+                //BasicProperties basicProperties;
              
-                           try
+                          /* try
                            {
 
 
@@ -319,7 +279,8 @@ namespace DataYRAN
                                flagUserSetup = true;
                       
                            }
-                      
+                
+                      */
                 string tipN = "T";
                // tipN = d.file1.DisplayName.Split('_')[2];
                 string[] tipParser = d.file1.DisplayName.Split('_');
@@ -350,7 +311,7 @@ namespace DataYRAN
                           
                             bool end = false;
                             uint kol = 0;
-                        byte[] dataOnePac = new byte[504648];
+                       List<byte> dataOnePac = new List<byte>();
 
                         int tecpos = 0;
                             int countFlagEnt = 0;
@@ -363,26 +324,78 @@ namespace DataYRAN
                                     using (var dataReader = new Windows.Storage.Streams.DataReader(inputStream))
                                     {
                                         numBytesLoaded = await dataReader.LoadAsync(numBytesLoaded1);
-                                        if (numBytesLoaded < numBytesLoaded1 || numBytesLoaded == 0)
+                                    if (numBytesLoaded < numBytesLoaded1 || numBytesLoaded == 0)
+                                    {
+
+                                        end = true;
+                                    }
+                                    else
+                                    {
+                                        byte[] dd = new byte[numBytesLoaded];
+                                        dataReader.ReadBytes(dd);
+                                        if (dd[numBytesLoaded - 1] == 0xFF && dd[numBytesLoaded - 2] == 0xFF && dd[numBytesLoaded - 3] == 0xFF && dd[numBytesLoaded - 4] == 0xFF)
                                         {
-                                     
-                                            end = true;
+
+                                            int cc1 = Count();
+                                            if (cc1 > 1800)
+                                            {
+                                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d.StatusP = true;
+});
+                                                Thread.Sleep(10000);
+                                                long totalMemory = GC.GetTotalMemory(false);
+                                                GC.Collect();
+                                                GC.WaitForPendingFinalizers();
+                                                // for(int f=0; f<10000; f++)
+                                                //  {
+                                                //      int xx = 0;
+                                                //  }
+                                                //Thread.Sleep(20000);
+                                                while (Count() > 500)
+                                                {
+                                                    Thread.Sleep(5000);
+                                                }
+                                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d.StatusP = true;
+});
+                                            }
+                                            OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dd, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName = tipN });
+                                            pac++;
+                                       
+                                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => { d.StatusSize += (ulong)dd.Length; ViewModel.CountNaObrabZ++; });
+
+
                                         }
+                                       
                                         else
                                         {
- 
-                                            for (int i = 0; i < numBytesLoaded; i++)
+
+
+                                            if ((dd[numBytesLoaded - 1] == 0xFE && dd[numBytesLoaded - 2] == 0xFE && dd[numBytesLoaded - 3] == 0xFE && dd[numBytesLoaded - 4] == 0xFE) || (numBytesLoaded > 502640 && numBytesLoaded < 504648))
                                             {
 
-                                            if (ccc > 1800)
+                                            }
+
+                                            else
+                                        {
+
+                                               
+                                                for (int i = 0; i < numBytesLoaded; i++)
                                             {
-                                                while (Count() > 1800)
+
+                                                int cc1 = Count();
+                                                if (cc1 > 1800)
                                                 {
                                                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
     () =>
     {
         d.StatusP = true;
     });
+                                                    Thread.Sleep(10000);
                                                     long totalMemory = GC.GetTotalMemory(false);
                                                     GC.Collect();
                                                     GC.WaitForPendingFinalizers();
@@ -393,8 +406,7 @@ namespace DataYRAN
                                                     //Thread.Sleep(20000);
                                                     while (Count() > 500)
                                                     {
-                                                        int xx = 0;
-                                                        xx++;
+                                                        Thread.Sleep(5000);
                                                     }
                                                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
@@ -402,41 +414,57 @@ namespace DataYRAN
     d.StatusP = true;
 });
                                                 }
-                                                ccc = Count();
-                                            }
-                                            ccc++;
-                                            var b = dataReader.ReadByte();
-                                           
-                                            dataOnePac[tecpos] = b;
-                                            tecpos++;
+
+
+
+                                                var b = dd[i];
+
+                                                dataOnePac.Add(b);
+                                                tecpos++;
                                                 if (b == 0xFF)
                                                 {
                                                     countFlagEnt++;
-                                                   if (countFlagEnt == 4)
-                                                   {
-                                             
-                                                    OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dataOnePac, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName=tipN });
-                                                    pac++;
-                                                
-                                                    dataOnePac = new Byte[504648];
-                                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-    d.StatusSize += 504648;
-    ViewModel.CountNaObrabZ++;
-});
-                                                    //Thread.Sleep(1000);
-                                                    countFlagEnt = 0;
-                                                    tecpos = 0;
-                                                   }
+                                                    if (countFlagEnt == 4)
+                                                        {
+                                                            Debug.WriteLine(numBytesLoaded.ToString() + "\t" + tecpos);
+                                                            if (tecpos > 502640 && tecpos < 504648)
+                                                            {
+                                                                //Debug.WriteLine(numBytesLoaded.ToString() + "\t" + "ggg");
+                                                                dataOnePac = null;
+                                                            }
+                                                            else
+                                                            {
+
+                                                                //Debug.WriteLine(numBytesLoaded.ToString() + "\t" + "g11gg");
+                                                                OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dataOnePac.ToArray(), LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName = tipN });
+                                                            }
+                                                                pac++;
+
+                                                                dataOnePac = new List<byte>();
+                                                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            () =>
+            {
+                d.StatusSize += 504648;
+                ViewModel.CountNaObrabZ++;
+            });
+                                                                //Thread.Sleep(1000);
+                                                                countFlagEnt = 0;
+                                                                tecpos = 0;
+                                                            
+                                                    }
                                                 }
                                                 else
                                                 {
                                                     countFlagEnt = 0;
                                                 }
-                                             
+
                                             }
 
+                                        }
+
+
+
+                                    }
                                         }
 
                                     }
@@ -457,15 +485,15 @@ namespace DataYRAN
                 {
                     try
                     {
-                        if (ccc > 1800)
-                        {
-                            while (Count() > 1800)
+                        
+                            if(Count() > 1800)
                             {
                                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
 {
 d.StatusP = true;
 });
+                            Thread.Sleep(10000);
                                 long totalMemory = GC.GetTotalMemory(false);
                                 GC.Collect();
                                 GC.WaitForPendingFinalizers();
@@ -476,8 +504,7 @@ d.StatusP = true;
                                 //Thread.Sleep(20000);
                                 while (Count() > 500)
                                 {
-                                    int xx = 0;
-                                    xx++;
+                                Thread.Sleep(10000);
                                 }
                                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
@@ -485,9 +512,9 @@ d.StatusP = true;
 d.StatusP = true;
 });
                             }
-                            ccc = Count();
-                        }
-                        ccc++;
+                         
+                        
+                     
                         byte[] bb = (await Windows.Storage.FileIO.ReadBufferAsync(d.file1)).ToArray();
                  
                         
@@ -531,6 +558,7 @@ ViewModel.CountNaObrabZ++;
                             }
 
                         }
+                        
                       
                       
                     }
@@ -541,6 +569,7 @@ ViewModel.CountNaObrabZ++;
                     }
 
                 }
+                
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
 {
@@ -620,7 +649,7 @@ d.Status = false;
                  //   MessageDialog messageDialog = new MessageDialog("dd");
                    // messageDialog.ShowAsync();
 
-                    await Task.Run(()=> WriteInFileIzOcherediAsync(cancellationToken));
+                    await Task.Run(()=> WriteInFileIzOcherediAsync(cancellationToken, ViewModel.cclassUserSetUp));
 
                     // await WriteInFileIzOcherediAsync(cancellationToken);
                     watch.Stop();
@@ -680,7 +709,7 @@ d.Status = false;
         /// охраняем данные о событии
         /// </summary>
         public SaveFileSob SaveFileSobDelegate;
-        public delegate Task ObrSig(int[] nul, string nameFile, string nemeBAAK, int[,] data1, int[,] dataTail1, string time1, string tipName);//
+        public delegate Task ObrSig(string nameFile, string nemeBAAK, int[,] data1, int[,] dataTail1, string time1, string tipName, ClassUserSetUp classUserSetUp, DataTimeUR dataTimeUR);//
 
         /// <summary>
         /// охраняем пакет в файл
@@ -698,14 +727,14 @@ d.Status = false;
         {
             if (ToggleSwitchSaveRaz.IsOn == true)
             {
-                razTab.Visibility = Visibility.Visible;
+               
                 SaveFileDelegate += SaveAsync;
                 ClassUserSetUp.SaveRaz = true;
 
             }
             else
             {
-                razTab.Visibility = Visibility.Collapsed;
+                
                 SaveFileDelegate -= SaveAsync;
                 ClassUserSetUp.SaveRaz = false;
 
@@ -743,26 +772,7 @@ d.Status = false;
             ObRing.IsActive = false;
         }
 
-        private async void ComboFile_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ProgR.IsActive = true;
-            if (ComboFile.SelectedItem != null)
-            {
-
-                ClassСписокList clac = new ClassСписокList();
-
-                int c = ComboFile.SelectedIndex;
-                clac = КолекцияФайловРазвертки[c];
-
-                StorageFile sampleFile = clac.file1;
-                textT.Text = await Windows.Storage.FileIO.ReadTextAsync(sampleFile);
-            }
-            else
-            {
-
-            }
-            ProgR.IsActive = false;
-        }
+    
 
         /// <summary>
         /// Очищаем таблицы и хранилище с разверткой
@@ -834,7 +844,7 @@ d.Status = false;
                 ObRing.IsActive = true;
                 ViewModel.ClassSobsT.Clear();
 
-                ViewModel.ClassSobNeutrons.Clear();
+             
 
                 ObRing.IsActive = false;
             }
@@ -883,6 +893,7 @@ d.Status = false;
                     // To output the text from this example, you need a TextBlock control
                     char[] rowSplitter = { '\r', '\n' };
                     string[] rowsInClipboard = text.Split(rowSplitter, StringSplitOptions.RemoveEmptyEntries);
+
                     for (int i = 1; i < rowsInClipboard.Length; i++)
                     {
                         string[] rows = rowsInClipboard[i].Split('\t');
@@ -902,6 +913,24 @@ d.Status = false;
                             ii[9] = Convert.ToInt16(rows[16]);
                             ii[10] = Convert.ToInt16(rows[17]);
                             ii[11] = Convert.ToInt16(rows[18]);
+                            int ic = 1;
+                            List<ClassSobNeutron> ll = new List<ClassSobNeutron>();
+                            for (int it = 19; it < 31; it++)
+                            {
+                                if (Convert.ToInt16(rows[it]) > 0)
+                                {
+                                    for (int d = 0; d < Convert.ToInt16(rows[it]); d++)
+                                    {
+                                        ll.Add(new ClassSobNeutron() { D = ic, Amp = 0, TimeAmp = 0, TimeEnd = 0, TimeEnd3 =0, TimeFirst = 0, TimeFirst3 = 0 });
+                                  
+
+                                    }
+                                    
+                                }
+                                ic++;
+
+                            }
+
                             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
       () =>
       {
@@ -913,19 +942,19 @@ d.Status = false;
               time = rows[4],
              mAmp = ii,
         
-                Nnut0 = Convert.ToInt16(rows[19]),
-                Nnut1 = Convert.ToInt16(rows[20]),
-                Nnut2 = Convert.ToInt16(rows[21]),
-                Nnut3 = Convert.ToInt16(rows[22]),
-                Nnut4 = Convert.ToInt16(rows[23]),
-                Nnut5 = Convert.ToInt16(rows[24]),
-                Nnut6 = Convert.ToInt16(rows[25]),
-                Nnut7 = Convert.ToInt16(rows[26]),
-                Nnut8 = Convert.ToInt16(rows[27]),
-                Nnut9 = Convert.ToInt16(rows[28]),
-                Nnut10 = Convert.ToInt16(rows[29]),
-                Nnut11 = Convert.ToInt16(rows[30]),
- 
+               // Nnut0 = Convert.ToInt16(rows[19]),
+              //  Nnut1 = Convert.ToInt16(rows[20]),
+              //  Nnut2 = Convert.ToInt16(rows[21]),
+               // Nnut3 = Convert.ToInt16(rows[22]),
+              //  Nnut4 = Convert.ToInt16(rows[23]),
+              //  Nnut5 = Convert.ToInt16(rows[24]),
+               // Nnut6 = Convert.ToInt16(rows[25]),
+               // Nnut7 = Convert.ToInt16(rows[26]),
+              //  Nnut8 = Convert.ToInt16(rows[27]),
+              //  Nnut9 = Convert.ToInt16(rows[28]),
+               // Nnut10 = Convert.ToInt16(rows[29]),
+               // Nnut11 = Convert.ToInt16(rows[30]),
+ classSobNeutronsList=ll,
                 sig0 = Convert.ToDouble(rows[31].Replace(".", ",")),
                 sig1 = Convert.ToDouble(rows[32].Replace(".", ",")),
                 sig2 = Convert.ToDouble(rows[33].Replace(".", ",")),
@@ -941,7 +970,7 @@ d.Status = false;
                 sig11 = Convert.ToDouble(rows[42].Replace(".", ",")),
                 
               SumAmp = Convert.ToInt32(rows[5]),
-                SumNeu = Convert.ToInt16(rows[6]),
+               // SumNeu = Convert.ToInt16(rows[6]),
                 
               Nnull0 = Convert.ToInt16(rows[43]),
               Nnull1 = Convert.ToInt16(rows[44]),
@@ -957,8 +986,11 @@ d.Status = false;
               Nnull11 = Convert.ToInt16(rows[54])
              
           });
+          ViewModel.CountNaObrabZ++;
+          ViewModel.CountObrabSob++;
 
       });
+                           
                         }
                         else
                         {
@@ -984,18 +1016,18 @@ d.Status = false;
               Amp10 = Convert.ToInt16(rows[17]),
               Amp11 = Convert.ToInt16(rows[18]),
               */
-              Nnut0 = Convert.ToInt16(rows[19]),
-              Nnut1 = Convert.ToInt16(rows[20]),
-              Nnut2 = Convert.ToInt16(rows[21]),
-              Nnut3 = Convert.ToInt16(rows[22]),
-              Nnut4 = Convert.ToInt16(rows[23]),
-              Nnut5 = Convert.ToInt16(rows[24]),
-              Nnut6 = Convert.ToInt16(rows[25]),
-              Nnut7 = Convert.ToInt16(rows[26]),
-              Nnut8 = Convert.ToInt16(rows[27]),
-              Nnut9 = Convert.ToInt16(rows[28]),
-              Nnut10 = Convert.ToInt16(rows[29]),
-              Nnut11 = Convert.ToInt16(rows[30]),
+             // Nnut0 = Convert.ToInt16(rows[19]),
+             // Nnut1 = Convert.ToInt16(rows[20]),
+              //Nnut2 = Convert.ToInt16(rows[21]),
+             // Nnut3 = Convert.ToInt16(rows[22]),
+             // Nnut4 = Convert.ToInt16(rows[23]),
+             // Nnut5 = Convert.ToInt16(rows[24]),
+             // Nnut6 = Convert.ToInt16(rows[25]),
+            //  Nnut7 = Convert.ToInt16(rows[26]),
+            //  Nnut8 = Convert.ToInt16(rows[27]),
+            //  Nnut9 = Convert.ToInt16(rows[28]),
+            //  Nnut10 = Convert.ToInt16(rows[29]),
+            //  Nnut11 = Convert.ToInt16(rows[30]),
 
               sig0 = Convert.ToDouble(rows[43]),
               sig1 = Convert.ToDouble(rows[44]),
@@ -1029,6 +1061,7 @@ d.Status = false;
                         }
                    
                     }
+                   
                 }
             }
             catch(Exception ex)
@@ -1098,7 +1131,7 @@ d.Status = false;
                 }
             }
         }
-        private async void AppBarToggleButton_Click_3(object sender, RoutedEventArgs e)
+       /* private async void AppBarToggleButton_Click_3(object sender, RoutedEventArgs e)
         {
             ObRing.IsActive = true;
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
@@ -1133,14 +1166,14 @@ d.Status = false;
             }
             ObRing.IsActive = false;
         }
-
+        */
         private async void AppBarToggleButton_Click_4(object sender, RoutedEventArgs e)
         {
             gridMenedger.Visibility = Visibility.Visible;
             SaveAllMenedger();
         }
 
-        private async void AppBarToggleButton_Click_5(object sender, RoutedEventArgs e)
+      /*  private async void AppBarToggleButton_Click_5(object sender, RoutedEventArgs e)
         {
             ObRing.IsActive = true;
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
@@ -1173,7 +1206,7 @@ d.Status = false;
             }
             ObRing.IsActive = false;
         }
-
+        */
         private void FileOb_Toggled(object sender, RoutedEventArgs e)
         {
             //  if (FileOb.IsOn == true)
@@ -1202,53 +1235,73 @@ d.Status = false;
         }
 
         object ind;
-      
-      
-  
+
+
+        bool poc = true;
         private async void DataGrid_SelectionChanged(object sender, Telerik.UI.Xaml.Controls.Grid.DataGridSelectionChangedEventArgs e)
         {
             if (DataGrid.SelectedItem != null)
-            {if (ind == DataGrid.SelectedItem)
+            {
+
+
+                // this.DataGrid.ShowRowDetailsForItem(newCheckedItem);
+
+                //  else
+
+                //  this.DataGrid.HideRowDetailsForItem(newCheckedItem);
+
+
+
+
+
+
+                ind = DataGrid.SelectedItem;
+
+                if (ind.ToString() == "DataYRAN.ClassSob")
                 {
-                    ind = null;
-                   
-                    Split1.IsPaneOpen = !Split1.IsPaneOpen;
-                }
-                else
-                {
-                    ind = DataGrid.SelectedItem;
-                    
-                    if(ind.ToString()=="DataYRAN.ClassSob")
+                    try
                     {
-                        try
+
+
+                        ClassSob classSob = (ClassSob)DataGrid.SelectedItem;
+                        MessageDialog messageDialog = new MessageDialog(classSob.dateUR.TimeString());
+                        await messageDialog.ShowAsync();
+                        if (poc)
                         {
+                          //  this.DataGrid.ShowRowDetailsForItem(classSob);
 
-
-                            ClassSob classSob = (ClassSob)DataGrid.SelectedItem;
-                            List<ClassSob> classSobsL = new List<ClassSob>();
-                            classSobsL.Add(classSob);
-                            await MyUser.ShowDetecAsync(classSobsL);
-                            await MyUsern.ShowDetecТAsync(classSobsL);
                         }
-                        catch(Exception ex)
+                        else
                         {
-                            MessageDialog messageDialog = new MessageDialog(ex.ToString());
-                          await  messageDialog.ShowAsync();
+                          //  this.DataGrid.HideRowDetailsForItem(classSob);
+                         
                         }
-
+                        
+                       
+                        List<ClassSob> classSobsL = new List<ClassSob>();
+                        classSobsL.Add(classSob);
+                        await MyUser.ShowDetecAsync(classSobsL);
+                        await MyUsern.ShowDetecТAsync(classSobsL);
                     }
-             
-                 
-                    Split1.IsPaneOpen = true;
-                  
-                    //classSobColl
+                    catch (Exception ex)
+                    {
+                        MessageDialog messageDialog = new MessageDialog(ex.ToString());
+                        await messageDialog.ShowAsync();
+                    }
 
                 }
+
+
+                //  Split1.IsPaneOpen = true;
+
+                //classSobColl
+
 
             }
+
             else
             {
-                Split1.IsPaneOpen = false;
+               
             }
         }
         private void DataGrid_SelectionChangedPlox(object sender, Telerik.UI.Xaml.Controls.Grid.DataGridSelectionChangedEventArgs e)
@@ -1305,11 +1358,7 @@ d.Status = false;
             }
 
         }
-        /*
-        ObservableCollection<ClassSob> _DataColecSob = new ObservableCollection<ClassSob>();
-        ObservableCollection<ClassSob> _DataColecSobCopy { get; set; }
-        _DataSobColli
-        */
+  
         private async void AppBarButton_Save(object sender, RoutedEventArgs e)
         {
 
@@ -1378,7 +1427,25 @@ d.Status = false;
         }
         private async void AppBarButton_Play(object sender, RoutedEventArgs e)
         {
-           
+            try
+            {
+               
+                
+               
+                int MaxDur = Convert.ToInt16(TimeGate.Text);
+                int MaxAmpl = Convert.ToInt16(MinAmplDetect.Text);
+                int MinClust = Convert.ToInt16(MinClustDec.Text);
+            await  Task.Run(()=>  ObchSobURAN(MaxDur, MaxAmpl, MinClust));
+               
+
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageDialog messageDialog = new MessageDialog(ex.ToString());
+                await messageDialog.ShowAsync();
+            }
 
         }
         private Double Sum(List<int> n, double x)
@@ -1602,32 +1669,7 @@ d.Status = false;
         }
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            RadioButton rb = sender as RadioButton;
-
-            if (rb != null && TextBloxPorogN != null && TextBloxDlitN!=null && dataN != null && List54!= null && List55 != null)
-            {
-                string colorName = rb.Tag.ToString();
-                switch (colorName)
-                {
-                    case "Tail":
-                        TextBloxPorogN.IsEnabled = true;
-                        TextBloxDlitN.IsEnabled = true;
-                        ClassUserSetUp.TipTail = true;
-                        dataN.IsVisible = true;
-                        List55.Visibility = Visibility.Collapsed;
-                        List54.Visibility = Visibility.Visible;
-                        break;
-                    case "NoTail":
-                        TextBloxPorogN.IsEnabled = false;
-                        TextBloxDlitN.IsEnabled = false;
-                        ClassUserSetUp.TipTail = false;
-                        dataN.IsVisible = false;
-                        List55.Visibility = Visibility.Visible;
-                        List54.Visibility = Visibility.Collapsed;
-                        break;
-                   
-                }
-            }
+            
         }
 
        
@@ -1982,7 +2024,7 @@ d.Status = false;
                 List54.Visibility = Visibility.Visible;
                 DataGrid.ItemsSource = ViewModel.ClassSobsT;
                 colstroc.Text = ViewModel.ClassSobsT.Count.ToString();
-                textHeader.Text = "Таблица данных БААК12-200Т";
+                
 
             }
             if (d == 1)
@@ -2000,7 +2042,7 @@ d.Status = false;
                 List54.Visibility = Visibility.Collapsed;
                 DataGrid.ItemsSource = ViewModel.ClassSobsN;
                 colstroc.Text = ViewModel.ClassSobsN.Count.ToString();
-                textHeader.Text = "Таблица данных БААК12-200";
+             
             }
             if (d == 2)
             {
@@ -2022,7 +2064,7 @@ d.Status = false;
                 List54.Visibility = Visibility.Collapsed;
                 DataGrid.ItemsSource = ViewModel.ClassSobsV;
                 colstroc.Text = ViewModel.ClassSobsV.Count.ToString();
-                textHeader.Text = "Таблица данных БААК12-100";
+               
             }
             if (d == 3)
             {
@@ -2030,36 +2072,7 @@ d.Status = false;
             }
             if(d==4)
             {
-                try
-                {
-                    dataFirstTimeV.IsVisible = false;
-                    dataMaxTime.IsVisible = false;
-                    DataGrid.Visibility = Visibility.Collapsed;
-                    DataGrid1.Visibility = Visibility.Visible;
-                    datanV.IsVisible = false;
-
-
-
-
-
-
-
-
-
-
-                    int MaxDur = Convert.ToInt16(TimeGate.Text);
-                    int MaxAmpl = Convert.ToInt16(MinAmplDetect.Text);
-                    int MinClust = Convert.ToInt16(MinClustDec.Text);
-                  ObchSobURAN(MaxDur, MaxAmpl, MinClust);
-                    textHeader.Text = "Таблица данных общие";
-
-
-                }
-                catch(Exception ex)
-                {
-                    MessageDialog messageDialog = new MessageDialog(ex.ToString());
-                   await messageDialog.ShowAsync();
-                }
+              
 
 
             }
@@ -2069,6 +2082,7 @@ d.Status = false;
 
 
         }
+
         public async void ObchSobURAN(int MaxDur, int MaxAmpl, int MinClust)
         {
             try
@@ -2078,15 +2092,33 @@ d.Status = false;
 
              
                 int Clust = 0;
-              // ViewModel._DataColecSobCopy = new ObservableCollection<ClassSob>();
-              foreach(ClassSob classSob in ViewModel.ClassSobsT)
+                ObservableCollection<ClassSob> cla = new ObservableCollection<ClassSob>();
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    cla = ViewModel.ClassSobsT;
+});
+    // ViewModel._DataColecSobCopy = new ObservableCollection<ClassSob>();
+    foreach (ClassSob classSob in cla)
                 {
-                    ViewModel._DataColecSobCopy.Add(classSob);
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    ViewModel._DataColecSobCopy.Add(classSob);
+});
                 }
-              
 
 
-               while (ViewModel._DataColecSobCopy.Count!=0)
+
+               
+
+               
+
+
+
+
+               
+                while (ViewModel._DataColecSobCopy.Count!=0)
                 {
                     ClassSobColl classSobColl = new ClassSobColl();
                     ClassSob clF = ViewModel._DataColecSobCopy.ElementAt(0);
@@ -2095,32 +2127,52 @@ d.Status = false;
                     
                   if (ViewModel._DataColecSobCopy.Count != 0)
                   {
-                        int xr = 0;
+                        
                         for(int i=0; i< ViewModel._DataColecSobCopy.Count; i++)
                         {
                             ClassSob classSob = ViewModel._DataColecSobCopy.ElementAt(i);
-                            if (DateNanos.isEventSimul(clF.time, classSob.time, MaxDur))
+                            if (clF.nameklaster!=classSob.nameklaster)
                             {
-                                classSobColl.col.Add(classSob);
-                                ViewModel._DataColecSobCopy.RemoveAt(xr);
-                                i--;
 
+
+                                if (DateNanos.isEventSimul(clF.time, classSob.time, MaxDur))
+                                {
+                                    classSobColl.col.Add(classSob);
+                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+    () =>
+    {
+        ViewModel._DataColecSobCopy.RemoveAt(i);
+    });
+                                    i--;
+
+                                }
                             }
 
                         }
                         
                       
                   }
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    textOb.Text = ViewModel._DataColecSobCopy.Count.ToString();
+});
+
                  
-                   
-                   
-                   
+
+
+
                    classSobColl.SumAmpAndNeutronAndClaster();
                    classSobColl.StartTime = clF.time;
-                   ViewModel._DataSobColli.Add(classSobColl);
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    ViewModel._DataSobColli.Add(classSobColl);
+});
                    
 
                 }
+               
 
             }
 
@@ -2230,7 +2282,10 @@ d.Status = false;
         private async void Button_Click_7(object sender, RoutedEventArgs e)
         {
             DataPackage dataPackage = new DataPackage();
-            await OutputClipboardText();
+         
+
+        
+              await OutputClipboardText();
             colstroc.Text = ViewModel.ClassSobsT.Count().ToString();
             MessageDialog messageDialog = new MessageDialog("Данные вставлены!!!");
            await messageDialog.ShowAsync();
@@ -2260,5 +2315,31 @@ d.Status = false;
             }
 
         }
+        private ClassSob currentCheckedItem;
+        private void OnCheckBoxClick(object sender, RoutedEventArgs e)
+        {
+            var cb = (CheckBox)sender;
+            var newCheckedItem = (ClassSob)cb.DataContext;
+            if (cb.IsChecked.HasValue && cb.IsChecked.Value)
+            {
+                this.DataGrid.ShowRowDetailsForItem(newCheckedItem);
+            }
+            else
+            {
+                this.DataGrid.HideRowDetailsForItem(newCheckedItem);
+            }
+
+            if (currentCheckedItem != null)
+            {
+               // currentCheckedItem.HasRowDetails = false;
+            }
+           // currentCheckedItem = newCheckedItem;
+        }
+        private async void AppButton_Click_7(object sender, RoutedEventArgs e)
+        {
+            Split1.IsPaneOpen = !Split1.IsPaneOpen;
+        }
+       
+
     }
 }

@@ -125,6 +125,9 @@
     <Compile Include="BlankPageShowMap.xaml.cs">
       <DependentUpon>BlankPageShowMap.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BlankPageTemp.xaml.cs">
+      <DependentUpon>BlankPageTemp.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BlankPageZavisimost.xaml.cs">
       <DependentUpon>BlankPageZavisimost.xaml</DependentUpon>
     </Compile>
@@ -236,6 +239,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BlankPageShowMap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BlankPageTemp.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
