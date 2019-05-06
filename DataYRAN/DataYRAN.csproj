@@ -147,6 +147,7 @@
     <Compile Include="ClassSobObrZav.cs" />
     <Compile Include="ClassSobV.cs" />
     <Compile Include="ClassTabs.cs" />
+    <Compile Include="ClassTemp.cs" />
     <Compile Include="ClassUserSetUp.cs" />
     <Compile Include="ClassViewModal.cs" />
     <Compile Include="ClassСписокList.cs" />

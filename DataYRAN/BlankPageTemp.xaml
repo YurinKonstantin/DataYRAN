@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:telerikGrid="using:Telerik.UI.Xaml.Controls.Grid"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -16,33 +17,91 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <CommandBar Margin="56,8,0,0">
-            <AppBarButton Icon="Save" Label="Сохранить" />
+            <AppBarButton Icon="Save" Label="Сохранить" Click="AppBarButton"/>
             <AppBarButton Icon="Refresh" Label="Обновить" />
             <CommandBar.Content>
                 <Button VerticalAlignment="Top" HorizontalAlignment="Left"  Style="{StaticResource NavigationBackButtonNormalStyle}" Click="Button_Click"/>
             </CommandBar.Content>
         </CommandBar>
-        <telerikGrid:RadDataGrid Grid.Row="2" x:Name="DataGrid"  RowDetailsDisplayMode="Single" ItemsSource="{x:Bind ViewModel.ClassSobsT}" IncrementalLoadingMode="Explicit" UseLayoutRounding="True"  AutoGenerateColumns="False" VerticalAlignment="Stretch" UserSortMode="Multiple" CanUserChooseColumns="True"  UserFilterMode="Enabled" SelectionMode="Single" SelectionChanged="DataGrid_SelectionChanged" Margin="0,0,0,0">
-            <telerikGrid:RadDataGrid.Columns>
-               
-                <telerikGrid:DataGridTextColumn PropertyName="time" Header="Время"  Width="400"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp" Header="Общий темп"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp1" Header="Темп Д1" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp2" Header="Темп Д2" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp3" Header="Темп Д3" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp4" Header="Темп Д4" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp5" Header="Темп Д5" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp6" Header="Темп Д6" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp7" Header="Темп Д7" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp8" Header="Темп Д8" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp9" Header="Темп Д9" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp10" Header="Темп Д10" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp11" Header="Темп Д11" SizeMode="Fixed" Width="100"/>
-                <telerikGrid:DataGridTextColumn PropertyName="Temp12" Header="Темп Д12" SizeMode="Fixed" Width="100"/>
+        <Pivot  Grid.Row="2" Title="Темп счета">
+            <PivotItem Header="События">
+                <controls:DataGrid x:Name="EmployeeGrid" Grid.Row="2" 
+                  ItemsSource="{x:Bind DataColec}"
+                  AutoGenerateColumns="False" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollMode="Auto">
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Header="Date"
+                                             Binding="{Binding dateTime}"/>
+                        <controls:DataGridTextColumn Header="Temp"
+                                             Binding="{Binding colSob}"/>
+                        <controls:DataGridTextColumn Header="TempD"
+                                             Binding="{Binding Temp}"/>
+                        <controls:DataGridTextColumn Header="TempD1"
+                                             Binding="{Binding mTemp[0]}"/>
+                        <controls:DataGridTextColumn Header="TempD2"
+                                             Binding="{Binding mTemp[1]}"/>
+                        <controls:DataGridTextColumn Header="TempD3"
+                                             Binding="{Binding mTemp[2]}"/>
+                        <controls:DataGridTextColumn Header="TempD4"
+                                             Binding="{Binding mTemp[3]}"/>
+                        <controls:DataGridTextColumn Header="TempD5"
+                                             Binding="{Binding mTemp[4]}"/>
+                        <controls:DataGridTextColumn Header="TempD6"
+                                             Binding="{Binding mTemp[5]}"/>
+                        <controls:DataGridTextColumn Header="TempD7"
+                                             Binding="{Binding mTemp[6]}"/>
+                        <controls:DataGridTextColumn Header="TempD8"
+                                             Binding="{Binding mTemp[7]}"/>
+                        <controls:DataGridTextColumn Header="TempD9"
+                                             Binding="{Binding mTemp[8]}"/>
+                        <controls:DataGridTextColumn Header="TempD10"
+                                             Binding="{Binding mTemp[9]}"/>
+                        <controls:DataGridTextColumn Header="TempD11"
+                                             Binding="{Binding mTemp[10]}"/>
+                        <controls:DataGridTextColumn Header="TempD12"
+                                             Binding="{Binding mTemp[11]}"/>
 
-            </telerikGrid:RadDataGrid.Columns>
 
-        </telerikGrid:RadDataGrid>
-
+                    </controls:DataGrid.Columns>
+                </controls:DataGrid>
+            </PivotItem>
+            <PivotItem Header="Нейтроны">
+                <controls:DataGrid x:Name="NeutronGrid"
+                  ItemsSource="{x:Bind DataColecN}"
+                  AutoGenerateColumns="False">
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Header="Date"
+                                             Binding="{Binding dateTime}"/>
+                        <controls:DataGridTextColumn Header="Temp"
+                                             Binding="{Binding Temp}"/>
+                        <controls:DataGridTextColumn Header="TempD1"
+                                             Binding="{Binding mTemp[0]}"/>
+                        <controls:DataGridTextColumn Header="TempD2"
+                                             Binding="{Binding mTemp[1]}"/>
+                        <controls:DataGridTextColumn Header="TempD3"
+                                             Binding="{Binding mTemp[2]}"/>
+                        <controls:DataGridTextColumn Header="TempD4"
+                                             Binding="{Binding mTemp[3]}"/>
+                        <controls:DataGridTextColumn Header="TempD5"
+                                             Binding="{Binding mTemp[4]}"/>
+                        <controls:DataGridTextColumn Header="TempD6"
+                                             Binding="{Binding mTemp[5]}"/>
+                        <controls:DataGridTextColumn Header="TempD7"
+                                             Binding="{Binding mTemp[6]}"/>
+                        <controls:DataGridTextColumn Header="TempD8"
+                                             Binding="{Binding mTemp[7]}"/>
+                        <controls:DataGridTextColumn Header="TempD9"
+                                             Binding="{Binding mTemp[8]}"/>
+                        <controls:DataGridTextColumn Header="TempD10"
+                                             Binding="{Binding mTemp[9]}"/>
+                        <controls:DataGridTextColumn Header="TempD11"
+                                             Binding="{Binding mTemp[10]}"/>
+                        <controls:DataGridTextColumn Header="TempD12"
+                                             Binding="{Binding mTemp[11]}"/>
+                    </controls:DataGrid.Columns>
+                </controls:DataGrid>
+            </PivotItem>
+        </Pivot>
+      
+       
     </Grid>
 </Page>

@@ -2339,7 +2339,19 @@ d.Status = false;
         {
             Split1.IsPaneOpen = !Split1.IsPaneOpen;
         }
-       
+        private async void AppButTemp(object sender, RoutedEventArgs e)
+        {
+            IDataView currentView = this.DataGrid.GetDataView();
+            ObservableCollection<ClassSob> classSobs = new ObservableCollection<ClassSob>();
+            foreach(ClassSob classSob in currentView)
+            {
+                classSobs.Add(classSob);
+            }
+            MessageDialog messageDialog = new MessageDialog(classSobs.Count.ToString());
+            await messageDialog.ShowAsync();
+            this.Frame.Navigate(typeof(BlankPageTemp), classSobs);
+
+        }
 
     }
 }

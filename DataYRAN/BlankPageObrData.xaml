@@ -518,7 +518,7 @@
                             </controls:TabView.TabStartHeader>
                             <controls:TabView.TabEndHeader>
                                 <CommandBar Background="White">
-                                    <AppBarButton Label="Темп счета" Icon="Clock" />
+                                    <AppBarButton Label="Темп счета" Icon="Clock" Click="AppButTemp"/>
                                     <AppBarButton Icon="Pictures" Label="визуализация" Click="AppBarButtonMap_Click"/>
                                     <AppBarToggleButton Icon="OutlineStar" Label="Статистика" Click="AppBarToggleButton_Click_6"/>
                                     <AppBarToggleButton Label="Гистограмма" Click="AppBarToggleButton_Click_7">

@@ -65,5 +65,9 @@ namespace DataYRAN
         {
             return DD.ToString("00") + "." + HH.ToString("00") + "." + Min.ToString("00") + "." + CC.ToString("00") + "." + Mil.ToString("00") + "." + ML.ToString("00") + "." + NN.ToString("00");
         }
+        public string DateTimeString()
+        {
+            return GG.ToString("0000") + "." + MM.ToString("00") + "." + DD.ToString("00") + "." + HH.ToString("00") + "." + Min.ToString("00") + "." + CC.ToString("00") + "." + Mil.ToString("00") + "." + ML.ToString("00") + "." + NN.ToString("00");
+        }
     }
 }
