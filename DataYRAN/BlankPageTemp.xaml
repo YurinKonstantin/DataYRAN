@@ -16,7 +16,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <CommandBar Margin="56,8,0,0">
+        <CommandBar Margin="0,8,0,0">
             <AppBarButton Icon="Save" Label="Сохранить" Click="AppBarButton"/>
             <AppBarButton Icon="Refresh" Label="Обновить" />
             <CommandBar.Content>

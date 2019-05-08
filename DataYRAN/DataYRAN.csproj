@@ -160,6 +160,11 @@
     <Compile Include="Data.cs" />
     <Compile Include="DataTime.cs" />
     <Compile Include="DateNanos.cs" />
+    <Compile Include="LIfeTime\ClassFileLT.cs" />
+    <Compile Include="LIfeTime\ClassLifeTime.cs" />
+    <Compile Include="LIfeTime\LifeTime.xaml.cs">
+      <DependentUpon>LifeTime.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -256,6 +261,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ContentDialogMenedgerSave.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LIfeTime\LifeTime.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

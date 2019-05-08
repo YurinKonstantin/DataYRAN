@@ -62,63 +62,165 @@ namespace DataYRAN
                     try
                     {
 
-
                         foreach (string f in g)
                         {
-                            if (h > 0)
+                            string[] rows = f.Split("\t");
+                            if (rows.Length!=0 && !rows[0].Contains("n"))
                             {
-                                string[] stroc = f.Split("\t");
-                                _DataColecSob.Add(new ClassSob()
+                                //count = Convert.ToInt32(rows[0]);
+                                if (rows[1].Contains("T"))
                                 {
-                                    nameFile = stroc[1],
-                                    nameklaster = stroc[2],
-                                    nameBAAK = stroc[3],
-                                    time = stroc[4],
-                                  
-                                  /*  mAmp[0] = Convert.ToInt16(stroc[7]),
-                                    mAmp[1] = Convert.ToInt16(stroc[8]),
-                                    mAmp[2] = Convert.ToInt16(stroc[9]),
-                                    mAmp[3] = Convert.ToInt16(stroc[10]),
-                                    mAmp[4] = Convert.ToInt16(stroc[11]),
-                                    mAmp[5] = Convert.ToInt16(stroc[12]),
-                                    mAmp[6] = Convert.ToInt16(stroc[13]),
-                                    mAmp[7] = Convert.ToInt16(stroc[14]),
-                                    mAmp[8] = Convert.ToInt16(stroc[15]),
-                                    mAmp[9] = Convert.ToInt16(stroc[16]),
-                                    mAmp[10] = Convert.ToInt16(stroc[17]),
-                                    mAmp[11] = Convert.ToInt16(stroc[18]),
-                                    */
-                                  //  Nnut0 = Convert.ToInt16(stroc[19]),
-                                  //  Nnut1 = Convert.ToInt16(stroc[20]),
-                                  //  Nnut2 = Convert.ToInt16(stroc[21]),
-                                 //   Nnut3 = Convert.ToInt16(stroc[22]),
-                                 //   Nnut4 = Convert.ToInt16(stroc[23]),
-                                  //  Nnut5 = Convert.ToInt16(stroc[24]),
-                                  //  Nnut6 = Convert.ToInt16(stroc[25]),
-                                  //  Nnut7 = Convert.ToInt16(stroc[26]),
-                                  //  Nnut8 = Convert.ToInt16(stroc[27]),
-                                  //  Nnut9 = Convert.ToInt16(stroc[28]),
-                                  //  Nnut10 = Convert.ToInt16(stroc[29]),
-                                 //   Nnut11 = Convert.ToInt16(stroc[30]),
-                                    SumAmp = Convert.ToInt32(stroc[5]),
-                                    SumNeu = Convert.ToInt32(stroc[6]),
-                                  
+                                    int[] ii = new int[12];
+                                    ii[0] = Convert.ToInt16(rows[7]);
+                                    ii[1] = Convert.ToInt16(rows[8]);
+                                    ii[2] = Convert.ToInt16(rows[9]);
+                                    ii[3] = Convert.ToInt16(rows[10]);
+                                    ii[4] = Convert.ToInt16(rows[11]);
+                                    ii[5] = Convert.ToInt16(rows[12]);
+                                    ii[6] = Convert.ToInt16(rows[13]);
+                                    ii[7] = Convert.ToInt16(rows[14]);
+                                    ii[8] = Convert.ToInt16(rows[15]);
+                                    ii[9] = Convert.ToInt16(rows[16]);
+                                    ii[10] = Convert.ToInt16(rows[17]);
+                                    ii[11] = Convert.ToInt16(rows[18]);
+                                    int ic = 1;
+                                    List<ClassSobNeutron> ll = new List<ClassSobNeutron>();
+                                    for (int it = 19; it < 31; it++)
+                                    {
+                                        if (Convert.ToInt16(rows[it]) > 0)
+                                        {
+                                            for (int d = 0; d < Convert.ToInt16(rows[it]); d++)
+                                            {
+                                                ll.Add(new ClassSobNeutron() { D = ic, Amp = 0, TimeAmp = 0, TimeEnd = 0, TimeEnd3 = 0, TimeFirst = 0, TimeFirst3 = 0 });
 
 
-                                });
-                                x++;
+                                            }
+
+                                        }
+                                        ic++;
+
+                                    }
+
+                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+              () =>
+              {
+                  _DataColecSob.Add(new ClassSob()
+                  {
+                      nameFile = rows[1],
+                      nameklaster = rows[2],
+                      nameBAAK = rows[3],
+                      time = rows[4],
+                      mAmp = ii,
 
 
+                      classSobNeutronsList = ll,
+                      sig0 = Convert.ToDouble(rows[31].Replace(".", ",")),
+                      sig1 = Convert.ToDouble(rows[32].Replace(".", ",")),
+                      sig2 = Convert.ToDouble(rows[33].Replace(".", ",")),
+                      sig3 = Convert.ToDouble(rows[34].Replace(".", ",")),
+                      sig4 = Convert.ToDouble(rows[35].Replace(".", ",")),
+                      sig5 = Convert.ToDouble(rows[36].Replace(".", ",")),
+                      sig6 = Convert.ToDouble(rows[37].Replace(".", ",")),
+                      sig7 = Convert.ToDouble(rows[38].Replace(".", ",")),
+                      sig8 = Convert.ToDouble(rows[39].Replace(".", ",")),
+                      sig9 = Convert.ToDouble(rows[40].Replace(".", ",")),
+                      sig10 = Convert.ToDouble(rows[41].Replace(".", ",")),
+
+                      sig11 = Convert.ToDouble(rows[42].Replace(".", ",")),
+
+                      SumAmp = Convert.ToInt32(rows[5]),
+                  // SumNeu = Convert.ToInt16(rows[6]),
+
+                  Nnull0 = Convert.ToInt16(rows[43]),
+                      Nnull1 = Convert.ToInt16(rows[44]),
+                      Nnull2 = Convert.ToInt16(rows[45]),
+                      Nnull3 = Convert.ToInt16(rows[46]),
+                      Nnull4 = Convert.ToInt16(rows[47]),
+                      Nnull5 = Convert.ToInt16(rows[48]),
+                      Nnull6 = Convert.ToInt16(rows[49]),
+                      Nnull7 = Convert.ToInt16(rows[50]),
+                      Nnull8 = Convert.ToInt16(rows[51]),
+                      Nnull9 = Convert.ToInt16(rows[52]),
+                      Nnull10 = Convert.ToInt16(rows[53]),
+                      Nnull11 = Convert.ToInt16(rows[54])
+
+                  });
+
+
+              });
+
+                                }
+                                else
+                                {
+                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+              () =>
+              {
+                  _DataColecSob.Add(new ClassSob()
+                  {
+                      nameFile = rows[2],
+                      nameklaster = rows[4],
+                      nameBAAK = rows[3],
+                      time = rows[1],
+                  /* Amp0 = Convert.ToInt16(rows[7]),
+                   Amp1 = Convert.ToInt16(rows[8]),
+                   Amp2 = Convert.ToInt16(rows[9]),
+                   Amp3 = Convert.ToInt16(rows[10]),
+                   Amp4 = Convert.ToInt16(rows[11]),
+                   Amp5 = Convert.ToInt16(rows[12]),
+                   Amp6 = Convert.ToInt16(rows[13]),
+                   Amp7 = Convert.ToInt16(rows[14]),
+                   Amp8 = Convert.ToInt16(rows[15]),
+                   Amp9 = Convert.ToInt16(rows[16]),
+                   Amp10 = Convert.ToInt16(rows[17]),
+                   Amp11 = Convert.ToInt16(rows[18]),
+                   */
+                  // Nnut0 = Convert.ToInt16(rows[19]),
+                  // Nnut1 = Convert.ToInt16(rows[20]),
+                  //Nnut2 = Convert.ToInt16(rows[21]),
+                  // Nnut3 = Convert.ToInt16(rows[22]),
+                  // Nnut4 = Convert.ToInt16(rows[23]),
+                  // Nnut5 = Convert.ToInt16(rows[24]),
+                  // Nnut6 = Convert.ToInt16(rows[25]),
+                  //  Nnut7 = Convert.ToInt16(rows[26]),
+                  //  Nnut8 = Convert.ToInt16(rows[27]),
+                  //  Nnut9 = Convert.ToInt16(rows[28]),
+                  //  Nnut10 = Convert.ToInt16(rows[29]),
+                  //  Nnut11 = Convert.ToInt16(rows[30]),
+
+                  sig0 = Convert.ToDouble(rows[43]),
+                      sig1 = Convert.ToDouble(rows[44]),
+                      sig2 = Convert.ToDouble(rows[45]),
+                      sig3 = Convert.ToDouble(rows[46]),
+                      sig4 = Convert.ToDouble(rows[47]),
+                      sig5 = Convert.ToDouble(rows[48]),
+                      sig6 = Convert.ToDouble(rows[49]),
+                      sig7 = Convert.ToDouble(rows[50]),
+                      sig8 = Convert.ToDouble(rows[51]),
+                      sig9 = Convert.ToDouble(rows[52]),
+                      sig10 = Convert.ToDouble(rows[53]),
+                      sig11 = Convert.ToDouble(rows[54]),
+                      SumAmp = Convert.ToInt32(rows[5]),
+                      SumNeu = Convert.ToInt16(rows[6]),
+                      Nnull0 = Convert.ToInt16(rows[31]),
+                      Nnull1 = Convert.ToInt16(rows[32]),
+                      Nnull2 = Convert.ToInt16(rows[33]),
+                      Nnull3 = Convert.ToInt16(rows[34]),
+                      Nnull4 = Convert.ToInt16(rows[35]),
+                      Nnull5 = Convert.ToInt16(rows[36]),
+                      Nnull6 = Convert.ToInt16(rows[37]),
+                      Nnull7 = Convert.ToInt16(rows[38]),
+                      Nnull8 = Convert.ToInt16(rows[39]),
+                      Nnull9 = Convert.ToInt16(rows[40]),
+                      Nnull10 = Convert.ToInt16(rows[41]),
+                      Nnull11 = Convert.ToInt16(rows[42])
+                  });
+
+              });
+                                }
                             }
-                            else
-                            {
-                                h++;
-                                x++;
-                            }
-
-
 
                         }
+               
                     }
                     catch (Exception)
                     {
@@ -146,7 +248,7 @@ namespace DataYRAN
         {
             int porog = 10;
             int trig = 4;
-            int step = 400;
+            int step = 40;
             int g = 0;
             List<int> listsob = new List<int>();
             double sredN = 0;

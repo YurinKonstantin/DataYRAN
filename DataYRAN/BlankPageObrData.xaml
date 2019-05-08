@@ -12,6 +12,7 @@
       xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
       xmlns:telerik="using:Telerik.UI.Xaml.Controls.DataVisualization"
       xmlns:telerik1="using:Telerik.UI.Xaml.Controls.Primitives"
+      xmlns:Windows10version1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
       mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
@@ -274,8 +275,8 @@
 
         </Grid.RowDefinitions>
         
-        <my:Menu  Grid.ColumnSpan="2" Margin="68,0,0,0" UseLayoutRounding="True" Background="WhiteSmoke">
-            <my:MenuItem Name="FileMenu" my:Menu.InputGestureText="Alt+F" Header="Файл" ToolTipService.ToolTip="для быстрого доступа Alt+F">
+        <Windows10version1809:MenuBar  Grid.ColumnSpan="2"  UseLayoutRounding="True" Background="WhiteSmoke">
+            <MenuBarItem Name="FileMenu" my:Menu.InputGestureText="Alt+F" Title="Файл" ToolTipService.ToolTip="для быстрого доступа Alt+F">
                 <MenuFlyoutSubItem Text="Новый" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+N">
                     <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+N" Text="Проект" Click="ButtonMenu_NewProgect"/>
                     <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+N" Text="File" IsEnabled="False" />
@@ -296,9 +297,9 @@
                     <MenuFlyoutItem  Text="Ручной выбор" Click="AppBarButton_Click"/>
                     <MenuFlyoutItem  Text="Менеджер загрузки"  Click="Button_Click_4"/>
                 </MenuFlyoutSubItem>
-            </my:MenuItem>
+            </MenuBarItem>
 
-            <my:MenuItem Name="TabMenu" my:Menu.InputGestureText="Alt+F" Header="Таблица" ToolTipService.ToolTip="для быстрого доступа Alt+F">
+            <MenuBarItem  Name="TabMenu" my:Menu.InputGestureText="Alt+F" Title="Таблица" ToolTipService.ToolTip="для быстрого доступа Alt+F">
                 <MenuFlyoutSubItem Text="Новый" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+N">
                     <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+N" Text="Таблица" Click="MenuFlyoutItemTabNew_Click"/>
                 </MenuFlyoutSubItem>
@@ -323,8 +324,8 @@
                     <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+O" Text="БААК12-100" Click="{x:Bind ViewModel.ClearDataBAAK12_100}"/>
                     <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+O" Text="БААК12-200Т общие" Click="{x:Bind ViewModel.ClearDataBAAK12_200TAll}"/>
                 </MenuFlyoutSubItem>
-            </my:MenuItem>
-        </my:Menu>
+            </MenuBarItem>
+        </Windows10version1809:MenuBar>
         
         <StackPanel Grid.Row="1" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" UseLayoutRounding="True">
             <AppBarButton Icon="AllApps" Label="Список"  Foreground="Blue"  Click="AppBarButton_Click_9" />
@@ -412,7 +413,7 @@
                             <AppBarSeparator/>
                             <AppBarButton Icon="Mail" Label="Отладка" VerticalAlignment="Stretch" Click="AppBarButton_Click_8" >
                             </AppBarButton>
-                            <AppBarButton Icon="Cancel" Label="Стоп" VerticalAlignment="Stretch" >
+                            <AppBarButton Icon="Cancel" Label="Стоп" VerticalAlignment="Stretch" Click="AppBarButton_Click_Cansel">
                             </AppBarButton>
                             <AppBarButton Icon="Accept" Label="Старт" VerticalAlignment="Stretch" Click="AppBarButton_Click_5" Foreground="Green">
                             </AppBarButton>
@@ -3145,7 +3146,7 @@
                 <TextBlock Text=""/>
                 <TextBlock Text="Папка для добавления файлов"/>
                 <StackPanel Orientation="Horizontal">
-                    <TextBox Text="C:\" x:Name="PathAddFile"/>
+                    <TextBlock Text="C:\" x:Name="PathAddFile"/>
                     <Button Content="Путь" Click="Button_Click_5"/>
                 </StackPanel>
                 <TextBlock Margin="0,12,0,0" Text="Фильтр фалов"/>

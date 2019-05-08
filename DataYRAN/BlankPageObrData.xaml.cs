@@ -242,7 +242,7 @@ namespace DataYRAN
             }
             return v;
         }
-        private async void ZapicOcheredNaObrabotkyAsync(string nBaaK, int leng, string nameRan, List<ClassСписокList> listt)
+        private async void ZapicOcheredNaObrabotkyAsync(string nBaaK, int leng, string nameRan, List<ClassСписокList> listt, CancellationToken cancellationToken)
         {
 
             int ccc = 0;
@@ -255,7 +255,12 @@ namespace DataYRAN
             uint numBytesLoaded1 = 504648;
             foreach (ClassСписокList d in listt)
             {
-                
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Thread.Sleep(50);
+
+                    break;
+                }
                 //listDataAll = new List<byte>();
                 bool flagUserSetup = true;
                 //BasicProperties basicProperties;
@@ -318,7 +323,13 @@ namespace DataYRAN
                             int pac = 0;
                             while (!end)
                             {
-                                using (var inputStream = stream.GetInputStreamAt(kol * numBytesLoaded1))
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                Thread.Sleep(50);
+
+                                break;
+                            }
+                            using (var inputStream = stream.GetInputStreamAt(kol * numBytesLoaded1))
                                 {
 
                                     using (var dataReader = new Windows.Storage.Streams.DataReader(inputStream))
@@ -331,6 +342,12 @@ namespace DataYRAN
                                     }
                                     else
                                     {
+                                        if (cancellationToken.IsCancellationRequested)
+                                        {
+                                            Thread.Sleep(50);
+
+                                            break;
+                                        }
                                         byte[] dd = new byte[numBytesLoaded];
                                         dataReader.ReadBytes(dd);
                                         if (dd[numBytesLoaded - 1] == 0xFF && dd[numBytesLoaded - 2] == 0xFF && dd[numBytesLoaded - 3] == 0xFF && dd[numBytesLoaded - 4] == 0xFF)
@@ -342,7 +359,12 @@ namespace DataYRAN
                                                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
 {
-    d.StatusP = true;
+    d.StatusP = true; if (cancellationToken.IsCancellationRequested)
+    {
+        Thread.Sleep(50);
+
+        //break;
+    }
 });
                                                 Thread.Sleep(10000);
                                                 long totalMemory = GC.GetTotalMemory(false);
@@ -355,6 +377,12 @@ namespace DataYRAN
                                                 //Thread.Sleep(20000);
                                                 while (Count() > 500)
                                                 {
+                                                    if (cancellationToken.IsCancellationRequested)
+                                                    {
+                                                        Thread.Sleep(50);
+
+                                                        break;
+                                                    }
                                                     Thread.Sleep(5000);
                                                 }
                                                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
@@ -386,11 +414,22 @@ namespace DataYRAN
                                                
                                                 for (int i = 0; i < numBytesLoaded; i++)
                                             {
+                                                    if (cancellationToken.IsCancellationRequested)
+                                                    {
+                                                        Thread.Sleep(50);
 
-                                                int cc1 = Count();
+                                                        break;
+                                                    }
+                                                    int cc1 = Count();
                                                 if (cc1 > 1800)
                                                 {
-                                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                                                        if (cancellationToken.IsCancellationRequested)
+                                                        {
+                                                            Thread.Sleep(50);
+
+                                                            break;
+                                                        }
+                                                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
     () =>
     {
         d.StatusP = true;
@@ -406,7 +445,13 @@ namespace DataYRAN
                                                     //Thread.Sleep(20000);
                                                     while (Count() > 500)
                                                     {
-                                                        Thread.Sleep(5000);
+                                                            if (cancellationToken.IsCancellationRequested)
+                                                            {
+                                                                Thread.Sleep(50);
+
+                                                                break;
+                                                            }
+                                                            Thread.Sleep(5000);
                                                     }
                                                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
@@ -493,6 +538,12 @@ namespace DataYRAN
 {
 d.StatusP = true;
 });
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                Thread.Sleep(50);
+
+                                break;
+                            }
                             Thread.Sleep(10000);
                                 long totalMemory = GC.GetTotalMemory(false);
                                 GC.Collect();
@@ -504,6 +555,12 @@ d.StatusP = true;
                                 //Thread.Sleep(20000);
                                 while (Count() > 500)
                                 {
+                                if (cancellationToken.IsCancellationRequested)
+                                {
+                                    Thread.Sleep(50);
+
+                                    break;
+                                }
                                 Thread.Sleep(10000);
                                 }
                                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
@@ -527,6 +584,12 @@ d.StatusP = true;
                         int pac = 0;
                         for(int i=0; i< bb.Length; i++)
                         {
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                Thread.Sleep(50);
+
+                                break;
+                            }
                             byte b = bb[i];
                       
                             dataOnePac[tecpos] = b;
@@ -597,6 +660,10 @@ d.Status = false;
                            ExampleInAppNotification.Show(text, 3000);
                        });
         }
+        private void AppBarButton_Click_Cansel(object sender, RoutedEventArgs e)
+        {
+            cancellationTokenSource.Cancel();
+        }
         private async void AppBarButton_Click_5(object sender, RoutedEventArgs e)
         {
 
@@ -645,7 +712,7 @@ d.Status = false;
                    
                     FirstDiagnosticFile(l);
                             ViewModel.CountNaObrabZ = 0;
-                            Task.Run(() => ZapicOcheredNaObrabotkyAsync(Y, 1, "1", l));
+                            Task.Run(() => ZapicOcheredNaObrabotkyAsync(Y, 1, "1", l, cancellationToken));
                  //   MessageDialog messageDialog = new MessageDialog("dd");
                    // messageDialog.ShowAsync();
 
@@ -1264,18 +1331,8 @@ d.Status = false;
 
 
                         ClassSob classSob = (ClassSob)DataGrid.SelectedItem;
-                        MessageDialog messageDialog = new MessageDialog(classSob.dateUR.TimeString());
-                        await messageDialog.ShowAsync();
-                        if (poc)
-                        {
-                          //  this.DataGrid.ShowRowDetailsForItem(classSob);
-
-                        }
-                        else
-                        {
-                          //  this.DataGrid.HideRowDetailsForItem(classSob);
-                         
-                        }
+                      
+                     
                         
                        
                         List<ClassSob> classSobsL = new List<ClassSob>();
@@ -1292,9 +1349,7 @@ d.Status = false;
                 }
 
 
-                //  Split1.IsPaneOpen = true;
-
-                //classSobColl
+         
 
 
             }
@@ -2347,8 +2402,7 @@ d.Status = false;
             {
                 classSobs.Add(classSob);
             }
-            MessageDialog messageDialog = new MessageDialog(classSobs.Count.ToString());
-            await messageDialog.ShowAsync();
+        
             this.Frame.Navigate(typeof(BlankPageTemp), classSobs);
 
         }

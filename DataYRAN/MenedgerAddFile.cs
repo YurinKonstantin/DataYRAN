@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace DataYRAN
 {
@@ -17,23 +18,18 @@ namespace DataYRAN
             mySplitView.IsPaneOpen = true;
             if (storage != null)
             {
-                String sConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;";
-                // Application now has read/write access to all contents in the picked folder
-                // (including other sub-folder contents)
-
-
-
-
-
-
-
+                ContentDialog deleteFileDialog = new ContentDialog()
+                {
+                    Title = "Добавление файлов для обработки",
+                    Content = "Дождитесь закрытия этого окна."+"\n"+ "Идет процесс добавления файлов для обработки",
+                  
+                };
+                deleteFileDialog.ShowAsync();
+               // ContentDialogResult result = await deleteFileDialog.ShowAsync();
 
                 IReadOnlyList<StorageFile> fileList = await storage.GetFilesAsync();
 
-                // Print the month and number of files in this group.
-                //  //outputText.AppendLine(folder.Name + " (" + fileList.Count + ")");
-                //  var messageDialog = new MessageDialog(folder1.Name + " (" + fileList.Count + ")");
-                //  await messageDialog.ShowAsync();
+             
 
                 foreach (StorageFile file in fileList)
                 {
@@ -48,6 +44,7 @@ namespace DataYRAN
                                
                                 // Application now has read/write access to the picked file
                                 ViewModel.AddFile(new ClassСписокList {  Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
+                                deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" +"Файл "+ file.DisplayName + " добавлен";
 
                             }
                             else
@@ -56,7 +53,15 @@ namespace DataYRAN
                                 string sNew = String.Empty;
                                 if(s.Length==2)
                                 {
-                                    sNew = s[0].Split("№")[1];
+                                    if(s[0].Contains("№"))
+                                    {
+                                        sNew = s[0].Split("№")[1];
+                                    }
+                                    else
+                                    {
+                                        sNew = s[0];
+                                    }
+                                    
                                 }
                                 else
                                 {
@@ -67,43 +72,43 @@ namespace DataYRAN
                                     
                                     // Application now has read/write access to the picked file
                                     ViewModel.AddFile(new ClassСписокList { Status = false, file1 = file,  StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
+                                    deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
 
-                                  
                                 }
                                 if (sNew == "2" && Chkl2.IsChecked == true)
                                 {
                                    
                                     // Application now has read/write access to the picked file
                                     ViewModel.AddFile(new ClassСписокList {  Status = false, file1 = file, StatusSize = 0, basicProperties= await file.GetBasicPropertiesAsync() });
-
+                                    deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                 }
                                 if (sNew == "3" && Chkl3.IsChecked == true)
                                 {
                                  
                                     // Application now has read/write access to the picked file
                                     ViewModel.AddFile(new ClassСписокList {   Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
-
+                                    deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                 }
                                 if (sNew == "4" && Chkl4.IsChecked == true)
                                 {
                                    
                                     // Application now has read/write access to the picked file
                                     ViewModel.AddFile(new ClassСписокList {  Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
-
+                                    deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                 }
                                 if (sNew == "5" && Chkl5.IsChecked == true)
                                 {
                                   
                                     // Application now has read/write access to the picked file
                                     ViewModel.AddFile(new ClassСписокList {Status = false, file1 = file,  StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
-
+                                    deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                 }
                                 if (sNew == "6" && Chkl6.IsChecked == true)
                                 {
                                    
                                     // Application now has read/write access to the picked file
                                     ViewModel.AddFile(new ClassСписокList { Status = false, file1 = file,  StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
-
+                                    deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                 }
 
 
@@ -131,7 +136,7 @@ namespace DataYRAN
                                   
                                     // Application now has read/write access to the picked file
                                     ViewModel.AddFile(new ClassСписокList {  Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
-
+                                    deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                 }
                                 else
                                 {
@@ -139,7 +144,15 @@ namespace DataYRAN
                                     string sNew = String.Empty;
                                     if (s.Length == 2)
                                     {
-                                        sNew = s[0].Split("№")[1];
+                                       
+                                        if (s[0].Contains("№"))
+                                        {
+                                            sNew = s[0].Split("№")[1];
+                                        }
+                                        else
+                                        {
+                                            sNew = s[0];
+                                        }
                                     }
                                     else
                                     {
@@ -150,43 +163,43 @@ namespace DataYRAN
                                       
                                         // Application now has read/write access to the picked file
                                         ViewModel.AddFile(new ClassСписокList {  Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
-
+                                        deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                     }
                                     if (sNew == "2" && Chkl2.IsChecked == true)
                                     {
                                        
                                         // Application now has read/write access to the picked file
                                         ViewModel.AddFile(new ClassСписокList {  Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
-
+                                        deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                     }
                                     if (sNew == "3" && Chkl3.IsChecked == true)
                                     {
                                         
                                         // Application now has read/write access to the picked file
                                         ViewModel.AddFile(new ClassСписокList {  Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
-
+                                        deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                     }
                                     if (sNew == "4" && Chkl4.IsChecked == true)
                                     {
                                        
                                         // Application now has read/write access to the picked file
                                         ViewModel.AddFile(new ClassСписокList {  Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
+                                        deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
 
-                                       
                                     }
                                     if (sNew == "5" && Chkl5.IsChecked == true)
                                     {
                                         
                                         // Application now has read/write access to the picked file
                                         ViewModel.AddFile(new ClassСписокList {  Status = false, file1 = file, StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
-
+                                        deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                     }
                                     if (sNew == "6" && Chkl6.IsChecked == true)
                                     {
                                       
                                         // Application now has read/write access to the picked file
                                         ViewModel.AddFile(new ClassСписокList {  Status = false, file1 = file,  StatusSize = 0, basicProperties = await file.GetBasicPropertiesAsync() });
-
+                                        deleteFileDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс добавления файлов для обработки" + "\n" + "Файл " + file.DisplayName + " добавлен";
                                     }
 
 
@@ -203,7 +216,9 @@ namespace DataYRAN
                         // outputText.AppendLine("   " + file.Name);
                     }
                 }
-
+                deleteFileDialog.Content = "Добавление файлов завершено";
+                System.Threading.Thread.Sleep(2000);
+                deleteFileDialog.Hide();
                 gridMenedgerAddFile.Visibility = Visibility.Collapsed;
 
                 // var messageDialog = new MessageDialog(folder.Name);
