@@ -137,6 +137,7 @@
     <Compile Include="ClassBDMan2.cs" />
     <Compile Include="ClassGraf.cs" />
     <Compile Include="ClassNevod-EAS.cs" />
+    <Compile Include="ClassPList.cs" />
     <Compile Include="ClassProject.cs" />
     <Compile Include="ClassRazvertka.cs" />
     <Compile Include="ClassSaveSetUp.cs" />
@@ -178,6 +179,19 @@
     <Compile Include="SetUpUser.xaml.cs">
       <DependentUpon>SetUpUser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StatObrabotka\StatNulLine\ClassRasNul.cs" />
+    <Compile Include="StatObrabotka\StatNulLine\NullLine.cs" />
+    <Compile Include="StatObrabotka\StatNulLine\PageStatNullLine.xaml.cs">
+      <DependentUpon>PageStatNullLine.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StatObrabotka\statObcTemp\PageStatSobTemp.xaml.cs">
+      <DependentUpon>PageStatSobTemp.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StatObrabotka\StatSig\ClassRasSig.cs" />
+    <Compile Include="StatObrabotka\StatSig\PageStatSig.xaml.cs">
+      <DependentUpon>PageStatSig.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StatObrabotka\StatSig\SigLine.cs" />
     <Compile Include="TelerikStringLoader.cs" />
     <Compile Include="ViewShovMaps.cs" />
     <Compile Include="ОбработкаСобытийИзОчереди.cs" />
@@ -284,6 +298,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="StatObrabotka\StatNulLine\PageStatNullLine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StatObrabotka\statObcTemp\PageStatSobTemp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StatObrabotka\StatSig\PageStatSig.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LiveCharts.Uwp">
@@ -317,6 +343,7 @@
       <HintPath>..\..\..\..\Users\yurin\source\repos\ObrabotcaURAN\ObrabotcaURAN\bin\Release\netstandard2.0\ObrabotcaURAN.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

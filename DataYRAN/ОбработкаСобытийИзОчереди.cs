@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage.FileProperties;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 
@@ -42,19 +43,16 @@ namespace DataYRAN
                         }
                         break;
                     }
-                try
-                {
+               
+                
 
                     if(OcherediNaObrab.Count > 0)
                     {
                         await Obr(classUserSetUp);
                     }
                    
-                }
-                catch(Exception ex)
-                {
-
-                }
+                
+               
                 }
             
           
@@ -75,7 +73,7 @@ namespace DataYRAN
             for (int i = 0; i < 12; i++)
             {
 
-                if (sig[i] < 2)
+                if (sig[i] <= 1)
                 {
                     Nu = Convert.ToInt32(masnul[i]);
                     AmpOtbora1 = AmpOtbora + Nu;
@@ -193,13 +191,12 @@ namespace DataYRAN
         public async Task Obr(ClassUserSetUp classUserSetUp)
         {
            
-                if (OcherediNaObrab.Count > 0)
-                {
+               
 
 
                     string time1 = String.Empty;
                     OcherediNaObrab.TryDequeue(out MyclasDataizFile ObrD);
-                    if (ObrD != null)
+                  //  if (ObrD != null)
                     {
 
 
@@ -349,7 +346,7 @@ namespace DataYRAN
 
                     }
 
-                }
+                
 
             
           
@@ -368,8 +365,7 @@ namespace DataYRAN
             List<ClassSobNeutron> cll = new List<ClassSobNeutron>();
 
 
-            try
-            {
+           
                
                      ParserBAAK12.ParseBinFileBAAK12.MaxAmpAndNul(data1, ref sig, ref Amp, ref Nul, ref bad, ClassUserSetUp.ObrNoise, ClassUserSetUp.KoefNoise, classUserSetUp.PorogS);
             
@@ -381,12 +377,9 @@ namespace DataYRAN
                     timeS = ParserBAAK12.ParseBinFileBAAK12.TimeS(data1, classUserSetUp.PorogS, Amp, Nul);
                 }
              
-            }
+            
 
-            catch (Exception ex)
-            {
-
-            }
+           
            
             string[] array = nameFile.Split('_');
             string nameFileNew = String.Empty;
@@ -426,31 +419,8 @@ namespace DataYRAN
              time = dataTimeUR.TimeString(),
              mAmp=Amp,
          dateUR=dataTimeUR,
-             /*Amp0 = Convert.ToInt16(Amp[0]),
-             Amp1 = Convert.ToInt16(Amp[1]),
-             Amp2 = Convert.ToInt16(Amp[2]),
-             Amp3 = Convert.ToInt16(Amp[3]),
-             Amp4 = Convert.ToInt16(Amp[4]),
-             Amp5 = Convert.ToInt16(Amp[5]),
-             Amp6 = Convert.ToInt16(Amp[6]),
-             Amp7 = Convert.ToInt16(Amp[7]),
-             Amp8 = Convert.ToInt16(Amp[8]),
-             Amp9 = Convert.ToInt16(Amp[9]),
-             Amp10 = Convert.ToInt16(Amp[10]),
-             Amp11 = Convert.ToInt16(Amp[11]),
-             */
-             //Nnut0 = Convert.ToInt16(coutN1[0]),
-             //Nnut1 = Convert.ToInt16(coutN1[1]),
-            // Nnut2 = Convert.ToInt16(coutN1[2]),
-            // Nnut3 = Convert.ToInt16(coutN1[3]),
-             //Nnut4 = Convert.ToInt16(coutN1[4]),
-             //Nnut5 = Convert.ToInt16(coutN1[5]),
-           //  Nnut6 = Convert.ToInt16(coutN1[6]),
-            // Nnut7 = Convert.ToInt16(coutN1[7]),
-            // Nnut8 = Convert.ToInt16(coutN1[8]),
-           //  Nnut9 = Convert.ToInt16(coutN1[9]),
-            // Nnut10 = Convert.ToInt16(coutN1[10]),
-            // Nnut11 = Convert.ToInt16(coutN1[11]),
+           
+            
              TimeS0 = timeS[0].ToString(),
              TimeS1 = timeS[1].ToString(),
              TimeS2 = timeS[2].ToString(),
@@ -476,8 +446,7 @@ namespace DataYRAN
              sig9 = sig[9],
              sig10 = sig[10],
              sig11 = sig[11],
-            // SumAmp = Convert.ToInt32(Amp.Sum()),
-             //SumNeu = coutN1.Sum(),
+            
              Nnull0 = Convert.ToInt16(Nul[0]),
              Nnull1 = Convert.ToInt16(Nul[1]),
              Nnull2 = Convert.ToInt16(Nul[2]),
@@ -967,5 +936,431 @@ namespace DataYRAN
 
 
         }
+
+
+
+        /*Загрузка файлов и выбор файлов*/
+        /// <summary>
+        /// Загружает пакеты из файлов в очередб на обработку
+        /// </summary>
+        /// <param name="nBaaK"></param>
+        /// <param name="leng"></param>
+        /// <param name="nameRan"></param>
+        /// <param name="listt"></param>
+        /// <param name="cancellationToken"></param>
+        private async void ZapicOcheredNaObrabotkyAsync(string nBaaK, int leng, string nameRan, List<ClassСписокList> listt, CancellationToken cancellationToken)
+        {
+
+            int ccc = 0;
+            int[] masNul = new int[12];
+            for (int i = 0; i < 12; i++)
+            {
+                masNul[i] = 2058;
+            }
+            uint numBytesLoaded = 1024;
+            uint numBytesLoaded1 = 504648;
+            BasicProperties basicProperties;
+            foreach (ClassСписокList d in listt)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Thread.Sleep(50);
+
+                    break;
+                }
+                //listDataAll = new List<byte>();
+                bool flagUserSetup = true;
+
+
+                try
+                {
+                    basicProperties = await d.file1.GetBasicPropertiesAsync();
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+async () =>
+{
+
+    if (basicProperties.Size > 136000000)
+    {
+        flagUserSetup = true;
+    }
+    else
+    {
+        flagUserSetup = false;
+    }
+});
+
+
+                }
+                catch (Exception ex)
+                {
+                    flagUserSetup = true;
+
+                }
+
+
+                string tipN = "T";
+                // tipN = d.file1.DisplayName.Split('_')[2];
+                string[] tipParser = d.file1.DisplayName.Split('_');
+                if (tipParser.Length > 2)
+                {
+                    tipN = tipParser[2];
+                }
+                else
+                {
+
+                }
+
+
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d.Status = true;
+});
+                //    break;
+                //   }
+                // }
+                if (flagUserSetup)
+                {
+                    try
+                    {
+                        var stream = await d.file1.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                        //  ulong size = stream.Size;
+
+                        bool end = false;
+                        uint kol = 0;
+                        List<byte> dataOnePac = new List<byte>();
+
+                        int tecpos = 0;
+                        int countFlagEnt = 0;
+                        int pac = 0;
+                        while (!end)
+                        {
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                Thread.Sleep(50);
+
+                                break;
+                            }
+                            using (var inputStream = stream.GetInputStreamAt(kol * numBytesLoaded1))
+                            {
+
+                                using (var dataReader = new Windows.Storage.Streams.DataReader(inputStream))
+                                {
+                                    numBytesLoaded = await dataReader.LoadAsync(numBytesLoaded1);
+                                    if (numBytesLoaded < numBytesLoaded1 || numBytesLoaded == 0)
+                                    {
+
+                                        end = true;
+                                    }
+                                    else
+                                    {
+                                        if (cancellationToken.IsCancellationRequested)
+                                        {
+                                            Thread.Sleep(50);
+
+                                            break;
+                                        }
+                                        byte[] dd = new byte[numBytesLoaded];
+                                        dataReader.ReadBytes(dd);
+                                        if (dd[numBytesLoaded - 1] == 0xFF && dd[numBytesLoaded - 2] == 0xFF && dd[numBytesLoaded - 3] == 0xFF && dd[numBytesLoaded - 4] == 0xFF)
+                                        {
+
+                                            int cc1 = Count();
+                                            if (cc1 > 1800)
+                                            {
+                                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d.StatusP = true; if (cancellationToken.IsCancellationRequested)
+    {
+        Thread.Sleep(50);
+
+        //break;
+    }
+});
+                                                Thread.Sleep(10000);
+                                                long totalMemory = GC.GetTotalMemory(false);
+                                                GC.Collect();
+                                                GC.WaitForPendingFinalizers();
+                                                // for(int f=0; f<10000; f++)
+                                                //  {
+                                                //      int xx = 0;
+                                                //  }
+                                                //Thread.Sleep(20000);
+                                                while (Count() > 500)
+                                                {
+                                                    if (cancellationToken.IsCancellationRequested)
+                                                    {
+                                                        Thread.Sleep(50);
+
+                                                        break;
+                                                    }
+                                                    Thread.Sleep(5000);
+                                                }
+                                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d.StatusP = true;
+});
+                                            }
+                                            OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dd, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName = tipN });
+                                            pac++;
+
+                                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => { d.StatusSize += (ulong)dd.Length; ViewModel.CountNaObrabZ++; });
+
+
+                                        }
+
+                                        else
+                                        {
+
+
+                                            if ((dd[numBytesLoaded - 1] == 0xFE && dd[numBytesLoaded - 2] == 0xFE && dd[numBytesLoaded - 3] == 0xFE && dd[numBytesLoaded - 4] == 0xFE) || (numBytesLoaded > 502640 && numBytesLoaded < 504648))
+                                            {
+
+                                            }
+
+                                            else
+                                            {
+
+
+                                                for (int i = 0; i < numBytesLoaded; i++)
+                                                {
+                                                    if (cancellationToken.IsCancellationRequested)
+                                                    {
+                                                        Thread.Sleep(50);
+
+                                                        break;
+                                                    }
+                                                    int cc1 = Count();
+                                                    if (cc1 > 1800)
+                                                    {
+                                                        if (cancellationToken.IsCancellationRequested)
+                                                        {
+                                                            Thread.Sleep(50);
+
+                                                            break;
+                                                        }
+                                                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+    () =>
+    {
+        d.StatusP = true;
+    });
+                                                        Thread.Sleep(10000);
+                                                        long totalMemory = GC.GetTotalMemory(false);
+                                                        GC.Collect();
+                                                        GC.WaitForPendingFinalizers();
+                                                        // for(int f=0; f<10000; f++)
+                                                        //  {
+                                                        //      int xx = 0;
+                                                        //  }
+                                                        //Thread.Sleep(20000);
+                                                        while (Count() > 500)
+                                                        {
+                                                            if (cancellationToken.IsCancellationRequested)
+                                                            {
+                                                                Thread.Sleep(50);
+
+                                                                break;
+                                                            }
+                                                            Thread.Sleep(5000);
+                                                        }
+                                                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+    () =>
+    {
+        d.StatusP = true;
+    });
+                                                    }
+
+
+
+                                                    var b = dd[i];
+
+                                                    dataOnePac.Add(b);
+                                                    tecpos++;
+                                                    if (b == 0xFF)
+                                                    {
+                                                        countFlagEnt++;
+                                                        if (countFlagEnt == 4)
+                                                        {
+                                                            Debug.WriteLine(numBytesLoaded.ToString() + "\t" + tecpos);
+                                                            if (tecpos > 502640 && tecpos < 504648)
+                                                            {
+                                                                //Debug.WriteLine(numBytesLoaded.ToString() + "\t" + "ggg");
+                                                                dataOnePac = null;
+                                                            }
+                                                            else
+                                                            {
+
+                                                                //Debug.WriteLine(numBytesLoaded.ToString() + "\t" + "g11gg");
+                                                                OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dataOnePac.ToArray(), LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName = tipN });
+                                                            }
+                                                            pac++;
+
+                                                            dataOnePac = new List<byte>();
+                                                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+        () =>
+        {
+            d.StatusSize += 504648;
+            ViewModel.CountNaObrabZ++;
+        });
+                                                            //Thread.Sleep(1000);
+                                                            countFlagEnt = 0;
+                                                            tecpos = 0;
+
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        countFlagEnt = 0;
+                                                    }
+
+                                                }
+
+                                            }
+
+
+
+                                        }
+                                    }
+
+                                }
+                            }
+                            kol++;
+                        }
+                        stream.Dispose();
+                    }
+                    catch
+                    {
+                        // var  messageDialog = new MessageDialog("ошибка открытия файла" + d.file1.Path +"   ");
+                        // await messageDialog.ShowAsync();
+                    }
+
+
+                }
+                else
+                {
+                    try
+                    {
+
+                        if (Count() > 1800)
+                        {
+                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+d.StatusP = true;
+});
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                Thread.Sleep(50);
+
+                                break;
+                            }
+                            Thread.Sleep(10000);
+                            long totalMemory = GC.GetTotalMemory(false);
+                            GC.Collect();
+                            GC.WaitForPendingFinalizers();
+                            // for(int f=0; f<10000; f++)
+                            //  {
+                            //      int xx = 0;
+                            //  }
+                            //Thread.Sleep(20000);
+                            while (Count() > 500)
+                            {
+                                if (cancellationToken.IsCancellationRequested)
+                                {
+                                    Thread.Sleep(50);
+
+                                    break;
+                                }
+                                Thread.Sleep(10000);
+                            }
+                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+d.StatusP = true;
+});
+                        }
+
+
+
+                        byte[] bb = (await Windows.Storage.FileIO.ReadBufferAsync(d.file1)).ToArray();
+
+
+
+
+                        byte[] dataOnePac = new byte[504648];
+
+                        int tecpos = 0;
+                        int countFlagEnt = 0;
+                        int pac = 0;
+                        for (int i = 0; i < bb.Length; i++)
+                        {
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                Thread.Sleep(50);
+
+                                break;
+                            }
+                            byte b = bb[i];
+
+                            dataOnePac[tecpos] = b;
+                            tecpos++;
+                            if (b == 0xFF)
+                            {
+                                countFlagEnt++;
+                                if (countFlagEnt == 4)
+                                {
+
+                                    OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dataOnePac, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName = tipN });
+                                    pac++;
+
+                                    dataOnePac = new Byte[504648];
+                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d.StatusSize += 504648;
+    ViewModel.CountNaObrabZ++;
+});
+                                    //Thread.Sleep(1000);
+                                    countFlagEnt = 0;
+                                    tecpos = 0;
+                                }
+                            }
+                            else
+                            {
+                                countFlagEnt = 0;
+                            }
+
+                        }
+
+
+
+                    }
+                    catch
+                    {
+                        // var  messageDialog = new MessageDialog("ошибка открытия файла" + d.file1.Path +"   ");
+                        // await messageDialog.ShowAsync();
+                    }
+
+                }
+
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+    d.Status = false;
+});
+            }
+
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Cancel();
+
+
+            }
+
+
+        }
+
     }
 }

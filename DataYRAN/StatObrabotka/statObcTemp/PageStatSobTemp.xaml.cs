@@ -19,28 +19,28 @@ using Windows.UI.Xaml.Navigation;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace DataYRAN
+namespace DataYRAN.StatObrabotka.statObcTemp
 {
     /// <summary>
     /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
     /// </summary>
-    public sealed partial class BlankPageTemp : Page
+    public sealed partial class PageStatSobTemp : Page
     {
-        public BlankPageTemp()
+        public PageStatSobTemp()
         {
             this.InitializeComponent();
         }
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
 
-            
-            if (e.Parameter is ObservableCollection<ClassSob>)
+
+            if (e.Parameter is ObservableCollection<ClassSobColl>)
             {
-               
 
-                ObservableCollection<ClassSob> classRazvertka = e.Parameter as ObservableCollection<ClassSob>;
 
-              await Temp(classRazvertka, 1);
+                ObservableCollection<ClassSobColl> classRazvertka = e.Parameter as ObservableCollection<ClassSobColl>;
+
+                await Temp(classRazvertka, 1);
 
 
 
@@ -49,14 +49,14 @@ namespace DataYRAN
             }
             else
             {
-               
+
             }
 
             base.OnNavigatedTo(e);
         }
-        public async Task Temp(ObservableCollection<ClassSob> classRazvertka1, int cloc)
+        public async Task Temp(ObservableCollection<ClassSobColl> classRazvertka1, int cloc)
         {
-           
+
             var orderedNumbers = from ClassSob in classRazvertka1
                                  orderby ClassSob.dateUR.DateTimeString()
                                  select ClassSob;
@@ -64,7 +64,7 @@ namespace DataYRAN
             DateTime dateTimeFirst = new DateTime(orderedNumbers.ElementAt(0).dateUR.GG, orderedNumbers.ElementAt(0).dateUR.MM, orderedNumbers.ElementAt(0).dateUR.DD, orderedNumbers.ElementAt(0).dateUR.HH, 0, 0, 0);
 
             DateTime dateTime1 = dateTime; //new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, 0, 0);
-            DateTime dateTimeEnd = new DateTime(orderedNumbers.ElementAt(orderedNumbers.Count()-1).dateUR.GG, orderedNumbers.ElementAt(orderedNumbers.Count() - 1).dateUR.MM, orderedNumbers.ElementAt(orderedNumbers.Count() - 1).dateUR.DD, orderedNumbers.ElementAt(orderedNumbers.Count() - 1).dateUR.HH, 0, 0, 0);
+            DateTime dateTimeEnd = new DateTime(orderedNumbers.ElementAt(orderedNumbers.Count() - 1).dateUR.GG, orderedNumbers.ElementAt(orderedNumbers.Count() - 1).dateUR.MM, orderedNumbers.ElementAt(orderedNumbers.Count() - 1).dateUR.DD, orderedNumbers.ElementAt(orderedNumbers.Count() - 1).dateUR.HH, 0, 0, 0);
 
             dateTime1 = dateTime1.AddHours(cloc);
             int col = 0;
@@ -72,12 +72,12 @@ namespace DataYRAN
             int[] masN = new int[12];
             for (int i = 0; i <= dateTimeEnd.Subtract(dateTimeFirst).TotalHours; i++)
             {
-              
-              
+
+
                 foreach (ClassSob classSob in orderedNumbers)
                 {
                     DateTime dateTimeTec = new DateTime(classSob.dateUR.GG, classSob.dateUR.MM, classSob.dateUR.DD, classSob.dateUR.HH, classSob.dateUR.Min, classSob.dateUR.CC, 0);
-                    
+
                     if (dateTimeTec.Subtract(dateTime).TotalHours >= 0 && dateTimeTec.Subtract(dateTime).TotalHours < cloc)
                     {
                         for (int ii = 0; ii < 12; ii++)
@@ -109,13 +109,13 @@ namespace DataYRAN
     DataColec.Add(new ClassTemp() { dateTime = dateTime, mTemp = mas, colSob = col });
     DataColecN.Add(new ClassTemp() { dateTime = dateTime, mTemp = masN });
 });
-                
+
                 col = 0;
                 mas = new int[12];
                 masN = new int[12];
                 dateTime = dateTime1;
                 dateTime1 = dateTime1.AddHours(cloc);
-           
+
             }
 
             MessageDialog messageDialog = new MessageDialog("Конец");
@@ -136,7 +136,7 @@ namespace DataYRAN
             set
             {
                 _DataColec = value;
-             
+
             }
         }
 
@@ -156,7 +156,7 @@ namespace DataYRAN
 
         private async void AppBarButton(object sender, RoutedEventArgs e)
         {
-           
+
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
             folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
             folderPicker.FileTypeFilter.Add("*");
@@ -166,22 +166,22 @@ namespace DataYRAN
             {
 
 
-              
+
                 if (DataColec.Count != 0)
                 {
                     using (StreamWriter writer =
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
                    "TempSob" + "." + "txt", CreationCollisionOption.GenerateUniqueName)))
                     {
-                        string sSob = "DateTime"  + "\t" + "SobTemp" + "\t" + "SumDTemp"  + "\t" + "TempD1" + "\t" + "TempD2" + "\t" + "TempD3" + "\t" + "TempD4" + "\t" + "TempD5" + "\t" + "TempD6" + "\t" + "TempD7"
+                        string sSob = "DateTime" + "\t" + "SobTemp" + "\t" + "SumDTemp" + "\t" + "TempD1" + "\t" + "TempD2" + "\t" + "TempD3" + "\t" + "TempD4" + "\t" + "TempD5" + "\t" + "TempD6" + "\t" + "TempD7"
                             + "\t" + "TempD8" + "\t" + "TempD9" + "\t" + "TempD10" + "\t" + "TempD11" + "\t" + "TempD12";
 
 
                         await writer.WriteLineAsync(sSob);
                         foreach (ClassTemp sob in DataColec)
                         {
-                           
-                            string Sob = sob.dateTime.ToString() + "\t" + sob.colSob.ToString() + "\t" + sob.Temp.ToString()+ "\t" + sob.mTemp[0].ToString() + "\t" + sob.mTemp[1].ToString() + "\t" +
+
+                            string Sob = sob.dateTime.ToString() + "\t" + sob.colSob.ToString() + "\t" + sob.Temp.ToString() + "\t" + sob.mTemp[0].ToString() + "\t" + sob.mTemp[1].ToString() + "\t" +
                             sob.mTemp[2].ToString() + "\t" + sob.mTemp[3].ToString() + "\t" + sob.mTemp[4].ToString() + "\t" + sob.mTemp[5].ToString() + "\t" + sob.mTemp[6].ToString() + "\t" + sob.mTemp[7].ToString() +
                             "\t" + sob.mTemp[8].ToString() + "\t" + sob.mTemp[9].ToString() + "\t" + sob.mTemp[10].ToString() + "\t" + sob.mTemp[11].ToString();
                             await writer.WriteLineAsync(Sob);
@@ -211,7 +211,7 @@ namespace DataYRAN
                 }
 
                 MessageDialog messageDialog = new MessageDialog("Темп сохранен");
-               await messageDialog.ShowAsync();
+                await messageDialog.ShowAsync();
 
             }
             else

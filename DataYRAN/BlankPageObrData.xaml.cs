@@ -41,6 +41,10 @@ using Windows.Storage.FileProperties;
 using System.Data;
 using System.Runtime.InteropServices.ComTypes;
 using Windows.ApplicationModel.ExtendedExecution;
+using DataYRAN.StatObrabotka.StatNulLine;
+using DataYRAN.StatObrabotka.StatSig;
+using Microsoft.Toolkit.Uwp.UI.Controls;
+using DataYRAN.StatObrabotka.statObcTemp;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -82,14 +86,10 @@ namespace DataYRAN
 
             }
 
-            // Specify a known location.
-            BasicGeoposition cityPosition = new BasicGeoposition() { Latitude = 55.6512013566365, Longitude = 37.6681702130651 };
-            Geopoint cityCenter = new Geopoint(cityPosition);
+      
 
-            // Set the map location.
-            MapControl1.Center = cityCenter;
-            MapControl1.ZoomLevel = 20;
-            MapControl1.LandmarksVisible = true;
+            
+       
             base.OnNavigatedTo(e);
         }
         public async void NavigateToFilePage1()
@@ -154,7 +154,7 @@ namespace DataYRAN
                 DataGridPlox.ItemsSource = _DataColecSobPlox;
                // DataGridnNeutron.ItemsSource = _DataColecNeu;
            
-                ToggleSwitchAuto.IsOn = ClassUserSetUp.AutoSeting;
+             
                 ToggleSwitchSaveRaz.IsOn = ClassUserSetUp.SaveRaz;
                 ToggleSwitchObrSig.IsOn = ClassUserSetUp.ObrSig;
                 TextBloxPorogN.Text = ClassUserSetUp.PorogN.ToString();
@@ -164,7 +164,7 @@ namespace DataYRAN
                TextBloxAmpNoise.Text = ClassUserSetUp.AmpNoise.ToString();
                 
                 first = false;
-                Avto_Toggled(null, null);
+             
                 flagFileSetup = true;
                 FileOb_Toggled(null, null);
                 if (MainPage.FileEvent != null)
@@ -195,31 +195,8 @@ namespace DataYRAN
         {
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
         }
-        TextBlock gg;
-        TextBox gq;
+       
 
-        private void Avto_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (ToggleSwitchAuto.IsOn == true)
-            {
-                //   var lastControl = stacPanNast.Children.LastOrDefault();
-                // stacPanNast.Children.Remove(gg);
-                //  stacPanNast.Children.Remove(gq);
-            }
-            else
-            {
-                gg = new TextBlock();
-                gq = new TextBox();
-                gq.IsEnabled = true;
-                gg.Text = "Плата";
-                gq.Text = "У1";
-                gq.IsReadOnly = false;
-                //  stacPanNast.Children.Add(gg);
-                //  stacPanNast.Children.Add(gq);
-            }
-
-
-        }
     
 
 
@@ -242,413 +219,7 @@ namespace DataYRAN
             }
             return v;
         }
-        private async void ZapicOcheredNaObrabotkyAsync(string nBaaK, int leng, string nameRan, List<ClassСписокList> listt, CancellationToken cancellationToken)
-        {
-
-            int ccc = 0;
-            int[] masNul = new int[12];
-            for (int i = 0; i < 12; i++)
-            {
-                masNul[i] = 2058;
-            }
-            uint numBytesLoaded = 1024;
-            uint numBytesLoaded1 = 504648;
-            foreach (ClassСписокList d in listt)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Thread.Sleep(50);
-
-                    break;
-                }
-                //listDataAll = new List<byte>();
-                bool flagUserSetup = true;
-                //BasicProperties basicProperties;
-             
-                          /* try
-                           {
-
-
-                               basicProperties = await d.file1.GetBasicPropertiesAsync();
-                               if (basicProperties.Size > 136000000)
-                               {
-                                   flagUserSetup = true;
-                               }
-                               else
-                               {
-                                   flagUserSetup = false;
-                               }
-                           }
-                           catch(Exception ex)
-                           {
-                               flagUserSetup = true;
-                      
-                           }
-                
-                      */
-                string tipN = "T";
-               // tipN = d.file1.DisplayName.Split('_')[2];
-                string[] tipParser = d.file1.DisplayName.Split('_');
-                if(tipParser.Length>2)
-                {
-                    tipN = tipParser[2];
-                }
-                else
-                {
-
-                }
-
-           
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-    d.Status = true;
-});
-                    //    break;
-                 //   }
-               // }
-                if (flagUserSetup)
-                {
-                    try
-                    {
-                            var stream = await d.file1.OpenAsync(Windows.Storage.FileAccessMode.Read);
-                          //  ulong size = stream.Size;
-                          
-                            bool end = false;
-                            uint kol = 0;
-                       List<byte> dataOnePac = new List<byte>();
-
-                        int tecpos = 0;
-                            int countFlagEnt = 0;
-                            int pac = 0;
-                            while (!end)
-                            {
-                            if (cancellationToken.IsCancellationRequested)
-                            {
-                                Thread.Sleep(50);
-
-                                break;
-                            }
-                            using (var inputStream = stream.GetInputStreamAt(kol * numBytesLoaded1))
-                                {
-
-                                    using (var dataReader = new Windows.Storage.Streams.DataReader(inputStream))
-                                    {
-                                        numBytesLoaded = await dataReader.LoadAsync(numBytesLoaded1);
-                                    if (numBytesLoaded < numBytesLoaded1 || numBytesLoaded == 0)
-                                    {
-
-                                        end = true;
-                                    }
-                                    else
-                                    {
-                                        if (cancellationToken.IsCancellationRequested)
-                                        {
-                                            Thread.Sleep(50);
-
-                                            break;
-                                        }
-                                        byte[] dd = new byte[numBytesLoaded];
-                                        dataReader.ReadBytes(dd);
-                                        if (dd[numBytesLoaded - 1] == 0xFF && dd[numBytesLoaded - 2] == 0xFF && dd[numBytesLoaded - 3] == 0xFF && dd[numBytesLoaded - 4] == 0xFF)
-                                        {
-
-                                            int cc1 = Count();
-                                            if (cc1 > 1800)
-                                            {
-                                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-    d.StatusP = true; if (cancellationToken.IsCancellationRequested)
-    {
-        Thread.Sleep(50);
-
-        //break;
-    }
-});
-                                                Thread.Sleep(10000);
-                                                long totalMemory = GC.GetTotalMemory(false);
-                                                GC.Collect();
-                                                GC.WaitForPendingFinalizers();
-                                                // for(int f=0; f<10000; f++)
-                                                //  {
-                                                //      int xx = 0;
-                                                //  }
-                                                //Thread.Sleep(20000);
-                                                while (Count() > 500)
-                                                {
-                                                    if (cancellationToken.IsCancellationRequested)
-                                                    {
-                                                        Thread.Sleep(50);
-
-                                                        break;
-                                                    }
-                                                    Thread.Sleep(5000);
-                                                }
-                                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-    d.StatusP = true;
-});
-                                            }
-                                            OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dd, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName = tipN });
-                                            pac++;
-                                       
-                                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => { d.StatusSize += (ulong)dd.Length; ViewModel.CountNaObrabZ++; });
-
-
-                                        }
-                                       
-                                        else
-                                        {
-
-
-                                            if ((dd[numBytesLoaded - 1] == 0xFE && dd[numBytesLoaded - 2] == 0xFE && dd[numBytesLoaded - 3] == 0xFE && dd[numBytesLoaded - 4] == 0xFE) || (numBytesLoaded > 502640 && numBytesLoaded < 504648))
-                                            {
-
-                                            }
-
-                                            else
-                                        {
-
-                                               
-                                                for (int i = 0; i < numBytesLoaded; i++)
-                                            {
-                                                    if (cancellationToken.IsCancellationRequested)
-                                                    {
-                                                        Thread.Sleep(50);
-
-                                                        break;
-                                                    }
-                                                    int cc1 = Count();
-                                                if (cc1 > 1800)
-                                                {
-                                                        if (cancellationToken.IsCancellationRequested)
-                                                        {
-                                                            Thread.Sleep(50);
-
-                                                            break;
-                                                        }
-                                                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-    () =>
-    {
-        d.StatusP = true;
-    });
-                                                    Thread.Sleep(10000);
-                                                    long totalMemory = GC.GetTotalMemory(false);
-                                                    GC.Collect();
-                                                    GC.WaitForPendingFinalizers();
-                                                    // for(int f=0; f<10000; f++)
-                                                    //  {
-                                                    //      int xx = 0;
-                                                    //  }
-                                                    //Thread.Sleep(20000);
-                                                    while (Count() > 500)
-                                                    {
-                                                            if (cancellationToken.IsCancellationRequested)
-                                                            {
-                                                                Thread.Sleep(50);
-
-                                                                break;
-                                                            }
-                                                            Thread.Sleep(5000);
-                                                    }
-                                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-    d.StatusP = true;
-});
-                                                }
-
-
-
-                                                var b = dd[i];
-
-                                                dataOnePac.Add(b);
-                                                tecpos++;
-                                                if (b == 0xFF)
-                                                {
-                                                    countFlagEnt++;
-                                                    if (countFlagEnt == 4)
-                                                        {
-                                                            Debug.WriteLine(numBytesLoaded.ToString() + "\t" + tecpos);
-                                                            if (tecpos > 502640 && tecpos < 504648)
-                                                            {
-                                                                //Debug.WriteLine(numBytesLoaded.ToString() + "\t" + "ggg");
-                                                                dataOnePac = null;
-                                                            }
-                                                            else
-                                                            {
-
-                                                                //Debug.WriteLine(numBytesLoaded.ToString() + "\t" + "g11gg");
-                                                                OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dataOnePac.ToArray(), LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName = tipN });
-                                                            }
-                                                                pac++;
-
-                                                                dataOnePac = new List<byte>();
-                                                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-            () =>
-            {
-                d.StatusSize += 504648;
-                ViewModel.CountNaObrabZ++;
-            });
-                                                                //Thread.Sleep(1000);
-                                                                countFlagEnt = 0;
-                                                                tecpos = 0;
-                                                            
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    countFlagEnt = 0;
-                                                }
-
-                                            }
-
-                                        }
-
-
-
-                                    }
-                                        }
-
-                                    }
-                                }
-                                kol++;
-                            }
-                        stream.Dispose();
-                    }
-                    catch 
-                    {
-                       // var  messageDialog = new MessageDialog("ошибка открытия файла" + d.file1.Path +"   ");
-                        // await messageDialog.ShowAsync();
-                    }
-
-
-                }
-                else
-                {
-                    try
-                    {
-                        
-                            if(Count() > 1800)
-                            {
-                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-d.StatusP = true;
-});
-                            if (cancellationToken.IsCancellationRequested)
-                            {
-                                Thread.Sleep(50);
-
-                                break;
-                            }
-                            Thread.Sleep(10000);
-                                long totalMemory = GC.GetTotalMemory(false);
-                                GC.Collect();
-                                GC.WaitForPendingFinalizers();
-                                // for(int f=0; f<10000; f++)
-                                //  {
-                                //      int xx = 0;
-                                //  }
-                                //Thread.Sleep(20000);
-                                while (Count() > 500)
-                                {
-                                if (cancellationToken.IsCancellationRequested)
-                                {
-                                    Thread.Sleep(50);
-
-                                    break;
-                                }
-                                Thread.Sleep(10000);
-                                }
-                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-d.StatusP = true;
-});
-                            }
-                         
-                        
-                     
-                        byte[] bb = (await Windows.Storage.FileIO.ReadBufferAsync(d.file1)).ToArray();
-                 
-                        
-                     
-                     
-                        byte[] dataOnePac = new byte[504648];
-
-                        int tecpos = 0;
-                        int countFlagEnt = 0;
-                        int pac = 0;
-                        for(int i=0; i< bb.Length; i++)
-                        {
-                            if (cancellationToken.IsCancellationRequested)
-                            {
-                                Thread.Sleep(50);
-
-                                break;
-                            }
-                            byte b = bb[i];
-                      
-                            dataOnePac[tecpos] = b;
-                            tecpos++;
-                            if (b == 0xFF)
-                            {
-                                countFlagEnt++;
-                                if (countFlagEnt == 4)
-                                {
-
-                                    OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = d.file1.DisplayName, Buf00 = dataOnePac, LenghtChenel = leng, НулеваяЛиния = masNul, NameBaaR12 = nBaaK.ToString(), Ran = nameRan, tipName = tipN });
-                                    pac++;
-
-                                    dataOnePac = new Byte[504648];
-                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-d.StatusSize += 504648;
-ViewModel.CountNaObrabZ++;
-});
-                                    //Thread.Sleep(1000);
-                                    countFlagEnt = 0;
-                                    tecpos = 0;
-                                }
-                            }
-                            else
-                            {
-                                countFlagEnt = 0;
-                            }
-
-                        }
-                        
-                      
-                      
-                    }
-                    catch
-                    {
-                        // var  messageDialog = new MessageDialog("ошибка открытия файла" + d.file1.Path +"   ");
-                        // await messageDialog.ShowAsync();
-                    }
-
-                }
-                
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-d.Status = false;
-});
-            }
-           
-            if (cancellationTokenSource != null)
-            {
-                cancellationTokenSource.Cancel();
-
-
-            }
-            
-
-        }
+   
 
 
 
@@ -679,17 +250,14 @@ d.Status = false;
                 case ExtendedExecutionResult.Allowed:
                  
              
-            Task task = Task.Run(() => ffg("Обработка запушена в фоновом режиме" + "\n" + "Можно свернуть экран"));
+            Task task = Task.Run(() => 
+            Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => { ExampleInAppNotification.Show("Обработка запушена в фоновом режиме" + "\n" + "Можно свернуть экран", 3000);})
+                    );
             cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
-            if (ToggleSwitchAuto.IsOn)
-            {
-                var ness = new MessageDialog("Авто режим не доступен. Выберите ручной режим");
-                await ness.ShowAsync();
-            }
-            else
-            {
-                string Y = gq.Text;
+          
+          
+         
                 ObRing.IsActive = true;
 
 
@@ -712,7 +280,7 @@ d.Status = false;
                    
                     FirstDiagnosticFile(l);
                             ViewModel.CountNaObrabZ = 0;
-                            Task.Run(() => ZapicOcheredNaObrabotkyAsync(Y, 1, "1", l, cancellationToken));
+                            Task.Run(() => ZapicOcheredNaObrabotkyAsync("У1", 1, "1", l, cancellationToken));
                  //   MessageDialog messageDialog = new MessageDialog("dd");
                    // messageDialog.ShowAsync();
 
@@ -749,7 +317,7 @@ d.Status = false;
 
 
 
-            }
+            
                     break;
 
                 default:
@@ -922,15 +490,6 @@ d.Status = false;
             }
         }
 
-        public void Gg()
-        {
-            Thread.Sleep(5000);
-        }
-       public async Task ggg( )
-        {
-            Task myReadDataTask = Task.Run(() => Gg());
-            await myReadDataTask;
-        }
         private async  void AppBarButton_Click_8(object sender, RoutedEventArgs e)
         {
           IDataView currentView = this.DataGrid.GetDataView();
@@ -1137,21 +696,7 @@ d.Status = false;
                 await messageDialog.ShowAsync();
             }
         }
-        private static void ReadXmlFile(string filename)
-        {
-            // Создаем экземпляр Xml документа.
-            var doc = new XmlDocument();
-
-            // Загружаем данные из файла.
-            doc.Load(filename);
-
-            // Получаем корневой элемент документа.
-            var root = doc.DocumentElement;
-
-            // Используем метод для рекурсивного обхода документа.
-            PrintItem(root);
-        }
-
+        
         /// <summary>
         /// Метод для отображения содержимого xml элемента.
         /// </summary>
@@ -1198,82 +743,14 @@ d.Status = false;
                 }
             }
         }
-       /* private async void AppBarToggleButton_Click_3(object sender, RoutedEventArgs e)
-        {
-            ObRing.IsActive = true;
-            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-            folderPicker.FileTypeFilter.Add("*");
-
-            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
-            {
-                // Application now has read/write access to all contents in the picked folder
-                // (including other sub-folder contents)
-                Windows.Storage.AccessCache.StorageApplicationPermissions.
-                FutureAccessList.AddOrReplace("PickedFolderToken", folder);
-
-                StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
-
-                StorageFolder storageFolderRazvertka = await storageFolder.CreateFolderAsync("Развертка", CreationCollisionOption.OpenIfExists);
-
-                IReadOnlyList<StorageFile> fileList =
-                    await storageFolderRazvertka.GetFilesAsync();
-               
-                foreach (StorageFile file in fileList)
-                {
-                   
-                    await file.CopyAsync(folder);
-                }
-
-            }
-            else
-            {
-
-            }
-            ObRing.IsActive = false;
-        }
-        */
+  
         private async void AppBarToggleButton_Click_4(object sender, RoutedEventArgs e)
         {
             gridMenedger.Visibility = Visibility.Visible;
             SaveAllMenedger();
         }
 
-      /*  private async void AppBarToggleButton_Click_5(object sender, RoutedEventArgs e)
-        {
-            ObRing.IsActive = true;
-            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-            folderPicker.FileTypeFilter.Add("*");
-
-            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
-            {
-                // Application now has read/write access to all contents in the picked folder
-                // (including other sub-folder contents)
-                Windows.Storage.AccessCache.StorageApplicationPermissions.
-                FutureAccessList.AddOrReplace("PickedFolderToken", folder);
-
-
-                var storageFolder = ApplicationData.Current.LocalFolder; ;
-                StorageFolder storageFolderN = await storageFolder.CreateFolderAsync("Нейтроны", CreationCollisionOption.OpenIfExists);
-                IReadOnlyList<StorageFile> fileList2 =
-                await storageFolderN.GetFilesAsync();
-
-                foreach (StorageFile file in fileList2)
-                {
-                    await file.CopyAsync(folder);
-                }
-
-            }
-            else
-            {
-
-            }
-            ObRing.IsActive = false;
-        }
-        */
+  
         private void FileOb_Toggled(object sender, RoutedEventArgs e)
         {
             //  if (FileOb.IsOn == true)
@@ -1291,16 +768,7 @@ d.Status = false;
             mySplitView.IsPaneOpen = !mySplitView.IsPaneOpen;
         }
 
-        private async void MapControl1_MapTapped(Windows.UI.Xaml.Controls.Maps.MapControl sender, Windows.UI.Xaml.Controls.Maps.MapInputEventArgs args)
-        {
-            Geopoint pos = args.Location;
-            Point pos1 = args.Position;
-            MessageDialog messageDialog = new MessageDialog(pos.Position.Longitude.ToString() + "  " + pos.Position.Latitude.ToString());
-            await messageDialog.ShowAsync();
-
-
-        }
-
+       
         object ind;
 
 
@@ -1512,60 +980,7 @@ d.Status = false;
             }
             return res;
         }
-        public void CountPorogs(ClassSob sob, int porog, out int c)
-        {
-            c = 0;
-
-            if (Convert.ToInt32(sob.mAmp[0]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[1]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[2]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[3]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[4]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[5]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[6]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[7]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[8]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[9]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[10]) >= porog)
-            {
-                c++;
-            }
-            if (Convert.ToInt32(sob.mAmp[11]) >= porog)
-            {
-                c++;
-            }
-
-        }
+   
         private void AppBarButton_Clear(object sender, RoutedEventArgs e)
         {
             ViewModel._DataSobColli.Clear();
@@ -1729,9 +1144,12 @@ d.Status = false;
 
        
       
-        public async Task obrRazv(string nameFile, string time)
+        public async Task obrRazv(string nameFile, string time, string tip)
         {
-           foreach(var v in ViewModel.DataColec)
+            var df = from ClassСписокList in ViewModel.DataColec.ToList().AsParallel()
+                     where ClassСписокList.file1.DisplayName == nameFile
+                     select ClassСписокList;
+           foreach (var v in df)
             {
                
                 if(nameFile==v.file1.DisplayName)
@@ -1747,14 +1165,7 @@ d.Status = false;
                         listDataAll = new List<byte>();
                         bool flagUserSetup = true;
 
-                        // foreach(ClassСписокList d1 in _DataColec)
-                        //   {
-                        //     if(d1==d)
-                        //    {
-                      
-                        //    break;
-                        //   }
-                        // }
+                  
                         if (flagUserSetup)
                         {
                             try
@@ -1823,8 +1234,20 @@ d.Status = false;
                                                         if (time== time1)
                                                         {
                                                             ClassRazvertka classRazvertka = new ClassRazvertka() { nameFile1=nameFile, data=data1, dataTail=dataTail1, Time=time1 };
-                                                          
-                                                            this.Frame.Navigate(typeof(BlankPageRazverta), classRazvertka);
+                                                            if (tip == "Viz")
+                                                            {
+
+
+                                                                this.Frame.Navigate(typeof(BlankPageRazverta), classRazvertka);
+                                                            }
+                                                            else
+                                                            {
+
+                                                                await saveAsyncFolder(data1, dataTail1, time1, nameFile);
+
+
+
+                                                            }
                                                             break;
                                                         }
                                                        // OcherediNaObrab.Enqueue(new MyclasDataizFile { NameFile = v.NameFile, Buf00 = dataOnePac, LenghtChenel = 1, НулеваяЛиния = masNul, NameBaaR12 = "Y", Ran = "Y" });
@@ -1886,22 +1309,13 @@ d.Status = false;
         {
             object ff = DataGrid.SelectedItem;
             ClassSob classSob = (ClassSob)ff;
-      
-          await  obrRazv(classSob.nameFile, classSob.time);
+            HyperlinkButton hyperlinkButton = (HyperlinkButton)sender;
+          await  obrRazv(classSob.nameFile, classSob.time, hyperlinkButton.Tag.ToString());
            // this.Frame.Navigate(typeof(BlankPageRazverta), classSob.nameFile);
         }
         private async void AppBarButtonMap(object sender, RoutedEventArgs e)
         {
-            if(StacMap.Visibility==Visibility.Collapsed)
-            {
-                MapControl1.Visibility = Visibility.Visible;
-                StacMap.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                MapControl1.Visibility = Visibility.Collapsed;
-                StacMap.Visibility = Visibility.Collapsed;
-            }
+           
         }
         private async void AppBarToggleButton_Click_7(object sender, RoutedEventArgs e)
         {
@@ -2142,19 +1556,8 @@ d.Status = false;
         {
             try
             {
-              
 
-
-             
-                int Clust = 0;
-                ObservableCollection<ClassSob> cla = new ObservableCollection<ClassSob>();
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-    cla = ViewModel.ClassSobsT;
-});
-    // ViewModel._DataColecSobCopy = new ObservableCollection<ClassSob>();
-    foreach (ClassSob classSob in cla)
+    foreach (ClassSob classSob in ViewModel.ClassSobsT)
                 {
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
@@ -2164,68 +1567,59 @@ d.Status = false;
                 }
 
 
+              var  listC =  (from ClassSob in ViewModel._DataColecSobCopy
+                         orderby ClassSob.time
+                         select ClassSob).ToList();
 
-               
-
-               
-
-
-
-
-               
-                while (ViewModel._DataColecSobCopy.Count!=0)
+                while (listC.Count!=0)
                 {
                     ClassSobColl classSobColl = new ClassSobColl();
-                    ClassSob clF = ViewModel._DataColecSobCopy.ElementAt(0);
-                 classSobColl.col.Add(clF);
-                    ViewModel._DataColecSobCopy.RemoveAt(0);
+               
                     
-                  if (ViewModel._DataColecSobCopy.Count != 0)
+                  if (listC.Count != 0)
                   {
+
                         
-                        for(int i=0; i< ViewModel._DataColecSobCopy.Count; i++)
-                        {
-                            ClassSob classSob = ViewModel._DataColecSobCopy.ElementAt(i);
-                            if (clF.nameklaster!=classSob.nameklaster)
-                            {
-
-
-                                if (DateNanos.isEventSimul(clF.time, classSob.time, MaxDur))
-                                {
-                                    classSobColl.col.Add(classSob);
-                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-    () =>
-    {
-        ViewModel._DataColecSobCopy.RemoveAt(i);
-    });
-                                    i--;
-
-                                }
-                            }
-
-                        }
+                            Debug.WriteLine("Выборка");
+                            var orderedNumbers = from ClassSob in listC.AsParallel()
+                                                 where DateNanos.isEventSimul(listC.ElementAt(0).time, ClassSob.time, MaxDur)
+                                                 select ClassSob;
                         
-                      
-                  }
+                            classSobColl.col.AddRange(orderedNumbers);
+                            classSobColl.StartTime = orderedNumbers.ElementAt(0).time;
+                            Debug.WriteLine("удаление");
+                            var dd = orderedNumbers.Distinct();
+                              foreach (ClassSob classSob in dd)
+                              {
+                          
+                                  try
+                                  {
+
+
+                                      listC.Remove(classSob);
+                                  }
+                                  catch(Exception ex)
+                                  {
+
+                                  }
+                         
+                              }
+
+                    }
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
 {
-    textOb.Text = ViewModel._DataColecSobCopy.Count.ToString();
-});
-
-                 
-
-
-
-                   classSobColl.SumAmpAndNeutronAndClaster();
-                   classSobColl.StartTime = clF.time;
+    textOb.Text = listC.Count().ToString();
+});             
+                    classSobColl.SumAmpAndNeutronAndClaster();
+                    Debug.WriteLine("добавление в общию");
+                    Debug.WriteLine(classSobColl.StartTime.ToString());
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
 {
     ViewModel._DataSobColli.Add(classSobColl);
 });
                    
-
                 }
                
 
@@ -2234,8 +1628,8 @@ d.Status = false;
 
             catch (Exception ex)
             {
-
-    await new MessageDialog(ex.ToString()).ShowAsync();
+                Debug.WriteLine(ex.ToString());
+               // new MessageDialog(ex.ToString()).ShowAsync();
 
             }
          
@@ -2277,60 +1671,7 @@ d.Status = false;
 
         }
         StorageFolder storage;
-        private async void Button_Click_5(object sender, RoutedEventArgs e)
-        {
-            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-            folderPicker.FileTypeFilter.Add("*");
-
-            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
-            {
-                PathAddFile.Text = folder.Path;
-                storage = folder;
-                // Application now has read/write access to all contents in the picked folder
-                // (including other sub-folder contents)
-                /*  Windows.Storage.AccessCache.StorageApplicationPermissions.
-                  FutureAccessList.AddOrReplace("PickedFolderToken", folder);
-
-
-
-
-                  IReadOnlyList<StorageFolder> folderList = await folder.GetFoldersAsync();
-
-                  foreach (StorageFolder folder1 in folderList)
-                  {
-                      IReadOnlyList<StorageFile> fileList = await folder1.GetFilesAsync();
-
-                      // Print the month and number of files in this group.
-                      //  //outputText.AppendLine(folder.Name + " (" + fileList.Count + ")");
-                      //  var messageDialog = new MessageDialog(folder1.Name + " (" + fileList.Count + ")");
-                      //  await messageDialog.ShowAsync();
-
-                      foreach (StorageFile file in fileList)
-                      {
-                          if (file.FileType == ".bin")
-                          {
-                              string FileName = file.DisplayName;
-                              string FilePath = file.Path;
-                              _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
-                              // Print the name of the file.
-                              // outputText.AppendLine("   " + file.Name);
-                          }
-                      }
-                  }
-
-      */
-                // var messageDialog = new MessageDialog(folder.Name);
-                //await messageDialog.ShowAsync();
-
-            }
-            else
-            {
-
-            }
-
-        }
+       
 
         
 
@@ -2406,6 +1747,70 @@ d.Status = false;
             this.Frame.Navigate(typeof(BlankPageTemp), classSobs);
 
         }
+        private async void StatNullLine_Clic(object sender, RoutedEventArgs e)
+        {
+            IDataView currentView = this.DataGrid.GetDataView();
+            if (currentView.Items.Count > 0)
+            {
 
+
+                ObservableCollection<ClassSob> classSobs = new ObservableCollection<ClassSob>();
+                foreach (ClassSob classSob in currentView)
+                {
+                    classSobs.Add(classSob);
+                }
+
+                this.Frame.Navigate(typeof(PageStatNullLine), classSobs);
+            }
+
+        }
+        private async void StatSigLine_Clic(object sender, RoutedEventArgs e)
+        {
+            IDataView currentView = this.DataGrid.GetDataView();
+            if (currentView.Items.Count > 0)
+            {
+
+
+                ObservableCollection<ClassSob> classSobs = new ObservableCollection<ClassSob>();
+                foreach (ClassSob classSob in currentView)
+                {
+                    classSobs.Add(classSob);
+                }
+
+                this.Frame.Navigate(typeof(PageStatSig), classSobs);
+            }
+
+        }
+
+        private void Sobitie_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TabView tabView = (TabView)sender;
+            int x = tabView.SelectedIndex;
+            if(x==2)
+            {
+                ed.IsEnabled = true;
+            }
+            else
+            {
+                ed.IsEnabled = false;
+            }
+        }
+
+        private void Ed_Click(object sender, RoutedEventArgs e)
+        {
+            IDataView currentView = this.DataGrid1.GetDataView();
+            if (currentView.Items.Count > 0)
+            {
+              
+
+                ObservableCollection<ClassSobColl> classSobs = new ObservableCollection<ClassSobColl>();
+                foreach (ClassSobColl classSob in currentView)
+                {
+                    classSobs.Add(classSob);
+                }
+
+                this.Frame.Navigate(typeof(PageStatSobTemp), classSobs);
+            }
+        }
     }
 }

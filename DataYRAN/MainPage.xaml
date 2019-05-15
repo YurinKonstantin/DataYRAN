@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+   Background="{ThemeResource SystemControlAccentAcrylicWindowAccentMediumHighBrush}"
    
    >
  
@@ -16,7 +16,7 @@
                     ItemInvoked="NavView_ItemInvoked"
                     Loaded="NavView_Loaded"
                     BackRequested="NavView_BackRequested"
-                    OpenPaneLength="280" CompactModeThresholdWidth="1200" ExpandedModeThresholdWidth="1250" >
+                    OpenPaneLength="280" CompactModeThresholdWidth="1200" ExpandedModeThresholdWidth="1250"    >
         <NavigationView.Background>
             <AcrylicBrush/>
         </NavigationView.Background>

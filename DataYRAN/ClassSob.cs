@@ -69,11 +69,16 @@ namespace DataYRAN
                 int[] bb = new int[12];
                 for(int i=0; i<12; i++)
                 {
-                    foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
+                    var dd = from ClassSobNeutron in classSobNeutronsList.AsParallel()
+                             where ClassSobNeutron.D == (i + 1)
+                             select ClassSobNeutron;
+                    bb[i] = bb[i] + dd.Count(); count=count+ dd.Count();
+
+                   // foreach (ClassSobNeutron classSobNeutron in classSobNeutronsList)
                     {
-                        if (classSobNeutron.D == i+1)
+                       // if (classSobNeutron.D == i+1)
                         {
-                            bb[i] = bb[i] + 1; count++;
+                         //   bb[i] = bb[i] + 1; count++;
                         }
                     }
                 }
@@ -275,6 +280,46 @@ namespace DataYRAN
         public double sig9 { get; set; }
         public double sig10 { get; set; }
         public double sig11 { get; set; }
+        public double[] mSig
+        {
+            get
+            {
+                double[] m = new double[12];
+                m[0] = sig0;
+                m[1] = sig1;
+                m[2] = sig2;
+                m[3] = sig3;
+                m[4] = sig4;
+                m[5] = sig5;
+                m[6] = sig6;
+                m[7] = sig7;
+                m[8] = sig8;
+                m[9] = sig9;
+                m[10] = sig10;
+                m[11] = sig11;
+                return m;
+            }
+        }
+        public int[] mNull
+        {
+            get
+            {
+                int[] m = new int[12];
+                m[0] = Convert.ToInt32(Nnull0);
+                m[1] = Convert.ToInt32(Nnull1);
+                m[2] = Convert.ToInt32(Nnull2);
+                m[3] = Convert.ToInt32(Nnull3);
+                m[4] = Convert.ToInt32(Nnull4);
+                m[5] = Convert.ToInt32(Nnull5);
+                m[6] = Convert.ToInt32(Nnull6);
+                m[7] = Convert.ToInt32(Nnull7);
+                m[8] = Convert.ToInt32(Nnull8);
+                m[9] = Convert.ToInt32(Nnull9);
+                m[10] = Convert.ToInt32(Nnull10);
+                m[11] = Convert.ToInt32(Nnull11);
+                return m;
+            }
+        }
         public short Nnull0 { get; set; }
         public short Nnull1 { get; set; }
         public short Nnull2 { get; set; }

@@ -12,6 +12,8 @@ namespace DataYRAN
 {
     public partial class BlankPageObrData
     {
+      
+        List<ClassСписокList> classСписокLists1 = new List<ClassСписокList>();
         private async void Button_Click_6(object sender, RoutedEventArgs e)
         {
             gridMenedgerAddFile.Visibility = Visibility.Collapsed;
@@ -225,6 +227,76 @@ namespace DataYRAN
                 //await messageDialog.ShowAsync();
 
             }
+        }
+        private async void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+               // ContentDialog deleteFileDialog = new ContentDialog()
+               // {
+                   // Title = "Анализ выбранной папки",
+                    //Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс анализа файлов",
+
+              //  };
+              //  deleteFileDialog.ShowAsync();
+                PathAddFile.Text = folder.Path;
+                storage = folder;
+                IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
+                foreach(StorageFile storageFile in fileList)
+                {
+                    classСписокLists1.Add(new ClassСписокList { Status = false, file1 = storageFile, StatusSize = 0, basicProperties = await storageFile.GetBasicPropertiesAsync() });
+                }
+
+             //   deleteFileDialog.Hide();
+                listaddF.ItemsSource = classСписокLists1;
+             
+                // Application now has read/write access to all contents in the picked folder
+                // (including other sub-folder contents)
+                /*  Windows.Storage.AccessCache.StorageApplicationPermissions.
+                  FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+
+
+
+
+                  IReadOnlyList<StorageFolder> folderList = await folder.GetFoldersAsync();
+
+                  foreach (StorageFolder folder1 in folderList)
+                  {
+                      IReadOnlyList<StorageFile> fileList = await folder1.GetFilesAsync();
+
+                      // Print the month and number of files in this group.
+                      //  //outputText.AppendLine(folder.Name + " (" + fileList.Count + ")");
+                      //  var messageDialog = new MessageDialog(folder1.Name + " (" + fileList.Count + ")");
+                      //  await messageDialog.ShowAsync();
+
+                      foreach (StorageFile file in fileList)
+                      {
+                          if (file.FileType == ".bin")
+                          {
+                              string FileName = file.DisplayName;
+                              string FilePath = file.Path;
+                              _DataColec.Add(new ClassСписокList { NameFile = FileName, NemePapka = FilePath, Status = false, file1 = file });
+                              // Print the name of the file.
+                              // outputText.AppendLine("   " + file.Name);
+                          }
+                      }
+                  }
+
+      */
+                // var messageDialog = new MessageDialog(folder.Name);
+                //await messageDialog.ShowAsync();
+
+            }
+            else
+            {
+
+            }
+
         }
     }
 }

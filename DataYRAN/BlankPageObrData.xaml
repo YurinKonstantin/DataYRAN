@@ -298,7 +298,6 @@
                     <MenuFlyoutItem  Text="Менеджер загрузки"  Click="Button_Click_4"/>
                 </MenuFlyoutSubItem>
             </MenuBarItem>
-
             <MenuBarItem  Name="TabMenu" my:Menu.InputGestureText="Alt+F" Title="Таблица" ToolTipService.ToolTip="для быстрого доступа Alt+F">
                 <MenuFlyoutSubItem Text="Новый" ToolTipService.ToolTip="для быстрого доступа Ctrl+Shift+N">
                     <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+Shift+N" Text="Таблица" Click="MenuFlyoutItemTabNew_Click"/>
@@ -325,17 +324,42 @@
                     <MenuFlyoutItem my:Menu.InputGestureText="Ctrl+O" Text="БААК12-200Т общие" Click="{x:Bind ViewModel.ClearDataBAAK12_200TAll}"/>
                 </MenuFlyoutSubItem>
             </MenuBarItem>
+            <MenuBarItem  Name="StatMenu" Title="Статистика">
+                <MenuFlyoutItem Text="Вся статистика" IsEnabled="False" />
+                <MenuFlyoutSubItem Text="Темп счета">
+                    <MenuFlyoutItem Text="По детекторам" Click="AppButTemp"/>
+                    <MenuFlyoutItem Text="По кластерам" IsEnabled="False"/>
+                    <MenuFlyoutItem Text="единое событие(все кластеры)" x:Name="ed" IsEnabled="False" Click="Ed_Click"/>
+                </MenuFlyoutSubItem>
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Сигмма D" Click="StatSigLine_Clic" />
+                <MenuFlyoutItem Text="Нулевая линия D"  Click="StatNullLine_Clic"/>
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Распределения Амплитуд"  IsEnabled="False" />
+                <MenuFlyoutItem Text="Распределения нейтронов"  IsEnabled="False" />
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Зависимость нейтронов от Амплитуд"  IsEnabled="False" />
+                <MenuFlyoutSeparator/>
+
+            </MenuBarItem>
+            <MenuBarItem Title="Справка">
+                <MenuFlyoutItem Text="О программе" IsEnabled="False"/>
+            </MenuBarItem>
+
         </Windows10version1809:MenuBar>
         
-        <StackPanel Grid.Row="1" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" UseLayoutRounding="True">
-            <AppBarButton Icon="AllApps" Label="Список"  Foreground="Blue"  Click="AppBarButton_Click_9" />
-            <AppBarButton Icon="Add" Label="Добавить файл" Foreground="Green" VerticalAlignment="Stretch" Click="AppBarButton_Click" />
-            <AppBarButton Icon="MoveToFolder" Label="Добавить папку" VerticalAlignment="Stretch" Foreground="Green" Click="AppBarButton_Click_2" />
-            <AppBarButton Icon="Delete" Label="Очистить список" VerticalAlignment="Stretch" Click="AppBarButton_Click_1" Foreground="Red" />
-            <AppBarButton Icon="Back" Label="Назад" VerticalAlignment="Stretch" Click="AppBarButton_Click_4" />
-            <AppBarButton Icon="Forward" Label="Вперед" VerticalAlignment="Stretch" Click="AppBarButton_Click_3" />
-            <AppBarButton Icon="AllApps" Label="Выбрать все" VerticalAlignment="Stretch"  />
-            <AppBarButton Icon="View" Label="Вид" VerticalAlignment="Stretch"  >
+        <StackPanel Margin="12,0,0,0" Grid.Row="1" Background="{StaticResource ApplicationPageBackgroundThemeBrush}" UseLayoutRounding="True">
+            <AppBarButton Icon="AllApps" Label="Список" FontSize="12"  Foreground="Blue"  Click="AppBarButton_Click_9" MaxWidth="58" MaxHeight="48"/>
+            <AppBarButton Icon="Add" Label="Добавить файл"  Foreground="Green" FontSize="10" VerticalAlignment="Stretch" Click="AppBarButton_Click" MaxWidth="58" MaxHeight="62"/>
+            <AppBarButton Icon="MoveToFolder" Label="Добавить папку" VerticalAlignment="Stretch" Foreground="Green" Click="AppBarButton_Click_2" MaxWidth="58" MaxHeight="62" />
+            <AppBarButton Icon="Delete" Label="Очистить список" VerticalAlignment="Stretch" Click="AppBarButton_Click_1" Foreground="Red" MaxWidth="58" MaxHeight="48"/>
+            <AppBarButton Icon="Back" Label="Назад" VerticalAlignment="Stretch" Click="AppBarButton_Click_4" MaxWidth="58" MaxHeight="48"/>
+            <AppBarButton Icon="Forward" Label="Вперед" VerticalAlignment="Stretch" Click="AppBarButton_Click_3" MaxWidth="58" MaxHeight="48"/>
+            <AppBarButton Icon="AllApps" Label="Выбрать все" VerticalAlignment="Stretch"  MaxWidth="58" MaxHeight="58"/>
+            <AppBarButton Icon="View" Label="Вид" VerticalAlignment="Stretch"  MaxWidth="58" MaxHeight="48">
                 <AppBarButton.Flyout>
                     <MenuFlyout  >
                         <MenuFlyoutItem Text = "Вид 1" Click="MenuFlyoutItem_Click"  />
@@ -402,8 +426,6 @@
                     <Pivot.RightHeader>
                         <CommandBar VerticalAlignment="Stretch" Background="Transparent" ClosedDisplayMode="Compact"  HorizontalAlignment="Right" UseLayoutRounding="True" IsDynamicOverflowEnabled="True">
                            
-                               
-
                             <AppBarSeparator Margin="0,0,16,0"/>
                            
                             <AppBarButton Icon="Delete" Click="AppBarButton_Click_7" Label="Удалить" ToolTipService.ToolTip="Очистет все таблицы" Foreground="Red"/>
@@ -443,8 +465,7 @@
 
                                                         </StackPanel>
 
-                                                        <TextBlock Text="Авто настройки" FontSize="16" />
-                                                        <ToggleSwitch x:Name="ToggleSwitchAuto" Toggled="Avto_Toggled"/>
+                                                        
 
 
                                                         <TextBlock Text="Сохранять развертку" FontSize="16" />
@@ -503,7 +524,7 @@
                         </CommandBar>
                     </Pivot.RightHeader>
                     <PivotItem Header="БААК12-200Т" FontSize="12">
-                        <controls:TabView x:Name="Sobitie" >
+                        <controls:TabView x:Name="Sobitie" SelectionChanged="Sobitie_SelectionChanged">
                         
                             <controls:TabView.TabStartHeader>
 
@@ -542,9 +563,13 @@
 
                                                 <StackPanel Margin="8,0,0,0" UseLayoutRounding="True">
 
-                                                    <HyperlinkButton Content="Перейти к развертки" Click="Button_Click" Margin="0,8,0,0"/>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <HyperlinkButton Content="Перейти к развертки" Click="Button_Click" Margin="0,8,0,0" Tag="Viz"/>
 
-
+                                                        <HyperlinkButton Content="Сохранить развертку" Click="Button_Click" Margin="4,8,0,0" Tag="Save"/>
+                                                    </StackPanel>
+                                                 
+                                                    
                                                     <StackPanel x:Name="List54" DataContext="{Binding SelectedItem, ElementName=DataGrid}" Margin="0,4,0,0" UseLayoutRounding="True">
 
 
@@ -916,12 +941,7 @@
                                                         </PivotItem>
                                                     </Pivot>
 
-                                                    <Maps:MapControl x:Name="MapControl1"   Width="240" Height="240" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="Collapsed"
-       ZoomInteractionMode="GestureAndControl"
-       TiltInteractionMode="GestureAndControl"   
-        MapServiceToken="UDDbiVEi8pMdARAw6uN4~FlOWI8GCRDrMsm4gmW3QXw~Al2UArrk6ORs-Zcve0_O8twKyz-AF3HEqs5zdCgHTJSjQK2t8TPs0EahL9unKAEk" 
-        Heading="{Binding ElementName=headingSlider,Path=Value, Mode=TwoWay}"  DesiredPitch="{Binding ElementName=desiredPitchSlider,Path=Value, Mode=TwoWay}"  
-        ZoomLevel="{Binding ElementName=zoomSlider,Path=Value, Mode=TwoWay}" MapTapped="MapControl1_MapTapped" />
+                                                
 
                                                 </Grid>
 
@@ -945,12 +965,12 @@
                                                         <telerikGrid:RadDataGrid.Columns>
 
 
-                                                            <telerikGrid:DataGridTextColumn PropertyName="D" Header="Детектор"/>
-                                                            <telerikGrid:DataGridTextColumn PropertyName="Amp" Header="Амплитуда"/>
-                                                            <telerikGrid:DataGridTextColumn PropertyName="TimeFirst" Header="Время начала сигнала"/>
-                                                            <telerikGrid:DataGridTextColumn PropertyName="TimeFirst3" Header="Время на уровне 3"/>
-                                                            <telerikGrid:DataGridTextColumn PropertyName="TimeAmp" Header="Время максимума"/>
-                                                            <telerikGrid:DataGridTextColumn PropertyName="TimeEnd3" Header="Время конца на уровне 3"/>
+                                                            <telerikGrid:DataGridTextColumn PropertyName="D" Header="Детектор" Width="100" SizeMode="Fixed"/>
+                                                            <telerikGrid:DataGridTextColumn PropertyName="Amp" Header="Амплитуда" Width="200" SizeMode="Fixed"/>
+                                                            <telerikGrid:DataGridTextColumn PropertyName="TimeFirst" Header="Время начала сигнала" Width="200" SizeMode="Fixed"/>
+                                                            <telerikGrid:DataGridTextColumn PropertyName="TimeFirst3" Header="Время на уровне 3" Width="200" SizeMode="Fixed"/>
+                                                            <telerikGrid:DataGridTextColumn PropertyName="TimeAmp" Header="Время максимума" Width="200" SizeMode="Fixed"/>
+                                                            <telerikGrid:DataGridTextColumn PropertyName="TimeEnd3" Header="Время конца на уровне 3" Width="200" SizeMode="Fixed"/>
                                                             <telerikGrid:DataGridTextColumn PropertyName="TimeEnd" Header="Время конца сигнала"/>
                                                         </telerikGrid:RadDataGrid.Columns>
                                                     </telerikGrid:RadDataGrid>
@@ -964,11 +984,11 @@
                                                         </DataTemplate>
                                                     </telerikGrid:DataGridTemplateColumn.CellContentTemplate>
                                                 </telerikGrid:DataGridTemplateColumn>
-                                                <telerikGrid:DataGridTextColumn PropertyName="time" Header="Время события"  Width="400"/>
-                                                <telerikGrid:DataGridTextColumn PropertyName="nameFile" Header="Имя файла"/>
-                                                <telerikGrid:DataGridTextColumn PropertyName="nameklaster" Header="Кластер №" SizeMode="Fixed" Width="100"/>
-                                                <telerikGrid:DataGridTextColumn PropertyName="SumAmp" Header="Суммарная амплитуда" x:Name="dataAmp"/>
-                                                <telerikGrid:DataGridTextColumn PropertyName="SumNeu" Header="Сумма нейтронов" x:Name="dataN" />
+                                                <telerikGrid:DataGridTextColumn PropertyName="time" Header="Время события" SizeMode="Fixed" Width="260"/>
+                                                <telerikGrid:DataGridTextColumn PropertyName="nameFile" Header="Имя файла" SizeMode="Fixed" Width="300"/>
+                                                <telerikGrid:DataGridTextColumn PropertyName="nameklaster" Header="Кластер №" SizeMode="Fixed"  Width="100"/>
+                                                <telerikGrid:DataGridTextColumn PropertyName="SumAmp" Header="Суммарная амплитуда" SizeMode="Fixed" x:Name="dataAmp" Width="300"/>
+                                                <telerikGrid:DataGridTextColumn PropertyName="SumNeu" Header="Сумма нейтронов" x:Name="dataN" SizeMode="Fixed" Width="300" />
 
                                                 <telerikGrid:DataGridTextColumn PropertyName="nV" Header="детектор с нейтроном" x:Name="datanV" IsVisible="False" />
                                                 <telerikGrid:DataGridTextColumn PropertyName="AmpNV" Header="Амплитуда нейтрона" x:Name="dataAmpNV" IsVisible="False" />
@@ -3141,7 +3161,11 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Text="Менеджер добавления файлов" Margin="40,40,0,0"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Менеджер добавления файлов" Margin="40,40,0,0" Grid.ColumnSpan="2"/>
             <StackPanel Grid.Row="1">
                 <TextBlock Text=""/>
                 <TextBlock Text="Папка для добавления файлов"/>
@@ -3183,10 +3207,33 @@
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
-           <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="8" VerticalAlignment="Bottom">
+           <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="8" VerticalAlignment="Bottom">
                 <Button Content="Загрузить" Margin="4" Click="Button_Click_6" />
                 <Button Content="Отмена" Margin="4" Click="Button_Click_3"/>
             </StackPanel>
+            <ListView x:Name="listaddF" Grid.Column="1" Grid.Row="1" Header="Файлы на добавления">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:ClassСписокList">
+                        <Grid UseLayoutRounding="True"  Background="White">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind file1.DisplayName, Mode=OneWay}" FontSize="16"></TextBlock>
+                            <TextBlock Grid.Row="1" Text="{x:Bind file1.Path, Mode=OneWay}" FontSize="10"></TextBlock>
+                            <StackPanel Orientation="Horizontal" Grid.Row="2">
+                                <TextBlock Text="Размер, Мбайт: "/>
+                                <TextBlock  Text="{x:Bind sizeF, Mode=OneWay}"></TextBlock>
+                            </StackPanel>
+                            <ProgressBar Grid.Row="3" x:Name="ProgB1" Foreground="Green" HorizontalAlignment="Stretch" IsIndeterminate="{Binding Status}" ShowPaused="{Binding StatusP}"  Visibility="{Binding Status}" />
+                            <ProgressBar Grid.Row="4" HorizontalAlignment="Stretch" x:Name="progressBar" Maximum="{Binding basicProperties.Size}" Height="5" Value="{Binding StatusSize}" Visibility="{Binding Status}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
 
     </Grid>

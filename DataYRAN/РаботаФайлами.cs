@@ -105,36 +105,41 @@ namespace DataYRAN
             Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
             if (folder != null)
             {
+                DateTime dateTime = DateTime.Now;
+                
+                StorageFolder storageFolderPeogect =await folder.CreateFolderAsync("ProgectDataUran"+dateTime.Year.ToString()+dateTime.Month.ToString("00")+ dateTime.Day.ToString("00"), CreationCollisionOption.GenerateUniqueName);
+          
                 // Application now has read/write access to all contents in the picked folder
                 // (including other sub-folder contents)
                 Windows.Storage.AccessCache.StorageApplicationPermissions.
                 FutureAccessList.AddOrReplace("PickedFolderToken", folder);
 
                 StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
-
+                StorageFile storageFileP =await storageFolder.CreateFileAsync("storageFileP", CreationCollisionOption.OpenIfExists);
+                await Windows.Storage.FileIO.AppendTextAsync(storageFileP, storageFolderPeogect.DisplayName+"\t"+ storageFolderPeogect.Path);
                 StorageFolder storageFolderRazvertka = await storageFolder.CreateFolderAsync("Развертка", CreationCollisionOption.OpenIfExists);
 
                 IReadOnlyList<StorageFile> fileList =
                     await storageFolderRazvertka.GetFilesAsync();
                 if (fileList.Count != 0)
                 {
-                    StorageFolder storageFolderSave = await folder.CreateFolderAsync("Развертка", CreationCollisionOption.GenerateUniqueName);
+                    StorageFolder storageFolderSave = await storageFolderPeogect.CreateFolderAsync("Развертка", CreationCollisionOption.GenerateUniqueName);
                     foreach (StorageFile file in fileList)
                     {
                         await file.CopyAsync(storageFolderSave);
                     }
                 }
 
-                await SaveSob(folder, "СобытияФайлаT", "txt", cul);
+                await SaveSob(storageFolderPeogect, "СобытияФайлаT", "txt", cul);
                await SaveSobTimeСмешения_детектора(folder, "ВременаСрабатДетек", "txt", cul);
-                await SaveSobPlox(folder, "СобытияФайлаBadT", "txt", cul);
+                await SaveSobPlox(storageFolderPeogect, "СобытияФайлаBadT", "txt", cul);
 
-                await SaveSobNeutron(folder, "НейтроныФайлаT", "txt", cul);
-                await SaveSobN(folder, "СобытияФайлаN", "txt", cul);
-                await SaveSobPloxN(folder, "СобытияФайлаBadN", "txt", cul);
-                await SaveSobV(folder, "СобытияФайлаV", "txt", cul);
-                await SaveSobPloxV(folder, "СобытияФайлаBadV", "txt", cul);
-               await SaveSobTimeСмешения_детектораNew(folder, "ВременаСрабатДетекNew", "txt", cul);
+                await SaveSobNeutron(storageFolderPeogect, "НейтроныФайлаT", "txt", cul);
+                await SaveSobN(storageFolderPeogect, "СобытияФайлаN", "txt", cul);
+                await SaveSobPloxN(storageFolderPeogect, "СобытияФайлаBadN", "txt", cul);
+                await SaveSobV(storageFolderPeogect, "СобытияФайлаV", "txt", cul);
+                await SaveSobPloxV(storageFolderPeogect, "СобытияФайлаBadV", "txt", cul);
+               await SaveSobTimeСмешения_детектораNew(storageFolderPeogect, "ВременаСрабатДетекNew", "txt", cul);
 
 
 
@@ -897,6 +902,89 @@ namespace DataYRAN
                     }
                 }
                 stream.Dispose();
+            }
+        }
+        public async System.Threading.Tasks.Task saveAsyncFolder(int[,] data, int[,] Tail, string time, string nameFile)
+        {
+
+            string cul = "en-US";
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+              
+                StorageFolder storageFolderRazvertka = await folder.CreateFolderAsync("Развертка", CreationCollisionOption.OpenIfExists);
+                StorageFile sampleFile = await storageFolderRazvertka.CreateFileAsync(nameFile + time + ".txt", CreationCollisionOption.ReplaceExisting);
+
+                var stream = await sampleFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+                using (var outputStream = stream.GetOutputStreamAt(0))
+                {
+                    using (var dataWriter = new Windows.Storage.Streams.DataWriter(outputStream))
+                    {
+                        string s = "i" + "\t" + "Ch1" + "\t" + "Ch2" + "\t" + "Ch3" + "\t" + "Ch4" + "\t" + "Ch5" + "\t" + "Ch6" + "\t" + "Ch7" + "\t" + "Ch8" + "\t" + "Ch9" + "\t" + "Ch10" + "\t" + "Ch11" + "\t" + "Ch12" + "\r\n";
+                        for (int i = 0; i < 1024; i++)
+                        {
+                            s = s + (i + 1).ToString() + "\t";
+                            for (int j = 0; j < 12; j++)
+                            {
+                                s = s + data[j, i] + "\t";
+                            }
+                            if (i < 1023)
+                            {
+                                s = s + "\r\n";
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        dataWriter.WriteString(s);
+                        s = null;
+                        await dataWriter.StoreAsync();
+                        await outputStream.FlushAsync();
+                    }
+                }
+                stream.Dispose(); // Or use the stream variable (see previous code snippet) with a using statement as well.
+                if (ClassUserSetUp.TipTail)
+                {
+                    storageFolderRazvertka = await folder.CreateFolderAsync("Развертка", CreationCollisionOption.OpenIfExists);
+                    sampleFile = await storageFolderRazvertka.CreateFileAsync(nameFile + time + "Хвост" + ".txt", CreationCollisionOption.ReplaceExisting);
+
+                    stream = await sampleFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+                    using (var outputStream = stream.GetOutputStreamAt(0))
+                    {
+                        using (var dataWriter = new Windows.Storage.Streams.DataWriter(outputStream))
+                        {
+                            string s = "i" + "\t" + "Ch1" + "\t" + "Ch2" + "\t" + "Ch3" + "\t" + "Ch4" + "\t" + "Ch5" + "\t" + "Ch6" + "\t" + "Ch7" + "\t" + "Ch8" + "\t" + "Ch9" + "\t" + "Ch10" + "\t" + "Ch11" + "\t" + "Ch12" + "\r\n";
+                            for (int i = 0; i < 20000; i++)
+                            {
+                                s = s + (i + 1).ToString() + "\t";
+                                for (int j = 0; j < 12; j++)
+                                {
+                                    s = s + Tail[j, i] + "\t";
+                                }
+                                if (i < 19999)
+                                {
+                                    s = s + "\r\n";
+                                }
+                                else
+                                {
+
+                                }
+
+                                dataWriter.WriteString(s);
+                                s = null;
+                            }
+
+                            await dataWriter.StoreAsync();
+                            await outputStream.FlushAsync();
+                        }
+                    }
+                    stream.Dispose();
+                }
             }
         }
         public async Task SaveFilter()
