@@ -27,7 +27,25 @@ namespace DataYRAN
 
         int sumClastUp;
         public int SumClastUp
-        { get { return sumClastUp; } set { sumClastUp = value; } }
+        {
+            get
+            {
+                int x = 0;
+                foreach (ClassSob classSob in col)
+                {
+                    for(int i=0; i<12; i++)
+                    {
+                        if(classSob.mAmp[i]>10)
+                        {
+                            x++;
+                        }
+                    }
+                
+
+                }
+                return x;
+            }
+            set { sumClastUp = value; } }
         public void SumAmpAndNeutronAndClaster()
         {
             foreach(ClassSob classSob in col)
@@ -48,6 +66,82 @@ namespace DataYRAN
             }
         }
        public List<ClassSob> col = new List<ClassSob>();
+        public DataTimeUR dateUR { get; set; }
+        public string klSob
+        {
+            
+            get
+            {
+                string ki = String.Empty;
+                foreach (ClassSob classSob in col)
+                {
+                    ki += classSob.nameklaster.ToString() + ",";
+
+                }
+                return ki;
+            }
+        }
+        public int NDn
+        {
+
+            get
+            {
+                int x = 0;
+                foreach (ClassSob classSob in col)
+                {
+                   if(classSob.Nnut0>0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut1 > 0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut2 > 0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut3 > 0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut4 > 0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut5 > 0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut6 > 0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut7 > 0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut8 > 0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut9 > 0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut10 > 0)
+                    {
+                        x++;
+                    }
+                    if (classSob.Nnut11 > 0)
+                    {
+                        x++;
+                    }
+
+                }
+                return x;
+            }
+        }
 
     }
 }

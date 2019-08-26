@@ -40,7 +40,7 @@ namespace DataYRAN
                 this.OnPropertyChanged(nameof(CountNaObrabZ));
             }
         }
-       
+        public string script = String.Empty;
         int countObrabSob = 0;
         public int CountObrabSob
         {
@@ -125,11 +125,11 @@ namespace DataYRAN
             cclassUserSetUp.saveUseSet1();
             ClassUserSetUp.saveUseSet();
         }
-        private ObservableCollection<ClassSob> classSobs = new ObservableCollection<ClassSob>();
+        public ObservableCollection<ClassSob> classSobs = new ObservableCollection<ClassSob>();
         /// <summary>
         /// Коллекция сигналов БААК12-200Т
         /// </summary>
-        public ObservableCollection<ClassSob> ClassSobsT { get { return this.classSobs; } }
+        public ObservableCollection<ClassSob> ClassSobsT { set { this.classSobs = value; this.OnPropertyChanged(nameof(ClassSobsT)); } get { return this.classSobs; } }
 
         public int CountSob
         {
@@ -183,6 +183,7 @@ namespace DataYRAN
             _DataColecSobPloxT.Clear();
             _DataColecSobPloxN.Clear();
             _DataSobColli.Clear();
+            _DataColecSobCopy.Clear();
         }
         public void ClearDataBAAK12_200T()
         {

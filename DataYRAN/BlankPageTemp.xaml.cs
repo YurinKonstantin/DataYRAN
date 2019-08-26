@@ -219,5 +219,121 @@ namespace DataYRAN
 
             }
         }
+        private void rankLowFilter_Click(object sender, RoutedEventArgs e)
+        {
+            int x = 50;
+            EmployeeGrid.ItemsSource = new ObservableCollection<ClassTemp>(from item in DataColec
+                                                                              where item.colSob > x
+                                                                              select item);
+        }
+        private void ClearFilter_Click(object sender, RoutedEventArgs e)
+        {
+            if (EmployeeGrid != null)
+            {
+                EmployeeGrid.ItemsSource = DataColec;
+            }
+        }
+
+        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+
+
+
+                if (DataColec.Count != 0)
+                {
+                    using (StreamWriter writer =
+                   new StreamWriter(await folder.OpenStreamForWriteAsync(
+                   "TempSobFil50" + "." + "txt", CreationCollisionOption.GenerateUniqueName)))
+                    {
+                        string sSob = "DateTime" + "\t" + "SobTemp";
+
+
+                        await writer.WriteLineAsync(sSob);
+                        foreach (ClassTemp sob in EmployeeGrid.ItemsSource)
+                        {
+
+                            string Sob = sob.dateTime.ToString() + "\t" + sob.colSob.ToString();
+                            await writer.WriteLineAsync(Sob);
+                        }
+                    }
+                }
+
+
+                MessageDialog messageDialog = new MessageDialog("Темп сохранен");
+                await messageDialog.ShowAsync();
+
+            }
+            else
+            {
+
+            }
+        }
+
+
+        private void rankLowFilterN_Click(object sender, RoutedEventArgs e)
+        {
+            int x = 50;
+           NeutronGrid.ItemsSource = new ObservableCollection<ClassTemp>(from item in DataColecN
+                                                                           where item.Temp > x
+                                                                           select item);
+        }
+        private void ClearFilterN_Click(object sender, RoutedEventArgs e)
+        {
+            if (NeutronGrid != null)
+            {
+                NeutronGrid.ItemsSource = DataColecN;
+            }
+        }
+
+        private async void AppBarButtonN_Click(object sender, RoutedEventArgs e)
+        {
+
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+
+
+
+                if (DataColecN.Count != 0)
+                {
+                    using (StreamWriter writer =
+                   new StreamWriter(await folder.OpenStreamForWriteAsync(
+                   "TempSobNFil50" + "." + "txt", CreationCollisionOption.GenerateUniqueName)))
+                    {
+                        string sSob = "DateTime" + "\t" + "SobTempN";
+
+
+                        await writer.WriteLineAsync(sSob);
+                        foreach (ClassTemp sob in NeutronGrid.ItemsSource)
+                        {
+
+                            string Sob = sob.dateTime.ToString() + "\t" + sob.Temp.ToString();
+                            await writer.WriteLineAsync(Sob);
+                        }
+                    }
+                }
+
+
+                MessageDialog messageDialog = new MessageDialog("Темп сохранен");
+                await messageDialog.ShowAsync();
+
+            }
+            else
+            {
+
+            }
+        }
     }
 }

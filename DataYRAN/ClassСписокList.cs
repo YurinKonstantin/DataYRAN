@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 
@@ -13,7 +14,9 @@ namespace DataYRAN
     [Serializable]
     public class ClassСписокList : INotifyPropertyChanged
     {
-       
+        public String Text { get; set; }
+        public ICommand Command { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
      public   BasicProperties basicProperties { get; set; }
         public string NameFile { get; set; }

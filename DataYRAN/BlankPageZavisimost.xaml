@@ -14,19 +14,37 @@
 
     <Grid >
         <Pivot x:Name="rootPivot" Title="Pivot Title" >
-            
+
             <Pivot.RightHeader>
                 <CommandBar OverflowButtonVisibility="Collapsed" Background="Transparent">
-                   
+
                     <AppBarButton Icon="Add" Click="AppBarButton_Click"/>
                     <AppBarButton Icon="Play" Click="AppBarButton_Click_1"/>
+                    <AppBarButton Icon="Play" Content="Obc" Click="AppBarButton_Click_1Ob"/>
                     <AppBarButton Icon="Delete" Click="AppBarButton_Click_3"/>
                     <AppBarButton Icon="Save" Click="AppBarButton_Click_2"/>
+                    <AppBarButton FrameworkElement.AllowFocusOnInteraction="True"  IsEnabled="True" Icon="Setting" Label="Настройки обработки" VerticalAlignment="Stretch"   Tapped="AppBarButton_Tapped">
+                        <FlyoutBase.AttachedFlyout>
+                            <Flyout>
+
+                                <StackPanel  Orientation="Vertical" Margin="16,32,0,0" Padding="0,0,0,0">
+
+                                 
+
+                              
+                                    <TextBlock FontSize="12" Text="Шаг амплитуды" Visibility="Collapsed"/>
+                                    <TextBox Name="StepsAmpl" Text="20" />
+
+
+                                </StackPanel>
+                            </Flyout>
+                        </FlyoutBase.AttachedFlyout>
+                        </AppBarButton>
                 </CommandBar>
             </Pivot.RightHeader>
             <PivotItem Header="Данные">
-                
-                    <controls:DataGrid x:Name="dataGrid3"  Margin="0,5,0,10" RowHeight="40" AutoGenerateColumns="False"  CanUserSortColumns="True" VerticalAlignment="Stretch">
+
+                <controls:DataGrid x:Name="dataGrid3"  Margin="0,5,0,10" RowHeight="40" AutoGenerateColumns="False"  CanUserSortColumns="True" VerticalAlignment="Stretch">
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn  Header="Время события"  Width="*" Binding="{Binding time}" FontSize="20"  />
                         <controls:DataGridTextColumn Header="Имя файла" Width="*" Binding="{Binding nameFile}" FontSize="20" />
@@ -48,8 +66,8 @@
                         <controls:DataGridTextColumn Header="Сумма нейтронов" Width="*" Binding="{Binding SumNeu}" FontSize="20" />
                     </controls:DataGrid.Columns>
                 </controls:DataGrid>
-
             </PivotItem>
+         
             <PivotItem Header="Результаты" x:Name="dd" >
                 <controls:DataGrid x:Name="DataGrid1" Height="160" Margin="0,5,0,10" RowHeight="40" AutoGenerateColumns="False" VerticalAlignment="Top">
                     <controls:DataGrid.Columns>
@@ -73,6 +91,7 @@
                     </controls:DataGrid.Columns>
                 </controls:DataGrid>
             </PivotItem>
+          
         </Pivot>
     </Grid>
 </Page>

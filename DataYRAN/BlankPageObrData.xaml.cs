@@ -26,25 +26,28 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
+
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+
 using Windows.UI.Xaml.Navigation;
 using Microsoft.QueryStringDotNET;
 using Windows.ApplicationModel.Activation;
-using Windows.Devices.Geolocation;
-using Windows.UI.Xaml.Controls.Maps;
-using Windows.UI;
-using System.Net;
+
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.FileProperties;
-using System.Data;
-using System.Runtime.InteropServices.ComTypes;
+
 using Windows.ApplicationModel.ExtendedExecution;
 using DataYRAN.StatObrabotka.StatNulLine;
 using DataYRAN.StatObrabotka.StatSig;
-using Microsoft.Toolkit.Uwp.UI.Controls;
+
 using DataYRAN.StatObrabotka.statObcTemp;
+using DataYRAN.StatObrabotka.TimeDistribuchen;
+using DataYRAN.Script;
+using Microsoft.Scripting.Hosting;
+using IronPython.Hosting;
+using Windows.Devices.Usb;
+using Telerik.Core.Data;
+
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -116,9 +119,7 @@ namespace DataYRAN
 
         ObservableCollection<ClassSobObrZav> _DataColecSob2 = new ObservableCollection<ClassSobObrZav>();
 
-  
-       
-
+        //   ViewModel.ClassSobsT
 
 
         public BlankPageObrData()
@@ -284,7 +285,7 @@ namespace DataYRAN
                  //   MessageDialog messageDialog = new MessageDialog("dd");
                    // messageDialog.ShowAsync();
 
-                    await Task.Run(()=> WriteInFileIzOcherediAsync(cancellationToken, ViewModel.cclassUserSetUp));
+                    await Task.Run(()=> WriteInFileIzOcherediAsync(cancellationToken, ViewModel.cclassUserSetUp, ViewModel.script));
 
                     // await WriteInFileIzOcherediAsync(cancellationToken);
                     watch.Stop();
@@ -303,7 +304,7 @@ namespace DataYRAN
                                 sobInSec.Text = "Очень бычстро";
                             }
                    // watch.Reset();
-                    var messq = new MessageDialog("Конец");
+                    var messq = new MessageDialog("Обработка данных завершена успешно." +"\n"+"Длительность обработки: "+ (watch.ElapsedMilliseconds / 1000).ToString()+"c.", "Завершение обработки");
                     await messq.ShowAsync();
                     
                     
@@ -344,7 +345,7 @@ namespace DataYRAN
         /// охраняем данные о событии
         /// </summary>
         public SaveFileSob SaveFileSobDelegate;
-        public delegate Task ObrSig(string nameFile, string nemeBAAK, int[,] data1, int[,] dataTail1, string time1, string tipName, ClassUserSetUp classUserSetUp, DataTimeUR dataTimeUR);//
+        public delegate Task ObrSig(string nameFile, string nemeBAAK, int[,] data1, int[,] dataTail1, string time1, string tipName, ClassUserSetUp classUserSetUp, DataTimeUR dataTimeUR, string script);//
 
         /// <summary>
         /// охраняем пакет в файл
@@ -407,7 +408,29 @@ namespace DataYRAN
             ObRing.IsActive = false;
         }
 
-    
+        private async void OpenDevice()
+        {
+            UInt32 vid = 0x045E;
+            UInt32 pid = 0x0611;
+           
+            string aqs = UsbDevice.GetDeviceSelector(vid, pid);
+
+            var myDevices = await Windows.Devices.Enumeration.DeviceInformation.FindAllAsync(aqs);
+
+            try
+            {
+             var   usbDevice = await UsbDevice.FromIdAsync(myDevices[0].Id);
+            }
+            catch (Exception exception)
+            {
+ 
+            }
+            finally
+            {
+
+            }
+
+        }
 
         /// <summary>
         /// Очищаем таблицы и хранилище с разверткой
@@ -492,211 +515,85 @@ namespace DataYRAN
 
         private async  void AppBarButton_Click_8(object sender, RoutedEventArgs e)
         {
-          IDataView currentView = this.DataGrid.GetDataView();
-         foreach(object d in currentView)
-            {
-                MessageDialog messageDialog = new MessageDialog(d.ToString());
-                await messageDialog.ShowAsync();
-            }
-            
-               
-            
+
+
           
-       
+
 
         }
-        async Task OutputClipboardText()
+        private async void ButtonScript_Click(object sender, RoutedEventArgs e)
         {
-            int count = 0;
-            try
+            Pyt();
+        }
+        private async void ButtonScriptSaveRazvertca_Click(object sender, RoutedEventArgs e)
+        {
+           ContentDialogScriptSaveRAzvertki deleteFileDialog = new ContentDialogScriptSaveRAzvertki()
             {
+               
 
+            };
+          
+            ContentDialogResult result = await deleteFileDialog.ShowAsync();
+            if (deleteFileDialog.Script != String.Empty)
+            {
+                ViewModel.script = deleteFileDialog.Script;
+            }
+            else
+            {
+                ViewModel.script = String.Empty;
+            }
+            
+        }
+        private async void ButtonScriptFilterDataGrid_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialogScriptSaveRAzvertki deleteFileDialog = new ContentDialogScriptSaveRAzvertki()
+            {
+                Title="Срипт для фильтра данных"
 
-                DataPackageView dataPackageView = Clipboard.GetContent();
-                if (dataPackageView.Contains(StandardDataFormats.Text))
+            };
+     
+            ContentDialogResult result = await deleteFileDialog.ShowAsync();
+            if (deleteFileDialog.Script != String.Empty)
+            {
+                IDataView currentView = this.DataGrid.GetDataView();
+                if (currentView.Items.Count > 0)
                 {
-                    string text = await dataPackageView.GetTextAsync();
-                    // To output the text from this example, you need a TextBlock control
-                    char[] rowSplitter = { '\r', '\n' };
-                    string[] rowsInClipboard = text.Split(rowSplitter, StringSplitOptions.RemoveEmptyEntries);
 
-                    for (int i = 1; i < rowsInClipboard.Length; i++)
+
+                    ObservableCollection<ClassSob> classSobs = new ObservableCollection<ClassSob>();
+                    foreach (ClassSob classSob in currentView)
                     {
-                        string[] rows = rowsInClipboard[i].Split('\t');
-                        count = Convert.ToInt32(rows[0]);
-                        if (rows[1].Contains("T") || rows[1].Contains("N") || rows[1].Contains("V"))
-                        {
-                            int[] ii = new int[12];
-                            ii[0] = Convert.ToInt16(rows[7]);
-                            ii[1] = Convert.ToInt16(rows[8]);
-                            ii[2] = Convert.ToInt16(rows[9]);
-                            ii[3] = Convert.ToInt16(rows[10]);
-                            ii[4] = Convert.ToInt16(rows[11]);
-                            ii[5] = Convert.ToInt16(rows[12]);
-                            ii[6] = Convert.ToInt16(rows[13]);
-                            ii[7] = Convert.ToInt16(rows[14]);
-                            ii[8] = Convert.ToInt16(rows[15]);
-                            ii[9] = Convert.ToInt16(rows[16]);
-                            ii[10] = Convert.ToInt16(rows[17]);
-                            ii[11] = Convert.ToInt16(rows[18]);
-                            int ic = 1;
-                            List<ClassSobNeutron> ll = new List<ClassSobNeutron>();
-                            for (int it = 19; it < 31; it++)
-                            {
-                                if (Convert.ToInt16(rows[it]) > 0)
-                                {
-                                    for (int d = 0; d < Convert.ToInt16(rows[it]); d++)
-                                    {
-                                        ll.Add(new ClassSobNeutron() { D = ic, Amp = 0, TimeAmp = 0, TimeEnd = 0, TimeEnd3 =0, TimeFirst = 0, TimeFirst3 = 0 });
-                                  
-
-                                    }
-                                    
-                                }
-                                ic++;
-
-                            }
-
-                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-      () =>
-      {
-          ViewModel.ClassSobsT.Add(new ClassSob()
-          {
-              nameFile = rows[1],
-              nameklaster = rows[2],
-              nameBAAK = rows[3],
-              time = rows[4],
-             mAmp = ii,
-        
-               // Nnut0 = Convert.ToInt16(rows[19]),
-              //  Nnut1 = Convert.ToInt16(rows[20]),
-              //  Nnut2 = Convert.ToInt16(rows[21]),
-               // Nnut3 = Convert.ToInt16(rows[22]),
-              //  Nnut4 = Convert.ToInt16(rows[23]),
-              //  Nnut5 = Convert.ToInt16(rows[24]),
-               // Nnut6 = Convert.ToInt16(rows[25]),
-               // Nnut7 = Convert.ToInt16(rows[26]),
-              //  Nnut8 = Convert.ToInt16(rows[27]),
-              //  Nnut9 = Convert.ToInt16(rows[28]),
-               // Nnut10 = Convert.ToInt16(rows[29]),
-               // Nnut11 = Convert.ToInt16(rows[30]),
- classSobNeutronsList=ll,
-                sig0 = Convert.ToDouble(rows[31].Replace(".", ",")),
-                sig1 = Convert.ToDouble(rows[32].Replace(".", ",")),
-                sig2 = Convert.ToDouble(rows[33].Replace(".", ",")),
-                sig3 = Convert.ToDouble(rows[34].Replace(".", ",")),
-                sig4 = Convert.ToDouble(rows[35].Replace(".", ",")),
-                sig5 = Convert.ToDouble(rows[36].Replace(".", ",")),
-                sig6 = Convert.ToDouble(rows[37].Replace(".", ",")),
-                sig7 = Convert.ToDouble(rows[38].Replace(".", ",")),
-                sig8 = Convert.ToDouble(rows[39].Replace(".", ",")),
-                sig9 = Convert.ToDouble(rows[40].Replace(".", ",")),
-                sig10 = Convert.ToDouble(rows[41].Replace(".", ",")),
-
-                sig11 = Convert.ToDouble(rows[42].Replace(".", ",")),
-                
-              SumAmp = Convert.ToInt32(rows[5]),
-               // SumNeu = Convert.ToInt16(rows[6]),
-                
-              Nnull0 = Convert.ToInt16(rows[43]),
-              Nnull1 = Convert.ToInt16(rows[44]),
-              Nnull2 = Convert.ToInt16(rows[45]),
-              Nnull3 = Convert.ToInt16(rows[46]),
-              Nnull4 = Convert.ToInt16(rows[47]),
-              Nnull5 = Convert.ToInt16(rows[48]),
-              Nnull6 = Convert.ToInt16(rows[49]),
-              Nnull7 = Convert.ToInt16(rows[50]),
-              Nnull8 = Convert.ToInt16(rows[51]),
-              Nnull9 = Convert.ToInt16(rows[52]),
-              Nnull10 = Convert.ToInt16(rows[53]),
-              Nnull11 = Convert.ToInt16(rows[54])
-             
-          });
-          ViewModel.CountNaObrabZ++;
-          ViewModel.CountObrabSob++;
-
-      });
-                           
-                        }
-                        else
-                        {
-                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-      () =>
-      {
-          ViewModel.ClassSobsT.Add(new ClassSob()
-          {
-              nameFile = rows[2],
-              nameklaster = rows[4],
-              nameBAAK = rows[3],
-              time = rows[1],
-             /* Amp0 = Convert.ToInt16(rows[7]),
-              Amp1 = Convert.ToInt16(rows[8]),
-              Amp2 = Convert.ToInt16(rows[9]),
-              Amp3 = Convert.ToInt16(rows[10]),
-              Amp4 = Convert.ToInt16(rows[11]),
-              Amp5 = Convert.ToInt16(rows[12]),
-              Amp6 = Convert.ToInt16(rows[13]),
-              Amp7 = Convert.ToInt16(rows[14]),
-              Amp8 = Convert.ToInt16(rows[15]),
-              Amp9 = Convert.ToInt16(rows[16]),
-              Amp10 = Convert.ToInt16(rows[17]),
-              Amp11 = Convert.ToInt16(rows[18]),
-              */
-             // Nnut0 = Convert.ToInt16(rows[19]),
-             // Nnut1 = Convert.ToInt16(rows[20]),
-              //Nnut2 = Convert.ToInt16(rows[21]),
-             // Nnut3 = Convert.ToInt16(rows[22]),
-             // Nnut4 = Convert.ToInt16(rows[23]),
-             // Nnut5 = Convert.ToInt16(rows[24]),
-             // Nnut6 = Convert.ToInt16(rows[25]),
-            //  Nnut7 = Convert.ToInt16(rows[26]),
-            //  Nnut8 = Convert.ToInt16(rows[27]),
-            //  Nnut9 = Convert.ToInt16(rows[28]),
-            //  Nnut10 = Convert.ToInt16(rows[29]),
-            //  Nnut11 = Convert.ToInt16(rows[30]),
-
-              sig0 = Convert.ToDouble(rows[43]),
-              sig1 = Convert.ToDouble(rows[44]),
-              sig2 = Convert.ToDouble(rows[45]),
-              sig3 = Convert.ToDouble(rows[46]),
-              sig4 = Convert.ToDouble(rows[47]),
-              sig5 = Convert.ToDouble(rows[48]),
-              sig6 = Convert.ToDouble(rows[49]),
-              sig7 = Convert.ToDouble(rows[50]),
-              sig8 = Convert.ToDouble(rows[51]),
-              sig9 = Convert.ToDouble(rows[52]),
-              sig10 = Convert.ToDouble(rows[53]),
-              sig11 = Convert.ToDouble(rows[54]),
-              SumAmp = Convert.ToInt32(rows[5]),
-              SumNeu = Convert.ToInt16(rows[6]),
-              Nnull0 = Convert.ToInt16(rows[31]),
-              Nnull1 = Convert.ToInt16(rows[32]),
-              Nnull2 = Convert.ToInt16(rows[33]),
-              Nnull3 = Convert.ToInt16(rows[34]),
-              Nnull4 = Convert.ToInt16(rows[35]),
-              Nnull5 = Convert.ToInt16(rows[36]),
-              Nnull6 = Convert.ToInt16(rows[37]),
-              Nnull7 = Convert.ToInt16(rows[38]),
-              Nnull8 = Convert.ToInt16(rows[39]),
-              Nnull9 = Convert.ToInt16(rows[40]),
-              Nnull10 = Convert.ToInt16(rows[41]),
-              Nnull11 = Convert.ToInt16(rows[42])
-          });
-
-      });
-                        }
+                        string yNumber = "false";
+                       
                    
+                    
+                        ScriptEngine engine = Python.CreateEngine();
+                        ScriptScope scope = engine.CreateScope();
+                        scope.SetVariable("Rez", yNumber);
+
+                        scope.SetVariable("ClassSob", classSob);
+                        engine.Execute(deleteFileDialog.Script, scope);
+                        dynamic zNumber = scope.GetVariable("Rez");
+                   
+                        // dynamic xNumber = scope.GetVariable("x");
+                        //   dynamic zNumber = scope.GetVariable("z");
+                        if (zNumber.ToString() == "true")
+                        {
+                            classSobs.Add(classSob);
+                        }
+                    
                     }
-                   
+
+                    DataGrid.ItemsSource = classSobs;
                 }
             }
-            catch(Exception ex)
+            else
             {
-                MessageDialog messageDialog = new MessageDialog(ex.ToString());
-                await messageDialog.ShowAsync();
+               DataGrid.ItemsSource= ViewModel.ClassSobsT; 
             }
+
         }
-        
+
         /// <summary>
         /// Метод для отображения содержимого xml элемента.
         /// </summary>
@@ -827,6 +724,30 @@ namespace DataYRAN
                
             }
         }
+        private async void DataGrid1_SelectionChanged(object sender, DataGridSelectionChangedEventArgs e)
+        {
+            if (DataGrid1.SelectedItem != null)
+            {
+
+
+                Split22.IsPaneOpen = !Split22.IsPaneOpen;
+
+
+                object ind = DataGrid1.SelectedItem;
+
+
+                ClassSobColl classSob = (ClassSobColl)DataGrid1.SelectedItem;
+
+                await MyUserO.ShowDetecAsync(classSob.col);
+                await MyUsernO.ShowDetecТAsync(classSob.col);
+
+            }
+            else
+            {
+                Split22.IsPaneOpen = false;
+            }
+
+        }
         private void DataGrid_SelectionChangedPlox(object sender, Telerik.UI.Xaml.Controls.Grid.DataGridSelectionChangedEventArgs e)
         {
             if (DataGridPlox.SelectedItem != null)
@@ -900,42 +821,28 @@ namespace DataYRAN
                 StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
 
                 int i = 0;
-                if (ViewModel._DataSobColli.Count != 0)
+                IDataView currentView = this.DataGrid1.GetDataView();
+                if (currentView.Items.Count > 0)
                 {
+
+
+                   // ObservableCollection<ClassSobColl> classSobs = new ObservableCollection<ClassSobColl>();
                     using (StreamWriter writer =
-                   new StreamWriter(await folder.OpenStreamForWriteAsync(
-                   "ОбщиеСоб.txt", CreationCollisionOption.OpenIfExists)))
+              new StreamWriter(await folder.OpenStreamForWriteAsync(
+              "ОбщиеСоб.txt", CreationCollisionOption.OpenIfExists)))
                     {
-                        string sSob = "n" + "\t" + "time" + "\t" + "sumAmpl" + "\t" + "sumNeut" + "\t" + "sumClust" + "\t" + "sumDecUp";
+                        string sSob = "n" + "\t" + "time" + "\t" + "sumAmpl" + "\t" + "sumNeut" + "\t" + "sumClust" + "\t" + "sumDecUp" + "\t" + "NDn";
 
 
-                        await writer.WriteLineAsync(sSob);
-                        foreach (ClassSobColl sob in ViewModel._DataSobColli)
-                        {
-                            i++;
-                            string Sob = i + "\t" + sob.StartTime + "\t" + sob.SummAmpl + "\t" + sob.SummNeu + "\t" + sob.SumClast + "\t" + sob.SumClastUp;
-                            await writer.WriteLineAsync(Sob);
-                        }
+                    await writer.WriteLineAsync(sSob);
+                    foreach (ClassSobColl classSob in currentView)
+                    {
+                        i++;
+                        string Sob = i + "\t" + classSob.StartTime + "\t" + classSob.SummAmpl + "\t" + classSob.SummNeu + "\t" + classSob.SumClast + "\t" + classSob.SumClastUp+"\t"+classSob.NDn;
+                        await writer.WriteLineAsync(Sob);
                     }
-                }
-
-
-                if (_DataColecSob2.Count != 0)
-                {
-                    using (StreamWriter writer =
-                   new StreamWriter(await folder.OpenStreamForWriteAsync(
-                   "СреднЗначОбщегоСобытия.txt", CreationCollisionOption.OpenIfExists)))
-                    {
-                        string sSob = "Ampl" + "\t" + "Sredn" + "\t" + "3sig";
-
-
-                        await writer.WriteLineAsync(sSob);
-                        foreach (ClassSobObrZav sob in _DataColecSob2)
-                        {
-                            i++;
-                            string Sob = sob.amp + "\t" + sob.sredN + "\t" + sob.sig;
-                            await writer.WriteLineAsync(Sob);
-                        }
+    
+                        
                     }
                 }
 
@@ -948,29 +855,7 @@ namespace DataYRAN
             var mess = new MessageDialog("Сохранение завершено");
             await mess.ShowAsync();
         }
-        private async void AppBarButton_Play(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-               
-                
-               
-                int MaxDur = Convert.ToInt16(TimeGate.Text);
-                int MaxAmpl = Convert.ToInt16(MinAmplDetect.Text);
-                int MinClust = Convert.ToInt16(MinClustDec.Text);
-            await  Task.Run(()=>  ObchSobURAN(MaxDur, MaxAmpl, MinClust));
-               
-
-
-
-            }
-            catch (Exception ex)
-            {
-                MessageDialog messageDialog = new MessageDialog(ex.ToString());
-                await messageDialog.ShowAsync();
-            }
-
-        }
+  
         private Double Sum(List<int> n, double x)
         {
             Double res = 0;
@@ -983,6 +868,7 @@ namespace DataYRAN
    
         private void AppBarButton_Clear(object sender, RoutedEventArgs e)
         {
+            ViewModel._DataColecSobCopy.Clear();
             ViewModel._DataSobColli.Clear();
         }
 
@@ -1220,19 +1106,40 @@ namespace DataYRAN
                                                         int[,] dataTail1 = new int[12, 20000];
                                                         int[] coutN1 = new int[12];
                                                         string time1 = null;
-                                                     
+                                                        string ss = String.Empty;
                                                         if (ClassUserSetUp.TipTail)
                                                         {
-                                                          ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200H(dataOnePac, out data1, out time1, out dataTail1);
+                                                        ss=  ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200H(dataOnePac, out data1, out time1, out dataTail1);
                                                         }
                                                         else
                                                         {
 
-                                                             ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200(dataOnePac, 1, out data1, out time1);
+                                                          ParserBAAK12.ParseBinFileBAAK12.ParseBinFileBAAK200(dataOnePac, 1, out data1, out time1);
                                                         }
-                                                        
-                                                        if (time== time1)
+
+
+                                                      
+                                                           
+                                                            string[] strTime = time1.Split('.');
+                                 
+                                                            //  Debug.WriteLine(time1);
+                                                            DataTimeUR dataTimeUR = new DataTimeUR(0, 0, Convert.ToInt16(strTime[0]), Convert.ToInt16(strTime[1]), Convert.ToInt16(strTime[2]) , Convert.ToInt16(strTime[3]),
+                                                                         Convert.ToInt16(strTime[4]), Convert.ToInt16(strTime[5]), Convert.ToInt16(strTime[6]));
+                                                       
+                                                                dataTimeUR.corectTime(nameFile);
+
+
+
+
+                                                        // time1 = strTime[0] + "." + strTime[1] + "." + (Convert.ToInt32(strTime[2]) + t).ToString("00") + "." + strTime[3] + "." + strTime[4] + "." + strTime[5] + "." + strTime[6];
+
+                                                        time1 = strTime[0] + "." + strTime[1] + "." + (Convert.ToInt32(strTime[2])).ToString("00") + "." + strTime[3] + "." + strTime[4] + "." + strTime[5] + "." + strTime[6];
+
+                                                        Debug.WriteLine(dataTimeUR.DateTimeString()+"\t"+ time);
+
+                                                        if (time == dataTimeUR.TimeString())
                                                         {
+                                                            Debug.WriteLine("EEE");
                                                             ClassRazvertka classRazvertka = new ClassRazvertka() { nameFile1=nameFile, data=data1, dataTail=dataTail1, Time=time1 };
                                                             if (tip == "Viz")
                                                             {
@@ -1458,6 +1365,227 @@ namespace DataYRAN
         {
             this.Frame.Navigate(typeof(BlankPageRazverta));
         }
+        private async void MenuFlyoutItemPnew_Click(object sender, RoutedEventArgs e)
+        {
+            ClassProject.SaveProgect(ViewModel.ClassSobsT);
+           
+        }
+        private async void MenuFlyoutItemPOpen_Click(object sender, RoutedEventArgs e)
+        {
+            // ObservableCollection<ClassSob> classSobsC = new ObservableCollection<ClassSob>();
+            ViewModel.ClassSobsT=await ClassProject.OpenP();
+            DataGrid.ItemsSource = ViewModel.ClassSobsT;
+            //  classSobsC
+            //  foreach (ClassSob classSob in classSobsC)
+            //  {
+            //     ViewModel.ClassSobsT.Add(classSob);
+            //  }
+
+            MessageDialog messageDialog = new MessageDialog("Открыт");
+           await messageDialog.ShowAsync();
+
+
+        }
+        private async void MenuFlyoutItemTabOpenSob_Click(object sender, RoutedEventArgs e)
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+            picker.SuggestedStartLocation =
+                Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            picker.FileTypeFilter.Add(".doc");
+            picker.FileTypeFilter.Add(".data");
+            picker.FileTypeFilter.Add(".txt");
+            try
+            {
+
+
+                Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+                if (file != null)
+
+                {
+                    ContentDialog contentDialog = new ContentDialog
+                    {
+                        Title = "Загрузка данных из текстовой таблице",
+                        Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс ...",
+
+                    };
+                    contentDialog.ShowAsync();
+                    IList<string> g = await Windows.Storage.FileIO.ReadLinesAsync(file);
+                    int h = g.Count;
+                    int x = 0;
+                    try
+                    {
+                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+
+    contentDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс ..." + "\n" + "Осталось: " + h.ToString();
+});
+                
+                        foreach (string f in g)
+                        {
+                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+
+contentDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс ..." + "\n" + "Осталось: " + h.ToString();
+});
+                            h--;
+                            string[] rows = f.Split("\t");
+                            if (rows.Length != 0 && !rows[0].Contains("n"))
+                            {
+                                //count = Convert.ToInt32(rows[0]);
+                                if (rows[1].Contains("T"))
+                                {
+                                    int[] ii = new int[12];
+                                    ii[0] = Convert.ToInt16(rows[7]);
+                                    ii[1] = Convert.ToInt16(rows[8]);
+                                    ii[2] = Convert.ToInt16(rows[9]);
+                                    ii[3] = Convert.ToInt16(rows[10]);
+                                    ii[4] = Convert.ToInt16(rows[11]);
+                                    ii[5] = Convert.ToInt16(rows[12]);
+                                    ii[6] = Convert.ToInt16(rows[13]);
+                                    ii[7] = Convert.ToInt16(rows[14]);
+                                    ii[8] = Convert.ToInt16(rows[15]);
+                                    ii[9] = Convert.ToInt16(rows[16]);
+                                    ii[10] = Convert.ToInt16(rows[17]);
+                                    ii[11] = Convert.ToInt16(rows[18]);
+                                    int ic = 1;
+                                    List<ClassSobNeutron> ll = new List<ClassSobNeutron>();
+                                    for (int it = 19; it < 31; it++)
+                                    {
+                                        if (Convert.ToInt16(rows[it]) > 0)
+                                        {
+                                            for (int d = 0; d < Convert.ToInt16(rows[it]); d++)
+                                            {
+                                                ll.Add(new ClassSobNeutron() { D = ic, Amp = 0, TimeAmp = 0, TimeEnd = 0, TimeEnd3 = 0, TimeFirst = 0, TimeFirst3 = 0 });
+
+
+                                            }
+
+                                        }
+                                        ic++;
+
+                                    }
+
+                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+              () =>
+              {
+                ViewModel.ClassSobsT.Add(new ClassSob()
+                  {
+                      nameFile = rows[1],
+                      nameklaster = rows[2],
+                      nameBAAK = rows[3],
+                      time = rows[4],
+                      mAmp = ii,
+
+
+                      classSobNeutronsList = ll,
+                      sig0 = Convert.ToDouble(rows[31].Replace(".", ",")),
+                      sig1 = Convert.ToDouble(rows[32].Replace(".", ",")),
+                      sig2 = Convert.ToDouble(rows[33].Replace(".", ",")),
+                      sig3 = Convert.ToDouble(rows[34].Replace(".", ",")),
+                      sig4 = Convert.ToDouble(rows[35].Replace(".", ",")),
+                      sig5 = Convert.ToDouble(rows[36].Replace(".", ",")),
+                      sig6 = Convert.ToDouble(rows[37].Replace(".", ",")),
+                      sig7 = Convert.ToDouble(rows[38].Replace(".", ",")),
+                      sig8 = Convert.ToDouble(rows[39].Replace(".", ",")),
+                      sig9 = Convert.ToDouble(rows[40].Replace(".", ",")),
+                      sig10 = Convert.ToDouble(rows[41].Replace(".", ",")),
+
+                      sig11 = Convert.ToDouble(rows[42].Replace(".", ",")),
+
+                      SumAmp = Convert.ToInt32(rows[5]),
+                      // SumNeu = Convert.ToInt16(rows[6]),
+
+                      Nnull0 = Convert.ToInt16(rows[43]),
+                      Nnull1 = Convert.ToInt16(rows[44]),
+                      Nnull2 = Convert.ToInt16(rows[45]),
+                      Nnull3 = Convert.ToInt16(rows[46]),
+                      Nnull4 = Convert.ToInt16(rows[47]),
+                      Nnull5 = Convert.ToInt16(rows[48]),
+                      Nnull6 = Convert.ToInt16(rows[49]),
+                      Nnull7 = Convert.ToInt16(rows[50]),
+                      Nnull8 = Convert.ToInt16(rows[51]),
+                      Nnull9 = Convert.ToInt16(rows[52]),
+                      Nnull10 = Convert.ToInt16(rows[53]),
+                      Nnull11 = Convert.ToInt16(rows[54])
+
+                  });
+
+
+              });
+
+                                }
+                                else
+                                {
+                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+              () =>
+              {
+                  ViewModel.ClassSobsT.Add(new ClassSob()
+                  {
+                      nameFile = rows[2],
+                      nameklaster = rows[4],
+                      nameBAAK = rows[3],
+                      time = rows[1],
+
+
+                      sig0 = Convert.ToDouble(rows[43]),
+                      sig1 = Convert.ToDouble(rows[44]),
+                      sig2 = Convert.ToDouble(rows[45]),
+                      sig3 = Convert.ToDouble(rows[46]),
+                      sig4 = Convert.ToDouble(rows[47]),
+                      sig5 = Convert.ToDouble(rows[48]),
+                      sig6 = Convert.ToDouble(rows[49]),
+                      sig7 = Convert.ToDouble(rows[50]),
+                      sig8 = Convert.ToDouble(rows[51]),
+                      sig9 = Convert.ToDouble(rows[52]),
+                      sig10 = Convert.ToDouble(rows[53]),
+                      sig11 = Convert.ToDouble(rows[54]),
+                      SumAmp = Convert.ToInt32(rows[5]),
+                      SumNeu = Convert.ToInt16(rows[6]),
+                      Nnull0 = Convert.ToInt16(rows[31]),
+                      Nnull1 = Convert.ToInt16(rows[32]),
+                      Nnull2 = Convert.ToInt16(rows[33]),
+                      Nnull3 = Convert.ToInt16(rows[34]),
+                      Nnull4 = Convert.ToInt16(rows[35]),
+                      Nnull5 = Convert.ToInt16(rows[36]),
+                      Nnull6 = Convert.ToInt16(rows[37]),
+                      Nnull7 = Convert.ToInt16(rows[38]),
+                      Nnull8 = Convert.ToInt16(rows[39]),
+                      Nnull9 = Convert.ToInt16(rows[40]),
+                      Nnull10 = Convert.ToInt16(rows[41]),
+                      Nnull11 = Convert.ToInt16(rows[42])
+                  });
+
+              });
+                                }
+                            }
+
+                        }
+
+                    }
+                    catch (Exception)
+                    {
+                        MessageDialog g1 = new MessageDialog("Ошибка в строке " + x.ToString());
+                        await g1.ShowAsync();
+                    }
+                    //  MessageDialog g = new MessageDialog(text);
+                    // await g.ShowAsync();
+                    contentDialog.Hide();
+
+                }
+                else
+                {
+
+                }
+            }
+            catch (Exception)
+            {
+                var mess = new MessageDialog("Ошибка");
+                await mess.ShowAsync();
+            }
+        }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
@@ -1551,18 +1679,54 @@ namespace DataYRAN
 
 
         }
-
-        public async void ObchSobURAN(int MaxDur, int MaxAmpl, int MinClust)
+        private async void AppBarButton_Play(object sender, RoutedEventArgs e)
         {
             try
             {
 
-    foreach (ClassSob classSob in ViewModel.ClassSobsT)
+
+
+                int MaxDur = Convert.ToInt16(TimeGate.Text);
+                int MaxAmpl = Convert.ToInt16(MinAmplDetect.Text);
+                int MinClust = Convert.ToInt16(MinClustDec.Text);
+                double minAmpN = Convert.ToDouble(AmpNeBol.Text);
+                ContentDialog contentDialog = new ContentDialog
+                {
+                    Title = "Поиск общих событий",
+                    Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс ...",
+
+                };
+                contentDialog.ShowAsync();
+                await Task.Run(() => ObchSobURAN(MaxDur, MaxAmpl, MinClust, minAmpN, contentDialog));
+                contentDialog.Hide();
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageDialog messageDialog = new MessageDialog(ex.ToString());
+                await messageDialog.ShowAsync();
+            }
+
+        }
+        public async void ObchSobURAN(int MaxDur, int MaxAmpl, int MinClust, double AmpN, ContentDialog contentDialog)
+        {
+            try
+            {
+
+              //  contentDialog.ShowAsync();
+
+
+                foreach (ClassSob classSob in ViewModel.ClassSobsT)
                 {
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
 {
     ViewModel._DataColecSobCopy.Add(classSob);
+ 
+
 });
                 }
 
@@ -1570,6 +1734,13 @@ namespace DataYRAN
               var  listC =  (from ClassSob in ViewModel._DataColecSobCopy
                          orderby ClassSob.time
                          select ClassSob).ToList();
+              //  (Enumerable.Range(0, (data1.Length / 12)).Select(x => data1[i, x]).Max()) - nul;
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+() =>
+{
+textOb.Text = listC.Count().ToString();
+    contentDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс ..." + "\n" + "Осталось: " + listC.Count().ToString();
+});
 
                 while (listC.Count!=0)
                 {
@@ -1579,15 +1750,36 @@ namespace DataYRAN
                   if (listC.Count != 0)
                   {
 
-                        
-                            Debug.WriteLine("Выборка");
-                            var orderedNumbers = from ClassSob in listC.AsParallel()
+                        ParallelQuery<ClassSob> orderedNumbers;
+                           // Debug.WriteLine("Выборка");
+                           if (listC.Count()>=8)
+                        {
+                             orderedNumbers = from ClassSob in (Enumerable.Range(0, 8).Select(x => listC.ElementAt(x))).AsParallel()
                                                  where DateNanos.isEventSimul(listC.ElementAt(0).time, ClassSob.time, MaxDur)
+                                              select ClassSob;
+                        }
+                           else
+                        {
+                           orderedNumbers = from ClassSob in (Enumerable.Range(0, listC.Count()).Select(x => listC.ElementAt(x))).AsParallel()
+                                            where DateNanos.isEventSimul(listC.ElementAt(0).time, ClassSob.time, MaxDur)
                                                  select ClassSob;
+                        }
                         
+                           if ((orderedNumbers.Count()>= MinClust))
+                        {
+
                             classSobColl.col.AddRange(orderedNumbers);
                             classSobColl.StartTime = orderedNumbers.ElementAt(0).time;
-                            Debug.WriteLine("удаление");
+                            classSobColl.dateUR = orderedNumbers.ElementAt(0).dateUR;
+                            classSobColl.SumAmpAndNeutronAndClaster();
+                           
+                           
+                                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => { ViewModel._DataSobColli.Add(classSobColl); });
+                                
+                       
+                        }
+                          
+                           // Debug.WriteLine("удаление");
                             var dd = orderedNumbers.Distinct();
                               foreach (ClassSob classSob in dd)
                               {
@@ -1610,19 +1802,16 @@ namespace DataYRAN
 () =>
 {
     textOb.Text = listC.Count().ToString();
+    contentDialog.Content = "Дождитесь закрытия этого окна." + "\n" + "Идет процесс ..." + "\n" + "Осталось: " + listC.Count().ToString();
 });             
-                    classSobColl.SumAmpAndNeutronAndClaster();
-                    Debug.WriteLine("добавление в общию");
-                    Debug.WriteLine(classSobColl.StartTime.ToString());
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-() =>
-{
-    ViewModel._DataSobColli.Add(classSobColl);
-});
+                   
+                   // Debug.WriteLine("добавление в общию");
+                   // Debug.WriteLine(classSobColl.StartTime.ToString());
+
                    
                 }
-               
 
+             
             }
 
 
@@ -1687,30 +1876,7 @@ namespace DataYRAN
            await messageDialog.ShowAsync();
         }
 
-        private async void DataGrid1_SelectionChanged(object sender, DataGridSelectionChangedEventArgs e)
-        {
-            if (DataGrid1.SelectedItem != null)
-            {
-              
-
-                    Split1.IsPaneOpen = !Split1.IsPaneOpen;
-                
-                
-                  object ind = DataGrid1.SelectedItem;
-                 
-                   
-                        ClassSobColl classSob = (ClassSobColl)DataGrid1.SelectedItem;
-
-                        await MyUser.ShowDetecAsync(classSob.col);
-                await MyUsern.ShowDetecТAsync(classSob.col);
-
-            }
-            else
-            {
-                Split1.IsPaneOpen = false;
-            }
-
-        }
+       
         private ClassSob currentCheckedItem;
         private void OnCheckBoxClick(object sender, RoutedEventArgs e)
         {
@@ -1730,6 +1896,26 @@ namespace DataYRAN
                // currentCheckedItem.HasRowDetails = false;
             }
            // currentCheckedItem = newCheckedItem;
+        }
+        private async void OnCheckBoxClick1(object sender, RoutedEventArgs e)
+        {
+            var cb = (CheckBox)sender;
+            var newCheckedItem = (ClassSobV)cb.DataContext;
+         
+            if (cb.IsChecked.HasValue && cb.IsChecked.Value)
+            {
+                this.DataGridV.ShowRowDetailsForItem(newCheckedItem);
+            }
+            else
+            {
+                this.DataGridV.HideRowDetailsForItem(newCheckedItem);
+            }
+
+            if (currentCheckedItem != null)
+            {
+                // currentCheckedItem.HasRowDetails = false;
+            }
+            // currentCheckedItem = newCheckedItem;
         }
         private async void AppButton_Click_7(object sender, RoutedEventArgs e)
         {
@@ -1784,15 +1970,19 @@ namespace DataYRAN
 
         private void Sobitie_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabView tabView = (TabView)sender;
+            Pivot tabView = (Pivot)sender;
             int x = tabView.SelectedIndex;
             if(x==2)
             {
                 ed.IsEnabled = true;
+                edAmp.IsEnabled = true;
+                edN.IsEnabled = true;
             }
             else
             {
                 ed.IsEnabled = false;
+                edAmp.IsEnabled = false;
+                edN.IsEnabled = false;
             }
         }
 
@@ -1810,6 +2000,61 @@ namespace DataYRAN
                 }
 
                 this.Frame.Navigate(typeof(PageStatSobTemp), classSobs);
+            }
+        }
+        private void TimeN_Click(object sender, RoutedEventArgs e)
+        {
+            IDataView currentView = this.DataGrid.GetDataView();
+            if (currentView.Items.Count > 0)
+            {
+
+
+                ObservableCollection<ClassSob> classSobs = new ObservableCollection<ClassSob>();
+                foreach (ClassSob classSob in currentView)
+                {
+                    classSobs.Add(classSob);
+                }
+
+                this.Frame.Navigate(typeof(PageTimeDistrib), classSobs);
+            }
+        }
+      
+       
+        private async void ListViewRight_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            MenuFlyout flyout = new MenuFlyout();
+            ClassСписокList data = (ClassСписокList)args.Item;
+            //  MessageDialog messageDialog = new MessageDialog(data.NameFile);
+            // await messageDialog.ShowAsync();
+            var deleteCommand = new StandardUICommand(StandardUICommandKind.Delete);
+
+            deleteCommand.ExecuteRequested += DeleteCommand_ExecuteRequested;
+
+        
+
+
+
+            MenuFlyoutItem item = new MenuFlyoutItem() { Command = deleteCommand };
+            flyout.Items.Add(item);
+            args.ItemContainer.ContextFlyout = flyout;
+        }
+
+        private void DeleteCommand_ExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
+        {
+            if (args.Parameter != null)
+            {
+                foreach (var i in ViewModel.DataColec)
+                {
+                    if (i.Text == (args.Parameter as string))
+                    {
+                        ViewModel.DataColec.Remove(i);
+                        return;
+                    }
+                }
+            }
+            if (listView1.SelectedIndex != -1)
+            {
+                ViewModel.DataColec.RemoveAt(listView1.SelectedIndex);
             }
         }
     }

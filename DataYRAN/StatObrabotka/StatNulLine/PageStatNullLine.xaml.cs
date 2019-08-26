@@ -43,9 +43,9 @@ namespace DataYRAN.StatObrabotka.StatNulLine
                 try
                 {
 
-                    var orderedNumbers = from ClassSob in classRazvertka.AsParallel()
-                                         where ClassSob.mNull[0] == 2048
-                                         select ClassSob;
+                 //   var orderedNumbers = from ClassSob in classRazvertka.AsParallel()
+                    //                     where ClassSob.mNull[0] == 2048
+                             //            select ClassSob;
 
               
                     await NullLine(classRazvertka, 1);

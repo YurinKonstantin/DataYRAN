@@ -1,0 +1,67 @@
+﻿<Page
+    x:Class="DataYRAN.StatObrabotka.Raspred.PageRaspredAmpD"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DataYRAN.StatObrabotka.Raspred"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions >
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+
+        </Grid.RowDefinitions>
+        <CommandBar Margin="0,8,0,0">
+            <AppBarButton Icon="Save" Label="Сохранить" Click="AppBarButton"/>
+            <AppBarButton Icon="Refresh" Label="Обновить" />
+            <CommandBar.Content>
+                <Button VerticalAlignment="Top" HorizontalAlignment="Left"  Style="{StaticResource NavigationBackButtonNormalStyle}" Click="Button_Click"/>
+            </CommandBar.Content>
+        </CommandBar>
+        <Pivot  Grid.Row="2" Title="Нулевая линия" SelectionChanged="Pivot_SelectionChanged" >
+           
+            <PivotItem Header="Распределение нулевой линии">
+                <controls:DataGrid x:Name="NeutronGrid"
+                  ItemsSource="{x:Bind DataColecN}"
+                  AutoGenerateColumns="False">
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Header="Значение"
+                                             Binding="{Binding znacRas}"/>
+                        <controls:DataGridTextColumn Header="D1"
+                                             Binding="{Binding MNullLine[0]}"/>
+                        <controls:DataGridTextColumn Header="D2"
+                                             Binding="{Binding MNullLine[1]}"/>
+                        <controls:DataGridTextColumn Header="eD3"
+                                             Binding="{Binding MNullLine[2]}"/>
+                        <controls:DataGridTextColumn Header="D4"
+                                             Binding="{Binding MNullLine[3]}"/>
+                        <controls:DataGridTextColumn Header="D5"
+                                             Binding="{Binding MNullLine[4]}"/>
+                        <controls:DataGridTextColumn Header="D6"
+                                             Binding="{Binding MNullLine[5]}"/>
+                        <controls:DataGridTextColumn Header="D7"
+                                             Binding="{Binding MNullLine[6]}"/>
+                        <controls:DataGridTextColumn Header="D8"
+                                             Binding="{Binding MNullLine[7]}"/>
+                        <controls:DataGridTextColumn Header="D9"
+                                             Binding="{Binding MNullLine[8]}"/>
+                        <controls:DataGridTextColumn Header="D10"
+                                             Binding="{Binding MNullLine[9]}"/>
+                        <controls:DataGridTextColumn Header="D11"
+                                             Binding="{Binding MNullLine[10]}"/>
+                        <controls:DataGridTextColumn Header="D12"
+                                             Binding="{Binding MNullLine[11]}"/>
+                    </controls:DataGrid.Columns>
+                </controls:DataGrid>
+            </PivotItem>
+
+        </Pivot>
+
+
+    </Grid>
+</Page>

@@ -10,7 +10,7 @@ namespace DataYRAN
 {
     public class ClassSob
     {
-      
+
 
         public int count { get; set; }
         public string nameTip;
@@ -25,13 +25,20 @@ namespace DataYRAN
             {
                 return mAmp.Sum();
             }
-                
-                set
+
+            set
             {
                 sumAmp = value;
             }
         }
-      public  DataTimeUR dateUR { get; set; }
+        public DataTimeUR dateUR { get; set; }
+        public string DataTimeV
+            {
+            get
+            {
+                return dateUR.DateString();
+            }
+            }
         int sumNeu = 0;
         public int SumNeu {
 

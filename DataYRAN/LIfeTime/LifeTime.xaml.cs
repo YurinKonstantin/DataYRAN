@@ -195,8 +195,8 @@ namespace DataYRAN.LIfeTime
                             }
                             catch
                             {
-                                MessageDialog messageDialog2 = new MessageDialog(classSob.nameFile);
-                                await messageDialog2.ShowAsync();
+                             //   MessageDialog messageDialog2 = new MessageDialog(classSob.nameFile);
+                             //   await messageDialog2.ShowAsync();
 
                             }
                         }

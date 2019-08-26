@@ -8,8 +8,44 @@ using Windows.UI.Popups;
 
 namespace DataYRAN
 {
-   public class ClassSobV
+    public class ChNeutron
     {
+
+      /// <summary>
+      /// Номер канала от 1 до 12
+      /// </summary>
+      public int ChN { get; set; }
+     
+        int polmaxTimeV = 0;
+        public int PolmaxTimeV
+        {
+            get
+            {
+                return polmaxTimeV;
+            }
+
+            set
+            {
+                polmaxTimeV = value;
+            }
+        }
+        public short Amp { get; set; }
+        public double sig { get; set; }
+        public short Nnull { get; set; }
+  
+        /// <summary>
+        /// Время начала сигнала в отсчетах
+        /// </summary>
+        public int FirstTimeV { get; set; }
+        /// <summary>
+        /// Время максимального хначения амплитуды в отсчетах
+        /// </summary>
+        public int MaxTime { get; set; }
+
+    }
+    public class ClassSobV
+    {
+     public List<ChNeutron> chNeutrons { get; set; }
         public string nameTip;
         public string nameFile { get; set; }
         public string nameklaster { get; set; }

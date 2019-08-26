@@ -29,6 +29,7 @@ namespace DataYRAN
         
 
         ObservableCollection<ClassSob> _DataColecSob = new ObservableCollection<ClassSob>();
+        ObservableCollection<ClassSobColl> _DataColecSobCol = new ObservableCollection<ClassSobColl>();
         ObservableCollection<ClassSobObrZav> _DataColecSob2 = new ObservableCollection<ClassSobObrZav>();
         public BlankPageZavisimost()
         {
@@ -161,31 +162,7 @@ namespace DataYRAN
                       nameklaster = rows[4],
                       nameBAAK = rows[3],
                       time = rows[1],
-                  /* Amp0 = Convert.ToInt16(rows[7]),
-                   Amp1 = Convert.ToInt16(rows[8]),
-                   Amp2 = Convert.ToInt16(rows[9]),
-                   Amp3 = Convert.ToInt16(rows[10]),
-                   Amp4 = Convert.ToInt16(rows[11]),
-                   Amp5 = Convert.ToInt16(rows[12]),
-                   Amp6 = Convert.ToInt16(rows[13]),
-                   Amp7 = Convert.ToInt16(rows[14]),
-                   Amp8 = Convert.ToInt16(rows[15]),
-                   Amp9 = Convert.ToInt16(rows[16]),
-                   Amp10 = Convert.ToInt16(rows[17]),
-                   Amp11 = Convert.ToInt16(rows[18]),
-                   */
-                  // Nnut0 = Convert.ToInt16(rows[19]),
-                  // Nnut1 = Convert.ToInt16(rows[20]),
-                  //Nnut2 = Convert.ToInt16(rows[21]),
-                  // Nnut3 = Convert.ToInt16(rows[22]),
-                  // Nnut4 = Convert.ToInt16(rows[23]),
-                  // Nnut5 = Convert.ToInt16(rows[24]),
-                  // Nnut6 = Convert.ToInt16(rows[25]),
-                  //  Nnut7 = Convert.ToInt16(rows[26]),
-                  //  Nnut8 = Convert.ToInt16(rows[27]),
-                  //  Nnut9 = Convert.ToInt16(rows[28]),
-                  //  Nnut10 = Convert.ToInt16(rows[29]),
-                  //  Nnut11 = Convert.ToInt16(rows[30]),
+               
 
                   sig0 = Convert.ToDouble(rows[43]),
                       sig1 = Convert.ToDouble(rows[44]),
@@ -416,6 +393,222 @@ namespace DataYRAN
         {
             _DataColecSob2.Clear();
             _DataColecSob.Clear();
+        }
+        private void AppBarButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+        }
+        private async void AppBarButton_Click_1Ob(object sender, RoutedEventArgs e)
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+            picker.SuggestedStartLocation =
+                Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            picker.FileTypeFilter.Add(".doc");
+            picker.FileTypeFilter.Add(".data");
+            picker.FileTypeFilter.Add(".txt");
+            try
+            {
+
+
+                Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+                if (file != null)
+
+                {
+
+                    IList<string> g11 = await Windows.Storage.FileIO.ReadLinesAsync(file);
+                    int h = 0;
+                    int x = 0;
+                    try
+                    {
+
+                        foreach (string f in g11)
+                        {
+                            string[] rows = f.Split("\t");
+                            if (rows.Length != 0 && !rows[0].Contains("n"))
+                            {
+                                //count = Convert.ToInt32(rows[0]);
+                                if (rows[1].Contains("T"))
+                                {
+                                    int[] ii = new int[12];
+                                    ii[0] = Convert.ToInt16(rows[7]);
+                                    ii[1] = Convert.ToInt16(rows[8]);
+                                    ii[2] = Convert.ToInt16(rows[9]);
+                                    ii[3] = Convert.ToInt16(rows[10]);
+                                    ii[4] = Convert.ToInt16(rows[11]);
+                                    ii[5] = Convert.ToInt16(rows[12]);
+                                    ii[6] = Convert.ToInt16(rows[13]);
+                                    ii[7] = Convert.ToInt16(rows[14]);
+                                    ii[8] = Convert.ToInt16(rows[15]);
+                                    ii[9] = Convert.ToInt16(rows[16]);
+                                    ii[10] = Convert.ToInt16(rows[17]);
+                                    ii[11] = Convert.ToInt16(rows[18]);
+                                    int ic = 1;
+                                    List<ClassSobNeutron> ll = new List<ClassSobNeutron>();
+                                    for (int it = 19; it < 31; it++)
+                                    {
+                                        if (Convert.ToInt16(rows[it]) > 0)
+                                        {
+                                            for (int d = 0; d < Convert.ToInt16(rows[it]); d++)
+                                            {
+                                                ll.Add(new ClassSobNeutron() { D = ic, Amp = 0, TimeAmp = 0, TimeEnd = 0, TimeEnd3 = 0, TimeFirst = 0, TimeFirst3 = 0 });
+
+
+                                            }
+
+                                        }
+                                        ic++;
+
+                                    }
+
+                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+              () =>
+              {
+                  _DataColecSob.Add(new ClassSob()
+                  {
+                      nameFile = rows[1],
+                      nameklaster = rows[2],
+                      nameBAAK = rows[3],
+                      time = rows[4],
+                      mAmp = ii,
+
+
+                      classSobNeutronsList = ll,
+                      sig0 = Convert.ToDouble(rows[31].Replace(".", ",")),
+                      sig1 = Convert.ToDouble(rows[32].Replace(".", ",")),
+                      sig2 = Convert.ToDouble(rows[33].Replace(".", ",")),
+                      sig3 = Convert.ToDouble(rows[34].Replace(".", ",")),
+                      sig4 = Convert.ToDouble(rows[35].Replace(".", ",")),
+                      sig5 = Convert.ToDouble(rows[36].Replace(".", ",")),
+                      sig6 = Convert.ToDouble(rows[37].Replace(".", ",")),
+                      sig7 = Convert.ToDouble(rows[38].Replace(".", ",")),
+                      sig8 = Convert.ToDouble(rows[39].Replace(".", ",")),
+                      sig9 = Convert.ToDouble(rows[40].Replace(".", ",")),
+                      sig10 = Convert.ToDouble(rows[41].Replace(".", ",")),
+
+                      sig11 = Convert.ToDouble(rows[42].Replace(".", ",")),
+
+                      SumAmp = Convert.ToInt32(rows[5]),
+                      // SumNeu = Convert.ToInt16(rows[6]),
+
+                      Nnull0 = Convert.ToInt16(rows[43]),
+                      Nnull1 = Convert.ToInt16(rows[44]),
+                      Nnull2 = Convert.ToInt16(rows[45]),
+                      Nnull3 = Convert.ToInt16(rows[46]),
+                      Nnull4 = Convert.ToInt16(rows[47]),
+                      Nnull5 = Convert.ToInt16(rows[48]),
+                      Nnull6 = Convert.ToInt16(rows[49]),
+                      Nnull7 = Convert.ToInt16(rows[50]),
+                      Nnull8 = Convert.ToInt16(rows[51]),
+                      Nnull9 = Convert.ToInt16(rows[52]),
+                      Nnull10 = Convert.ToInt16(rows[53]),
+                      Nnull11 = Convert.ToInt16(rows[54])
+
+                  });
+
+
+              });
+
+                                }
+                                else
+                                {
+                                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+              () =>
+              {
+                  _DataColecSobCol.Add(new ClassSobColl()
+                  {
+                     SummAmpl=Convert.ToInt32(rows[2]),
+                     SummNeu=Convert.ToInt32(rows[3])
+                  });
+
+              });
+                                }
+                            }
+
+                        }
+
+                    }
+                    catch (Exception)
+                    {
+                        MessageDialog g1 = new MessageDialog("Ошибка в строке " + x.ToString());
+                        await g1.ShowAsync();
+                    }
+                    //  MessageDialog g = new MessageDialog(text);
+                    // await g.ShowAsync();
+
+                }
+                else
+                {
+
+                }
+            }
+            catch (Exception)
+            {
+                var mess = new MessageDialog("Ошибка");
+                await mess.ShowAsync();
+            }
+
+
+
+            int porog = 10;
+            int trig = 4;
+            int step = Convert.ToInt32(StepsAmpl.Text);
+            int g = 0;
+            List<int> listsob = new List<int>();
+            double sredN = 0;
+            for (int i = 1; i < 2048 * 72; i++)
+            {
+                g++;
+                foreach (ClassSobColl sob in _DataColecSobCol)
+                {
+                    int c = 0;
+
+                    if (sob.SummAmpl == i && sob.SummNeu < 100)
+                    {
+                        
+                       
+                            listsob.Add(sob.SummNeu);
+
+                    }
+                }
+                if (g == step)
+                {
+                    if (listsob.Count == 0)
+                    {
+
+                        // _DataColecSob2.Add(new ClassSobObrZav()
+                        //  {
+                        //    amp = i,
+                        //   sredN = 0,
+                        //   sig = 0
+
+                        // });
+                    }
+                    else
+                    {
+                        sredN = listsob.Average();
+                        _DataColecSob2.Add(new ClassSobObrZav()
+                        {
+                            amp = i,
+                            sredN = listsob.Average(),
+                            sig = Math.Sqrt(Sum(listsob, sredN) / listsob.Count)
+
+                        });
+                    }
+                    g = 0;
+                    listsob = new List<int>();
+                    sredN = 0;
+
+                }
+
+
+
+
+
+            }
+            MessageDialog gh = new MessageDialog("Конец");
+            await gh.ShowAsync();
+
         }
     }
 }

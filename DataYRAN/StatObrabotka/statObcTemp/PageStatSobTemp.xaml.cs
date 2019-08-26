@@ -68,52 +68,38 @@ namespace DataYRAN.StatObrabotka.statObcTemp
 
             dateTime1 = dateTime1.AddHours(cloc);
             int col = 0;
-            int[] mas = new int[12];
-            int[] masN = new int[12];
+            int mas = 0;
+            int masN = 0;
+            int masK = 0;
             for (int i = 0; i <= dateTimeEnd.Subtract(dateTimeFirst).TotalHours; i++)
             {
 
 
-                foreach (ClassSob classSob in orderedNumbers)
+                foreach (ClassSobColl classSob in orderedNumbers)
                 {
                     DateTime dateTimeTec = new DateTime(classSob.dateUR.GG, classSob.dateUR.MM, classSob.dateUR.DD, classSob.dateUR.HH, classSob.dateUR.Min, classSob.dateUR.CC, 0);
 
                     if (dateTimeTec.Subtract(dateTime).TotalHours >= 0 && dateTimeTec.Subtract(dateTime).TotalHours < cloc)
                     {
-                        for (int ii = 0; ii < 12; ii++)
-                        {
-                            if (classSob.mAmp[ii] >= 10)
-                            {
-                                mas[ii] = mas[ii] + 1;
-                            }
+                        mas++; ;
+                        masN += classSob.SummNeu;
+                        masK += classSob.SumClast;
 
-                        }
-                        masN[0] = masN[0] + classSob.Nnut0;
-                        masN[1] = masN[1] + classSob.Nnut1;
-                        masN[2] = masN[2] + classSob.Nnut2;
-                        masN[3] = masN[3] + classSob.Nnut3;
-                        masN[4] = masN[4] + classSob.Nnut4;
-                        masN[5] = masN[5] + classSob.Nnut5;
-                        masN[6] = masN[6] + classSob.Nnut6;
-                        masN[7] = masN[7] + classSob.Nnut7;
-                        masN[8] = masN[8] + classSob.Nnut8;
-                        masN[9] = masN[9] + classSob.Nnut9;
-                        masN[10] = masN[10] + classSob.Nnut10;
-                        masN[11] = masN[11] + classSob.Nnut11;
                         col++;
                     }
                 }
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 () =>
 {
-    DataColec.Add(new ClassTemp() { dateTime = dateTime, mTemp = mas, colSob = col });
-    DataColecN.Add(new ClassTemp() { dateTime = dateTime, mTemp = masN });
+    DataColec.Add(new ClassTempObc() { dateTime = dateTime, Temp = mas, colSob = col });
+    DataColecN.Add(new ClassTempObc() { dateTime = dateTime, Temp = masN });
 });
 
                 col = 0;
-                mas = new int[12];
-                masN = new int[12];
-                dateTime = dateTime1;
+                mas = 0;
+                masN = 0;
+                masK = 0;
+               dateTime = dateTime1;
                 dateTime1 = dateTime1.AddHours(cloc);
 
             }
@@ -126,8 +112,8 @@ namespace DataYRAN.StatObrabotka.statObcTemp
         {
             this.Frame.Navigate(typeof(BlankPageObrData));
         }
-        ObservableCollection<ClassTemp> _DataColec = new ObservableCollection<ClassTemp>();
-        public ObservableCollection<ClassTemp> DataColec
+        ObservableCollection<ClassTempObc> _DataColec = new ObservableCollection<ClassTempObc>();
+        public ObservableCollection<ClassTempObc> DataColec
         {
             get
             {
@@ -140,8 +126,8 @@ namespace DataYRAN.StatObrabotka.statObcTemp
             }
         }
 
-        ObservableCollection<ClassTemp> _DataColecN = new ObservableCollection<ClassTemp>();
-        public ObservableCollection<ClassTemp> DataColecN
+        ObservableCollection<ClassTempObc> _DataColecN = new ObservableCollection<ClassTempObc>();
+        public ObservableCollection<ClassTempObc> DataColecN
         {
             get
             {
@@ -173,17 +159,14 @@ namespace DataYRAN.StatObrabotka.statObcTemp
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
                    "TempSob" + "." + "txt", CreationCollisionOption.GenerateUniqueName)))
                     {
-                        string sSob = "DateTime" + "\t" + "SobTemp" + "\t" + "SumDTemp" + "\t" + "TempD1" + "\t" + "TempD2" + "\t" + "TempD3" + "\t" + "TempD4" + "\t" + "TempD5" + "\t" + "TempD6" + "\t" + "TempD7"
-                            + "\t" + "TempD8" + "\t" + "TempD9" + "\t" + "TempD10" + "\t" + "TempD11" + "\t" + "TempD12";
+                        string sSob = "DateTime" + "\t" + "SobTemp";
 
 
                         await writer.WriteLineAsync(sSob);
-                        foreach (ClassTemp sob in DataColec)
+                        foreach (ClassTempObc sob in DataColec)
                         {
 
-                            string Sob = sob.dateTime.ToString() + "\t" + sob.colSob.ToString() + "\t" + sob.Temp.ToString() + "\t" + sob.mTemp[0].ToString() + "\t" + sob.mTemp[1].ToString() + "\t" +
-                            sob.mTemp[2].ToString() + "\t" + sob.mTemp[3].ToString() + "\t" + sob.mTemp[4].ToString() + "\t" + sob.mTemp[5].ToString() + "\t" + sob.mTemp[6].ToString() + "\t" + sob.mTemp[7].ToString() +
-                            "\t" + sob.mTemp[8].ToString() + "\t" + sob.mTemp[9].ToString() + "\t" + sob.mTemp[10].ToString() + "\t" + sob.mTemp[11].ToString();
+                            string Sob = sob.dateTime.ToString() + "\t" + sob.Temp.ToString();
                             await writer.WriteLineAsync(Sob);
                         }
                     }
@@ -194,21 +177,75 @@ namespace DataYRAN.StatObrabotka.statObcTemp
                    new StreamWriter(await folder.OpenStreamForWriteAsync(
                    "TempSobN" + "." + "txt", CreationCollisionOption.GenerateUniqueName)))
                     {
-                        string sSob = "DateTime" + "\t" + "STemp" + "\t" + "TempD1" + "\t" + "TempD2" + "\t" + "TempD3" + "\t" + "TempD4" + "\t" + "TempD5" + "\t" + "TempD6" + "\t" + "TempD7"
-                            + "\t" + "TempD8" + "\t" + "TempD9" + "\t" + "TempD10" + "\t" + "TempD11" + "\t" + "TempD12";
+                        string sSob = "DateTime" + "\t" + "STemp";
 
 
                         await writer.WriteLineAsync(sSob);
-                        foreach (ClassTemp sob in DataColecN)
+                        foreach (ClassTempObc sob in DataColecN)
                         {
 
-                            string Sob = sob.dateTime.ToString() + "\t" + sob.Temp.ToString() + "\t" + sob.mTemp[0].ToString() + "\t" + sob.mTemp[1].ToString() + "\t" +
-                            sob.mTemp[2].ToString() + "\t" + sob.mTemp[3].ToString() + "\t" + sob.mTemp[4].ToString() + "\t" + sob.mTemp[5].ToString() + "\t" + sob.mTemp[6].ToString() + "\t" + sob.mTemp[7].ToString() +
-                            "\t" + sob.mTemp[8].ToString() + "\t" + sob.mTemp[9].ToString() + "\t" + sob.mTemp[10].ToString() + "\t" + sob.mTemp[11].ToString();
+                            string Sob = sob.dateTime.ToString() + "\t" + sob.Temp.ToString();
                             await writer.WriteLineAsync(Sob);
                         }
                     }
                 }
+
+                MessageDialog messageDialog = new MessageDialog("Темп сохранен");
+                await messageDialog.ShowAsync();
+
+            }
+            else
+            {
+
+            }
+        }
+        private void rankLowFilter_Click(object sender, RoutedEventArgs e)
+        {
+            int x = 100;
+            EmployeeGrid.ItemsSource = new ObservableCollection<ClassTempObc>(from item in DataColec
+                                                                              where item.Temp > x
+                                                                              select item);
+        }
+        private void ClearFilter_Click(object sender, RoutedEventArgs e)
+        {
+            if (EmployeeGrid != null)
+            {
+                EmployeeGrid.ItemsSource = DataColec;
+            }
+        }
+
+        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+
+             
+
+                if (DataColec.Count != 0)
+                {
+                    using (StreamWriter writer =
+                   new StreamWriter(await folder.OpenStreamForWriteAsync(
+                   "TempSobFil50" + "." + "txt", CreationCollisionOption.GenerateUniqueName)))
+                    {
+                        string sSob = "DateTime" + "\t" + "SobTemp";
+
+
+                        await writer.WriteLineAsync(sSob);
+                        foreach (ClassTempObc sob in EmployeeGrid.ItemsSource)
+                        {
+
+                            string Sob = sob.dateTime.ToString() + "\t" + sob.Temp.ToString();
+                            await writer.WriteLineAsync(Sob);
+                        }
+                    }
+                }
+             
 
                 MessageDialog messageDialog = new MessageDialog("Темп сохранен");
                 await messageDialog.ShowAsync();

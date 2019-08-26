@@ -1,0 +1,39 @@
+﻿<Page
+    x:Class="DataYRAN.StatObrabotka.TimeDistribuchen.PageTimeDistrib"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DataYRAN.StatObrabotka.TimeDistribuchen"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions >
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+
+        </Grid.RowDefinitions>
+        <CommandBar Margin="0,8,0,0">
+            <AppBarButton Icon="Save" Label="Сохранить" Click="AppBarButton"/>
+            <AppBarButton Icon="Refresh" Label="Обновить" />
+            <CommandBar.Content>
+                <Button VerticalAlignment="Top" HorizontalAlignment="Left"  Style="{StaticResource NavigationBackButtonNormalStyle}" Click="Button_Click"/>
+            </CommandBar.Content>
+        </CommandBar>
+        <controls:DataGrid x:Name="NeutronGrid" Grid.Row="2"
+                 
+                  AutoGenerateColumns="False">
+            <controls:DataGrid.Columns>
+                <controls:DataGridTextColumn Header="Время"
+                                             Binding="{Binding Time}"/>
+                <controls:DataGridTextColumn Header="Количесвто"
+                                             Binding="{Binding Count1}"/>
+            
+            </controls:DataGrid.Columns>
+        </controls:DataGrid>
+
+    </Grid>
+</Page>

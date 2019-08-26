@@ -11,21 +11,25 @@
     <AssemblyName>DataYRAN</AssemblyName>
     <DefaultLanguage>ru-RU</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18362.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <PackageCertificateKeyFile>DataYRAN_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>
+    </PackageCertificateKeyFile>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
-    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
+    <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <AppInstallerUri>Z:\SetAppURAN\DataURAN</AppInstallerUri>
     <AppxPackageDir>Z:\SetAppURAN\DataURAN\</AppxPackageDir>
+    <PackageCertificateThumbprint>266BF0881ED993C48FF73BB3FC68D1762645E63E</PackageCertificateThumbprint>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +53,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -176,14 +181,25 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordingViewModel.cs" />
     <Compile Include="RezimRaboti.cs" />
+    <Compile Include="Script\ContentDialogScriptSaveRAzvertki.xaml.cs">
+      <DependentUpon>ContentDialogScriptSaveRAzvertki.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Script\PageListingScript.xaml.cs">
+      <DependentUpon>PageListingScript.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SetUpUser.xaml.cs">
       <DependentUpon>SetUpUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StatObrabotka\Raspred\ClassRasAmp.cs" />
+    <Compile Include="StatObrabotka\Raspred\PageRaspredAmpD.xaml.cs">
+      <DependentUpon>PageRaspredAmpD.xaml</DependentUpon>
     </Compile>
     <Compile Include="StatObrabotka\StatNulLine\ClassRasNul.cs" />
     <Compile Include="StatObrabotka\StatNulLine\NullLine.cs" />
     <Compile Include="StatObrabotka\StatNulLine\PageStatNullLine.xaml.cs">
       <DependentUpon>PageStatNullLine.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StatObrabotka\statObcTemp\ClassTempObc.cs" />
     <Compile Include="StatObrabotka\statObcTemp\PageStatSobTemp.xaml.cs">
       <DependentUpon>PageStatSobTemp.xaml</DependentUpon>
     </Compile>
@@ -192,6 +208,10 @@
       <DependentUpon>PageStatSig.xaml</DependentUpon>
     </Compile>
     <Compile Include="StatObrabotka\StatSig\SigLine.cs" />
+    <Compile Include="StatObrabotka\TimeDistribuchen\ClassTD.cs" />
+    <Compile Include="StatObrabotka\TimeDistribuchen\PageTimeDistrib.xaml.cs">
+      <DependentUpon>PageTimeDistrib.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TelerikStringLoader.cs" />
     <Compile Include="ViewShovMaps.cs" />
     <Compile Include="ОбработкаСобытийИзОчереди.cs" />
@@ -206,25 +226,41 @@
     <None Include="DataYRAN_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\BadgeLogo.scale-100.png" />
+    <Content Include="Assets\BadgeLogo.scale-150.png" />
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
     <Content Include="Assets\database.png" />
+    <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\SplashScreen.scale-125.png" />
+    <Content Include="Assets\SplashScreen.scale-150.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-400.png" />
     <Content Include="Assets\Square150x150Logo.scale-100.png" />
+    <Content Include="Assets\Square150x150Logo.scale-125.png" />
+    <Content Include="Assets\Square150x150Logo.scale-150.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-400.png" />
     <Content Include="Assets\Square310x310Logo.scale-100.png" />
+    <Content Include="Assets\Square310x310Logo.scale-125.png" />
+    <Content Include="Assets\Square310x310Logo.scale-150.png" />
     <Content Include="Assets\Square310x310Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-100.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-400.png" />
+    <Content Include="Assets\Square310x310Logo.scale-400.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-48.png" />
     <Content Include="Assets\Square71x71Logo.scale-100.png" />
+    <Content Include="Assets\Square71x71Logo.scale-125.png" />
     <Content Include="Assets\Square71x71Logo.scale-200.png" />
     <Content Include="Assets\Square71x71Logo.scale-400.png" />
+    <Content Include="Assets\StoreLogo.scale-100.png" />
+    <Content Include="Assets\StoreLogo.scale-125.png" />
+    <Content Include="Assets\StoreLogo.scale-150.png" />
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
     <Content Include="Assets\top.jpg" />
     <Content Include="Assets\Wide310x150Logo.scale-100.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-125.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
     <Content Include="Properties\Default.rd.xml" />
@@ -286,15 +322,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainPage1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MyUserControlURAN.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Script\ContentDialogScriptSaveRAzvertki.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Script\PageListingScript.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SetUpUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StatObrabotka\Raspred\PageRaspredAmpD.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -310,13 +354,20 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="StatObrabotka\TimeDistribuchen\PageTimeDistrib.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DynamicLanguageRuntime.Net40.Unofficial">
+      <Version>2.6.1003.1</Version>
+    </PackageReference>
+    <PackageReference Include="IronPython">
+      <Version>2.7.10-alpha0</Version>
+    </PackageReference>
     <PackageReference Include="LiveCharts.Uwp">
       <Version>0.8.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.8</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>5.1.1</Version>
@@ -331,7 +382,7 @@
       <Version>1.0.0</Version>
     </PackageReference>
     <PackageReference Include="Telerik.UI.for.UniversalWindowsPlatform">
-      <Version>1.0.1.4</Version>
+      <Version>1.0.1.6</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -343,7 +394,6 @@
       <HintPath>..\..\..\..\Users\yurin\source\repos\ObrabotcaURAN\ObrabotcaURAN\bin\Release\netstandard2.0\ObrabotcaURAN.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

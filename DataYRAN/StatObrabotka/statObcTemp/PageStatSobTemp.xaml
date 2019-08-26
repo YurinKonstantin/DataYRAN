@@ -17,51 +17,45 @@
         </Grid.RowDefinitions>
         <CommandBar Margin="0,8,0,0">
             <AppBarButton Icon="Save" Label="Сохранить" Click="AppBarButton"/>
-            <AppBarButton Icon="Refresh" Label="Обновить" />
+        
             <CommandBar.Content>
                 <Button VerticalAlignment="Top" HorizontalAlignment="Left"  Style="{StaticResource NavigationBackButtonNormalStyle}" Click="Button_Click"/>
             </CommandBar.Content>
         </CommandBar>
         <Pivot  Grid.Row="2" Title="Темп счета">
+     
             <PivotItem Header="События">
-                <controls:DataGrid x:Name="EmployeeGrid" Grid.Row="2" 
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <CommandBar Background="White">
+                        <AppBarButton Icon="Refresh" Label="Обновить" />
+                        <AppBarButton Icon="Filter" Label="фильтр" >
+                            <AppBarButton.Flyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem x:Name="TempL" Text="Temp &lt; 10" Click="rankLowFilter_Click" />
+                                    <MenuFlyoutItem x:Name="TempH" Text="Temp &gt; 50" />
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem x:Name="clearFilter" Text="Remove Filter" Click="ClearFilter_Click"/>
+                                </MenuFlyout>
+                            </AppBarButton.Flyout>
+                        </AppBarButton>
+                        <AppBarButton Icon="Save" Label="сохранить" Click="AppBarButton_Click"/>
+                    </CommandBar>
+                    <controls:DataGrid x:Name="EmployeeGrid" Grid.Row="1" 
                   ItemsSource="{x:Bind DataColec}"
                   AutoGenerateColumns="False" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollMode="Auto">
-                    <controls:DataGrid.Columns>
-                        <controls:DataGridTextColumn Header="Date"
+                        <controls:DataGrid.Columns>
+                            <controls:DataGridTextColumn Header="Date"
                                              Binding="{Binding dateTime}"/>
-                        <controls:DataGridTextColumn Header="Temp"
-                                             Binding="{Binding colSob}"/>
-                        <controls:DataGridTextColumn Header="TempD"
-                                             Binding="{Binding Temp}"/>
-                        <controls:DataGridTextColumn Header="TempD1"
-                                             Binding="{Binding mTemp[0]}"/>
-                        <controls:DataGridTextColumn Header="TempD2"
-                                             Binding="{Binding mTemp[1]}"/>
-                        <controls:DataGridTextColumn Header="TempD3"
-                                             Binding="{Binding mTemp[2]}"/>
-                        <controls:DataGridTextColumn Header="TempD4"
-                                             Binding="{Binding mTemp[3]}"/>
-                        <controls:DataGridTextColumn Header="TempD5"
-                                             Binding="{Binding mTemp[4]}"/>
-                        <controls:DataGridTextColumn Header="TempD6"
-                                             Binding="{Binding mTemp[5]}"/>
-                        <controls:DataGridTextColumn Header="TempD7"
-                                             Binding="{Binding mTemp[6]}"/>
-                        <controls:DataGridTextColumn Header="TempD8"
-                                             Binding="{Binding mTemp[7]}"/>
-                        <controls:DataGridTextColumn Header="TempD9"
-                                             Binding="{Binding mTemp[8]}"/>
-                        <controls:DataGridTextColumn Header="TempD10"
-                                             Binding="{Binding mTemp[9]}"/>
-                        <controls:DataGridTextColumn Header="TempD11"
-                                             Binding="{Binding mTemp[10]}"/>
-                        <controls:DataGridTextColumn Header="TempD12"
-                                             Binding="{Binding mTemp[11]}"/>
+                            <controls:DataGridTextColumn Header="Temp" Binding="{Binding colSob}"/>
 
 
-                    </controls:DataGrid.Columns>
-                </controls:DataGrid>
+                        </controls:DataGrid.Columns>
+                    </controls:DataGrid>
+                </Grid>
             </PivotItem>
             <PivotItem Header="Нейтроны">
                 <controls:DataGrid x:Name="NeutronGrid"
@@ -70,32 +64,10 @@
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn Header="Date"
                                              Binding="{Binding dateTime}"/>
-                        <controls:DataGridTextColumn Header="Temp"
-                                             Binding="{Binding Temp}"/>
-                        <controls:DataGridTextColumn Header="TempD1"
-                                             Binding="{Binding mTemp[0]}"/>
-                        <controls:DataGridTextColumn Header="TempD2"
-                                             Binding="{Binding mTemp[1]}"/>
-                        <controls:DataGridTextColumn Header="TempD3"
-                                             Binding="{Binding mTemp[2]}"/>
-                        <controls:DataGridTextColumn Header="TempD4"
-                                             Binding="{Binding mTemp[3]}"/>
-                        <controls:DataGridTextColumn Header="TempD5"
-                                             Binding="{Binding mTemp[4]}"/>
-                        <controls:DataGridTextColumn Header="TempD6"
-                                             Binding="{Binding mTemp[5]}"/>
-                        <controls:DataGridTextColumn Header="TempD7"
-                                             Binding="{Binding mTemp[6]}"/>
-                        <controls:DataGridTextColumn Header="TempD8"
-                                             Binding="{Binding mTemp[7]}"/>
-                        <controls:DataGridTextColumn Header="TempD9"
-                                             Binding="{Binding mTemp[8]}"/>
-                        <controls:DataGridTextColumn Header="TempD10"
-                                             Binding="{Binding mTemp[9]}"/>
-                        <controls:DataGridTextColumn Header="TempD11"
-                                             Binding="{Binding mTemp[10]}"/>
-                        <controls:DataGridTextColumn Header="TempD12"
-                                             Binding="{Binding mTemp[11]}"/>
+                        <controls:DataGridTextColumn Header="Temp" Binding="{Binding Temp}"/>
+
+
+
                     </controls:DataGrid.Columns>
                 </controls:DataGrid>
             </PivotItem>
