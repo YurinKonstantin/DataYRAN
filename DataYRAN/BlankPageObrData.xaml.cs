@@ -95,6 +95,7 @@ namespace DataYRAN
        
             base.OnNavigatedTo(e);
         }
+        //fgfgfgf
         public async void NavigateToFilePage1()
         {
             MessageDialog messageDialog = new MessageDialog("gfhf");
